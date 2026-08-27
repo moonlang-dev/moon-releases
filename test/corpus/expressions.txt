@@ -1,0 +1,1581 @@
+================================================================================
+precedence ladder full
+================================================================================
+
+fn f() {
+  a || b && c == d | e & f ^ g < h << i + j * k
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (binary_expression
+        left: (identifier)
+        right: (binary_expression
+          left: (identifier)
+          right: (binary_expression
+            left: (binary_expression
+              left: (identifier)
+              right: (identifier))
+            right: (binary_expression
+              left: (binary_expression
+                left: (identifier)
+                right: (identifier))
+              right: (binary_expression
+                left: (binary_expression
+                  left: (identifier)
+                  right: (identifier))
+                right: (binary_expression
+                  left: (identifier)
+                  right: (binary_expression
+                    left: (identifier)
+                    right: (identifier)))))))))))
+
+================================================================================
+logical or and
+================================================================================
+
+fn f() {
+  a || b && c
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (binary_expression
+        left: (identifier)
+        right: (binary_expression
+          left: (identifier)
+          right: (identifier))))))
+
+================================================================================
+bitwise or at equality level
+================================================================================
+
+fn f() {
+  a == b | c
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (binary_expression
+        left: (binary_expression
+          left: (identifier)
+          right: (identifier))
+        right: (identifier)))))
+
+================================================================================
+bit and xor
+================================================================================
+
+fn f() {
+  a & b ^ c
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (binary_expression
+        left: (binary_expression
+          left: (identifier)
+          right: (identifier))
+        right: (identifier)))))
+
+================================================================================
+comparison and shift
+================================================================================
+
+fn f() {
+  a < b >> c
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (binary_expression
+        left: (binary_expression
+          left: (identifier)
+          right: (identifier))
+        right: (identifier)))))
+
+================================================================================
+additive multiplicative
+================================================================================
+
+fn f() {
+  a + b * c - d / e % f
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (binary_expression
+        left: (binary_expression
+          left: (identifier)
+          right: (binary_expression
+            left: (identifier)
+            right: (identifier)))
+        right: (binary_expression
+          left: (binary_expression
+            left: (identifier)
+            right: (identifier))
+          right: (identifier))))))
+
+================================================================================
+unary operators
+================================================================================
+
+fn f() {
+  -a
+  !b
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (expression_statement
+        (unary_expression
+          operand: (identifier)))
+      result: (unary_expression
+        operand: (identifier)))))
+
+================================================================================
+address of
+================================================================================
+
+fn f() {
+  &x
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (address_of_expression
+        operand: (identifier)))))
+
+================================================================================
+managed pointer address and dereference chains
+================================================================================
+
+fn f() {
+  let pointer = &value;
+  **pointer
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (let_statement
+        pattern: (identifier)
+        value: (address_of_expression
+          operand: (identifier)))
+      result: (dereference_expression
+        operand: (dereference_expression
+          operand: (identifier))))))
+
+================================================================================
+await expression
+================================================================================
+
+fn f() {
+  await fetch()
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (await_expression
+        operand: (call_expression
+          function: (identifier)
+          arguments: (arguments))))))
+
+================================================================================
+cast chain
+================================================================================
+
+fn f() {
+  x as int as float
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (cast_expression
+        value: (cast_expression
+          value: (identifier)
+          type: (primitive_type))
+        type: (primitive_type)))))
+
+================================================================================
+range expression
+================================================================================
+
+fn f() {
+  0..10
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (range_expression
+        start: (integer_literal)
+        end: (integer_literal)))))
+
+================================================================================
+call expression
+================================================================================
+
+fn f() {
+  add(1, 2)
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (call_expression
+        function: (identifier)
+        arguments: (arguments
+          (integer_literal)
+          (integer_literal))))))
+
+================================================================================
+turbofish call
+================================================================================
+
+fn f() {
+  parse<int>(s)
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (turbofish_call_expression
+        function: (identifier)
+        type_arguments: (turbofish
+          (primitive_type))
+        arguments: (arguments
+          (identifier))))))
+
+================================================================================
+turbofish multiple args
+================================================================================
+
+fn f() {
+  make<int, string>(a, b)
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (turbofish_call_expression
+        function: (identifier)
+        type_arguments: (turbofish
+          (primitive_type)
+          (primitive_type))
+        arguments: (arguments
+          (identifier)
+          (identifier))))))
+
+================================================================================
+comparison is not a turbofish
+================================================================================
+
+fn f() {
+  a < b && c > d
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (binary_expression
+        left: (binary_expression
+          left: (identifier)
+          right: (identifier))
+        right: (binary_expression
+          left: (identifier)
+          right: (identifier))))))
+
+================================================================================
+method call chain
+================================================================================
+
+fn f() {
+  list.map(g).filter(h)
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (call_expression
+        function: (field_expression
+          object: (call_expression
+            function: (field_expression
+              object: (identifier)
+              field: (identifier))
+            arguments: (arguments
+              (identifier)))
+          field: (identifier))
+        arguments: (arguments
+          (identifier))))))
+
+================================================================================
+index expression
+================================================================================
+
+fn f() {
+  arr[0]
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (index_expression
+        object: (identifier)
+        index: (integer_literal)))))
+
+================================================================================
+field access
+================================================================================
+
+fn f() {
+  p.x
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (field_expression
+        object: (identifier)
+        field: (identifier)))))
+
+================================================================================
+tuple index
+================================================================================
+
+fn f() {
+  t.0
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (tuple_index_expression
+        object: (identifier)
+        index: (integer_literal)))))
+
+================================================================================
+nested tuple index
+================================================================================
+
+fn f() {
+  t.0.1
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (tuple_index_expression
+        object: (tuple_index_expression
+          object: (identifier)
+          index: (integer_literal))
+        index: (integer_literal)))))
+
+================================================================================
+try operator
+================================================================================
+
+fn f() {
+  parse(s)?
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (try_expression
+        (call_expression
+          function: (identifier)
+          arguments: (arguments
+            (identifier)))))))
+
+================================================================================
+path expression
+================================================================================
+
+fn f() {
+  std.math.pi
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (field_expression
+        object: (field_expression
+          object: (identifier)
+          field: (identifier))
+        field: (identifier)))))
+
+================================================================================
+path call
+================================================================================
+
+fn f() {
+  std.io.read_line()
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (call_expression
+        function: (field_expression
+          object: (field_expression
+            object: (identifier)
+            field: (identifier))
+          field: (identifier))
+        arguments: (arguments)))))
+
+================================================================================
+leading path
+================================================================================
+
+fn f() {
+  .global.value
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (field_expression
+        object: (path_expression
+          (identifier))
+        field: (identifier)))))
+
+================================================================================
+contextual enum shorthand positions
+================================================================================
+
+fn accept(value: State) {}
+
+fn build() -> State {
+  let direct: State = .Ready
+  accept(.Payload(1))
+  let values: [State] = [.Ready, .Payload(2)]
+  return .Ready
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    (identifier)
+    (parameter_list
+      (parameter
+        (identifier)
+        (named_type
+          (identifier))))
+    (block))
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (return_type
+      (named_type
+        (identifier)))
+    (block
+      (let_statement
+        (identifier)
+        (named_type
+          (identifier))
+        (path_expression
+          (identifier)))
+      (expression_statement
+        (call_expression
+          (identifier)
+          (arguments
+            (call_expression
+              (path_expression
+                (identifier))
+              (arguments
+                (integer_literal))))))
+      (let_statement
+        (identifier)
+        (array_type
+          (named_type
+            (identifier)))
+        (array_expression
+          (path_expression
+            (identifier))
+          (call_expression
+            (path_expression
+              (identifier))
+            (arguments
+              (integer_literal)))))
+      (return_statement
+        (path_expression
+          (identifier))))))
+
+================================================================================
+parenthesized
+================================================================================
+
+fn f() {
+  (a + b) * c
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (binary_expression
+        left: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (identifier)))
+        right: (identifier)))))
+
+================================================================================
+generator expression
+================================================================================
+
+fn f() {
+  (x * y for x in source if x > 0 for y in inner(x) if y < 10)
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (block
+      (generator_expression
+        (binary_expression
+          (identifier)
+          (identifier))
+        (comprehension_for_clause
+          (binding_pattern
+            (identifier))
+          (identifier))
+        (comprehension_if_clause
+          (binary_expression
+            (identifier)
+            (integer_literal)))
+        (comprehension_for_clause
+          (binding_pattern
+            (identifier))
+          (call_expression
+            (identifier)
+            (arguments
+              (identifier))))
+        (comprehension_if_clause
+          (binary_expression
+            (identifier)
+            (integer_literal)))))))
+
+================================================================================
+empty tuple
+================================================================================
+
+fn f() {
+  ()
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (tuple_expression))))
+
+================================================================================
+tuple literal
+================================================================================
+
+fn f() {
+  (1, 2, 3)
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (tuple_expression
+        (integer_literal)
+        (integer_literal)
+        (integer_literal)))))
+
+================================================================================
+array literal
+================================================================================
+
+fn f() {
+  [1, 2, 3]
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (array_expression
+        (integer_literal)
+        (integer_literal)
+        (integer_literal)))))
+
+================================================================================
+array comprehension
+================================================================================
+
+fn f() {
+  [x + y for (x, _) in pairs if x > 0 for y in 0..x]
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (block
+      (array_comprehension
+        (binary_expression
+          (identifier)
+          (identifier))
+        (comprehension_for_clause
+          (tuple_pattern
+            (binding_pattern
+              (identifier))
+            (wildcard_pattern))
+          (identifier))
+        (comprehension_if_clause
+          (binary_expression
+            (identifier)
+            (integer_literal)))
+        (comprehension_for_clause
+          (binding_pattern
+            (identifier))
+          (range_expression
+            (integer_literal)
+            (identifier)))))))
+
+================================================================================
+empty array
+================================================================================
+
+fn f() {
+  []
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (array_expression))))
+
+================================================================================
+empty dict
+================================================================================
+
+fn f() {
+  {:}
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (dict_expression))))
+
+================================================================================
+dictionary comprehension
+================================================================================
+
+fn f() {
+  {key: value * 2 for (key, value) in source if value > 0}
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (block
+      (dict_comprehension
+        (identifier)
+        (binary_expression
+          (identifier)
+          (integer_literal))
+        (comprehension_for_clause
+          (tuple_pattern
+            (binding_pattern
+              (identifier))
+            (binding_pattern
+              (identifier)))
+          (identifier))
+        (comprehension_if_clause
+          (binary_expression
+            (identifier)
+            (integer_literal)))))))
+
+================================================================================
+incomplete array comprehension
+================================================================================
+
+fn f() {
+  [x for x in source
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (block
+      (array_comprehension
+        (identifier)
+        (comprehension_for_clause
+          (binding_pattern
+            (identifier))
+          (identifier))
+        (MISSING "]")))))
+
+================================================================================
+incomplete dictionary comprehension
+================================================================================
+
+fn f() {
+  {item.key: item.value for item in source
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (block
+      (dict_comprehension
+        (field_expression
+          (identifier)
+          (identifier))
+        (field_expression
+          (identifier)
+          (identifier))
+        (comprehension_for_clause
+          (binding_pattern
+            (identifier))
+          (identifier)))
+      (MISSING "}"))))
+
+================================================================================
+incomplete generator expression
+================================================================================
+
+fn f() {
+  (x for x in source
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (block
+      (generator_expression
+        (identifier)
+        (comprehension_for_clause
+          (binding_pattern
+            (identifier))
+          (identifier))
+        (MISSING ")")))))
+
+================================================================================
+dict literal
+================================================================================
+
+fn f() {
+  {"a": 1, "b": 2}
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (dict_expression
+        (dict_entry
+          key: (string
+            (string_content))
+          value: (integer_literal))
+        (dict_entry
+          key: (string
+            (string_content))
+          value: (integer_literal))))))
+
+================================================================================
+struct literal
+================================================================================
+
+fn f() {
+  Point { x: 1, y: 2 }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (expression_statement
+        (identifier))
+      result: (dict_expression
+        (dict_entry
+          key: (identifier)
+          value: (integer_literal))
+        (dict_entry
+          key: (identifier)
+          value: (integer_literal))))))
+
+================================================================================
+struct literal shorthand
+================================================================================
+
+fn f() {
+  Point { x, y }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (struct_literal
+        name: (identifier)
+        body: (struct_literal_body
+          (struct_literal_field
+            name: (identifier))
+          (struct_literal_field
+            name: (identifier)))))))
+
+================================================================================
+struct literal spread
+================================================================================
+
+fn f() {
+  Point { ...base, x: 1 }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (struct_literal
+        name: (identifier)
+        body: (struct_literal_body
+          (struct_spread
+            (identifier))
+          (struct_literal_field
+            name: (identifier)
+            value: (integer_literal)))))))
+
+================================================================================
+closure no params
+================================================================================
+
+fn f() {
+  || 0
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (closure_expression
+        parameters: (closure_parameters)
+        body: (integer_literal)))))
+
+================================================================================
+closure params
+================================================================================
+
+fn f() {
+  |x, y| x + y
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (closure_expression
+        parameters: (closure_parameters
+          (closure_parameter
+            name: (identifier))
+          (closure_parameter
+            name: (identifier)))
+        body: (binary_expression
+          left: (identifier)
+          right: (identifier))))))
+
+================================================================================
+closure typed return
+================================================================================
+
+fn f() {
+  |x: int| -> int x + 1
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (closure_expression
+        parameters: (closure_parameters
+          (closure_parameter
+            name: (identifier)
+            type: (primitive_type)))
+        (return_type
+          type: (primitive_type))
+        body: (binary_expression
+          left: (identifier)
+          right: (integer_literal))))))
+
+================================================================================
+if expression
+================================================================================
+
+fn f() {
+  if a { 1 } else { 2 }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (if_expression
+        condition: (identifier)
+        consequence: (block
+          result: (integer_literal))
+        alternative: (block
+          result: (integer_literal))))))
+
+================================================================================
+if else if
+================================================================================
+
+fn f() {
+  if a { 1 } else if b { 2 } else { 3 }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (if_expression
+        condition: (identifier)
+        consequence: (block
+          result: (integer_literal))
+        alternative: (if_expression
+          condition: (identifier)
+          consequence: (block
+            result: (integer_literal))
+          alternative: (block
+            result: (integer_literal)))))))
+
+================================================================================
+if let and else if let
+================================================================================
+
+fn f() {
+  if let some(value) = lookup() { value } else if let Event.Key(key) = event { key } else { "none" }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (block
+      (if_expression
+        (conditional_let
+          (option_result_pattern
+            (pattern_arguments
+              (binding_pattern
+                (identifier))))
+          (call_expression
+            (identifier)
+            (arguments)))
+        (block
+          (identifier))
+        (if_expression
+          (conditional_let
+            (enum_pattern
+              (identifier)
+              (identifier)
+              (pattern_arguments
+                (binding_pattern
+                  (identifier))))
+            (identifier))
+          (block
+            (identifier))
+          (block
+            (string
+              (string_content))))))))
+
+================================================================================
+match expression
+================================================================================
+
+fn f() {
+  match x {
+    0 => 1,
+    _ => 2,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (literal_pattern
+            (integer_literal))
+          value: (integer_literal))
+        (match_arm
+          pattern: (wildcard_pattern)
+          value: (integer_literal))))))
+
+================================================================================
+some none
+================================================================================
+
+fn f() {
+  some(5)
+  none
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (expression_statement
+        (some_expression
+          (integer_literal)))
+      result: (none_expression))))
+
+================================================================================
+ok err
+================================================================================
+
+fn f() {
+  ok(1)
+  err.NotFound("x")
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (expression_statement
+        (ok_expression
+          (integer_literal)))
+      result: (err_expression
+        name: (identifier)
+        message: (string
+          (string_content))))))
+
+================================================================================
+block expression
+================================================================================
+
+fn f() {
+  let y = {
+    let z = 1
+    z + 1
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (let_statement
+        pattern: (identifier)
+        value: (block
+          (let_statement
+            pattern: (identifier)
+            value: (integer_literal))
+          result: (binary_expression
+            left: (identifier)
+            right: (integer_literal)))))))
+
+================================================================================
+string interpolation
+================================================================================
+
+fn f() {
+  "hi ${name}, you are ${age}"
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (string
+        (string_content)
+        (interpolation
+          (identifier))
+        (string_content)
+        (interpolation
+          (identifier))))))
+
+================================================================================
+boolean and numbers
+================================================================================
+
+fn f() {
+  true
+  false
+  42
+  3.14
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (expression_statement
+        (boolean_literal))
+      (expression_statement
+        (boolean_literal))
+      (expression_statement
+        (integer_literal))
+      result: (float_literal))))
+
+================================================================================
+numeric literal spellings
+================================================================================
+
+fn f() {
+  0xFF
+  0b1010
+  0o755
+  1_000_000
+  1e9
+  1.5e-3
+  2E+8
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (expression_statement
+        (integer_literal))
+      (expression_statement
+        (integer_literal))
+      (expression_statement
+        (integer_literal))
+      (expression_statement
+        (integer_literal))
+      (expression_statement
+        (float_literal))
+      (expression_statement
+        (float_literal))
+      result: (float_literal))))
+
+================================================================================
+named arguments
+================================================================================
+
+fn main() {
+  connect("h", port: 9090, secure: true)
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (call_expression
+        function: (identifier)
+        arguments: (arguments
+          (string
+            (string_content))
+          (named_argument
+            name: (identifier)
+            (integer_literal))
+          (named_argument
+            name: (identifier)
+            (boolean_literal)))))))
+
+================================================================================
+match arm with block body
+================================================================================
+
+fn m() {
+  match await r {
+    some(v) => {
+      v
+    }
+    none => {
+      0 - 1
+    }
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (block
+      (match_expression
+        (await_expression
+          (identifier))
+        (match_arm
+          (option_result_pattern
+            (pattern_arguments
+              (binding_pattern
+                (identifier))))
+          (block
+            (identifier)))
+        (match_arm
+          (none_pattern)
+          (block
+            (binary_expression
+              (integer_literal)
+              (integer_literal))))))))
+
+================================================================================
+string with literal dollar and backslash escapes
+================================================================================
+
+fn m() {
+  let s = "$2.$1 caf\u{00e9}\n\t"
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (block
+      (let_statement
+        (identifier)
+        (string
+          (dollar)
+          (string_content)
+          (dollar)
+          (string_content)
+          (escape_sequence)
+          (string_content)
+          (escape_sequence)
+          (escape_sequence))))))
+
+================================================================================
+string with short and braced interpolation
+================================================================================
+
+fn m() {
+  let s = "hi $name, ${count + 1} left"
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (block
+      (let_statement
+        (identifier)
+        (string
+          (string_content)
+          (interpolation
+            (interpolation_variable))
+          (string_content)
+          (interpolation
+            (binary_expression
+              (identifier)
+              (integer_literal)))
+          (string_content))))))
+
+================================================================================
+struct literal inside a control head's delimiters
+================================================================================
+
+fn f() {
+  if same(p, P { x: 0 }) {
+    g()
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (if_expression
+        condition: (call_expression
+          function: (identifier)
+          arguments: (arguments
+            (identifier)
+            (struct_literal
+              name: (identifier)
+              body: (struct_literal_body
+                (struct_literal_field
+                  name: (identifier)
+                  value: (integer_literal))))))
+        consequence: (block
+          result: (call_expression
+            function: (identifier)
+            arguments: (arguments)))))))
+
+================================================================================
+parenthesized struct literal in a control head
+================================================================================
+
+fn f() {
+  if p == (P { x: 0 }) {
+    g()
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (if_expression
+        condition: (binary_expression
+          left: (identifier)
+          right: (parenthesized_expression
+            (struct_literal
+              name: (identifier)
+              body: (struct_literal_body
+                (struct_literal_field
+                  name: (identifier)
+                  value: (integer_literal))))))
+        consequence: (block
+          result: (call_expression
+            function: (identifier)
+            arguments: (arguments)))))))
+
+================================================================================
+block that proves itself a block only at a later annotated let
+================================================================================
+
+fn f() {
+  match n {
+    0 => {
+      if n == 0 { g() }
+      let y: int = 3
+      y
+    }
+    _ => 0
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (literal_pattern
+            (integer_literal))
+          value: (block
+            (expression_statement
+              (if_expression
+                condition: (binary_expression
+                  left: (identifier)
+                  right: (integer_literal))
+                consequence: (block
+                  result: (call_expression
+                    function: (identifier)
+                    arguments: (arguments)))))
+            (let_statement
+              pattern: (identifier)
+              type: (primitive_type)
+              value: (integer_literal))
+            result: (identifier)))
+        (match_arm
+          pattern: (wildcard_pattern)
+          value: (integer_literal))))))

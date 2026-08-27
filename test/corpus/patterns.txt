@@ -1,0 +1,760 @@
+================================================================================
+wildcard
+================================================================================
+
+fn f() {
+  match x {
+    _ => 0,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (wildcard_pattern)
+          value: (integer_literal))))))
+
+================================================================================
+binding
+================================================================================
+
+fn f() {
+  match x {
+    n => n,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (binding_pattern
+            (identifier))
+          value: (identifier))))))
+
+================================================================================
+binding subpattern
+================================================================================
+
+fn f() {
+  match x {
+    n @ 1..10 => n,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (binding_subpattern
+            name: (identifier)
+            pattern: (range_pattern
+              start: (integer_literal)
+              end: (integer_literal)))
+          value: (identifier))))))
+
+================================================================================
+integer literal
+================================================================================
+
+fn f() {
+  match x {
+    0 => 1,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (literal_pattern
+            (integer_literal))
+          value: (integer_literal))))))
+
+================================================================================
+negative integer
+================================================================================
+
+fn f() {
+  match x {
+    -1 => 1,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (literal_pattern
+            (integer_literal))
+          value: (integer_literal))))))
+
+================================================================================
+boolean literal
+================================================================================
+
+fn f() {
+  match x {
+    true => 1,
+    false => 0,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (literal_pattern
+            (boolean_literal))
+          value: (integer_literal))
+        (match_arm
+          pattern: (literal_pattern
+            (boolean_literal))
+          value: (integer_literal))))))
+
+================================================================================
+string literal
+================================================================================
+
+fn f() {
+  match x {
+    "hello" => 1,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (literal_pattern
+            (string
+              (string_content)))
+          value: (integer_literal))))))
+
+================================================================================
+range exclusive
+================================================================================
+
+fn f() {
+  match x {
+    1..5 => 1,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (range_pattern
+            start: (integer_literal)
+            end: (integer_literal))
+          value: (integer_literal))))))
+
+================================================================================
+range inclusive
+================================================================================
+
+fn f() {
+  match x {
+    1..=5 => 1,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (range_pattern
+            start: (integer_literal)
+            end: (integer_literal))
+          value: (integer_literal))))))
+
+================================================================================
+range negative
+================================================================================
+
+fn f() {
+  match x {
+    -5..0 => 1,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (range_pattern
+            start: (integer_literal)
+            end: (integer_literal))
+          value: (integer_literal))))))
+
+================================================================================
+string prefix
+================================================================================
+
+fn f() {
+  match x {
+    "pre".. => 1,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (string_prefix_pattern
+            (string
+              (string_content)))
+          value: (integer_literal))))))
+
+================================================================================
+string suffix
+================================================================================
+
+fn f() {
+  match x {
+    .."post" => 1,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (string_suffix_pattern
+            (string
+              (string_content)))
+          value: (integer_literal))))))
+
+================================================================================
+string contains
+================================================================================
+
+fn f() {
+  match x {
+    .."mid".. => 1,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (string_contains_pattern
+            (string
+              (string_content)))
+          value: (integer_literal))))))
+
+================================================================================
+tuple pattern
+================================================================================
+
+fn f() {
+  match x {
+    (a, b) => a,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (tuple_pattern
+            (binding_pattern
+              (identifier))
+            (binding_pattern
+              (identifier)))
+          value: (identifier))))))
+
+================================================================================
+struct pattern
+================================================================================
+
+fn f() {
+  match x {
+    Point { x, y } => x,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (struct_pattern
+            name: (identifier)
+            (field_pattern
+              name: (identifier))
+            (field_pattern
+              name: (identifier)))
+          value: (identifier))))))
+
+================================================================================
+struct pattern rest
+================================================================================
+
+fn f() {
+  match x {
+    Point { x, .. } => x,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (struct_pattern
+            name: (identifier)
+            (field_pattern
+              name: (identifier))
+            (rest_pattern))
+          value: (identifier))))))
+
+================================================================================
+enum pattern
+================================================================================
+
+fn f() {
+  match x {
+    Shape.Circle(r) => r,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (enum_pattern
+            enum: (identifier)
+            variant: (identifier)
+            (pattern_arguments
+              (binding_pattern
+                (identifier))))
+          value: (identifier))))))
+
+================================================================================
+enum shorthand variant
+================================================================================
+
+fn f() {
+  match x {
+    .Red => 1,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (enum_pattern
+            variant: (identifier))
+          value: (integer_literal))))))
+
+================================================================================
+tuple-struct enum pattern
+================================================================================
+
+fn f() {
+  match x {
+    Circle(r) => r,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (enum_pattern
+            variant: (identifier)
+            (pattern_arguments
+              (binding_pattern
+                (identifier))))
+          value: (identifier))))))
+
+================================================================================
+option patterns
+================================================================================
+
+fn f() {
+  match x {
+    some(n) => n,
+    none => 0,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (option_result_pattern
+            (pattern_arguments
+              (binding_pattern
+                (identifier))))
+          value: (identifier))
+        (match_arm
+          pattern: (none_pattern)
+          value: (integer_literal))))))
+
+================================================================================
+result patterns
+================================================================================
+
+fn f() {
+  match x {
+    ok(v) => v,
+    err(e) => e,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (option_result_pattern
+            (pattern_arguments
+              (binding_pattern
+                (identifier))))
+          value: (identifier))
+        (match_arm
+          pattern: (option_result_pattern
+            (pattern_arguments
+              (binding_pattern
+                (identifier))))
+          value: (identifier))))))
+
+================================================================================
+array pattern
+================================================================================
+
+fn f() {
+  match x {
+    [a, b, c] => a,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (array_pattern
+            (binding_pattern
+              (identifier))
+            (binding_pattern
+              (identifier))
+            (binding_pattern
+              (identifier)))
+          value: (identifier))))))
+
+================================================================================
+array pattern rest
+================================================================================
+
+fn f() {
+  match x {
+    [head, ..tail] => head,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (array_pattern
+            (binding_pattern
+              (identifier))
+            (rest_element
+              (binding_pattern
+                (identifier))))
+          value: (identifier))))))
+
+================================================================================
+array pattern middle rest
+================================================================================
+
+fn f() {
+  match x {
+    [first, .., last] => first,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (array_pattern
+            (binding_pattern
+              (identifier))
+            (rest_element)
+            (binding_pattern
+              (identifier)))
+          value: (identifier))))))
+
+================================================================================
+or patterns
+================================================================================
+
+fn f() {
+  match x {
+    0 | 1 | 2 => 1,
+    _ => 0,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (literal_pattern
+            (integer_literal))
+          pattern: (literal_pattern
+            (integer_literal))
+          pattern: (literal_pattern
+            (integer_literal))
+          value: (integer_literal))
+        (match_arm
+          pattern: (wildcard_pattern)
+          value: (integer_literal))))))
+
+================================================================================
+guard
+================================================================================
+
+fn f() {
+  match x {
+    n if n > 0 => 1,
+    _ => 0,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (binding_pattern
+            (identifier))
+          guard: (binary_expression
+            left: (identifier)
+            right: (integer_literal))
+          value: (integer_literal))
+        (match_arm
+          pattern: (wildcard_pattern)
+          value: (integer_literal))))))
+
+================================================================================
+nested patterns
+================================================================================
+
+fn f() {
+  match x {
+    Some((0, y)) => y,
+    _ => 0,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (enum_pattern
+            variant: (identifier)
+            (pattern_arguments
+              (tuple_pattern
+                (literal_pattern
+                  (integer_literal))
+                (binding_pattern
+                  (identifier)))))
+          value: (identifier))
+        (match_arm
+          pattern: (wildcard_pattern)
+          value: (integer_literal))))))
+
+================================================================================
+arm returns
+================================================================================
+
+fn f() {
+  match x {
+    0 => return 1,
+    _ => 0,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (match_expression
+        value: (identifier)
+        (match_arm
+          pattern: (literal_pattern
+            (integer_literal))
+          value: (return_statement
+            value: (integer_literal)))
+        (match_arm
+          pattern: (wildcard_pattern)
+          value: (integer_literal))))))

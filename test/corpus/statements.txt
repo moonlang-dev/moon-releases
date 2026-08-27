@@ -1,0 +1,770 @@
+================================================================================
+let binding
+================================================================================
+
+fn f() {
+  let x = 1
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (let_statement
+        pattern: (identifier)
+        value: (integer_literal)))))
+
+================================================================================
+let mutable
+================================================================================
+
+fn f() {
+  let mut x = 0
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (let_statement
+        pattern: (identifier)
+        value: (integer_literal)))))
+
+================================================================================
+let typed
+================================================================================
+
+fn f() {
+  let x: int = 1
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (let_statement
+        pattern: (identifier)
+        type: (primitive_type)
+        value: (integer_literal)))))
+
+================================================================================
+let tuple destructure
+================================================================================
+
+fn f() {
+  let (a, b) = pair
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (let_statement
+        pattern: (tuple_pattern
+          (binding_pattern
+            (identifier))
+          (binding_pattern
+            (identifier)))
+        value: (identifier)))))
+
+================================================================================
+let array destructure
+================================================================================
+
+fn f() {
+  let [head, ..tail] = items
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (let_statement
+        pattern: (array_pattern
+          (binding_pattern
+            (identifier))
+          (rest_element
+            (binding_pattern
+              (identifier))))
+        value: (identifier)))))
+
+================================================================================
+let struct destructure
+================================================================================
+
+fn f() {
+  let Point { x, y } = p
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (let_statement
+        pattern: (struct_pattern
+          name: (identifier)
+          (field_pattern
+            name: (identifier))
+          (field_pattern
+            name: (identifier)))
+        value: (identifier)))))
+
+================================================================================
+refutable let else
+================================================================================
+
+fn f(event: Event) -> string {
+  let .Key(name) = event else {
+    return "not a key"
+  }
+  name
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    (identifier)
+    (parameter_list
+      (parameter
+        (identifier)
+        (named_type
+          (identifier))))
+    (return_type
+      (primitive_type))
+    (block
+      (let_statement
+        (enum_pattern
+          (identifier)
+          (pattern_arguments
+            (binding_pattern
+              (identifier))))
+        (identifier)
+        (block
+          (return_statement
+            (string
+              (string_content)))))
+      (identifier))))
+
+================================================================================
+return value
+================================================================================
+
+fn f() -> int {
+  return 42
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    (return_type
+      type: (primitive_type))
+    body: (block
+      (return_statement
+        value: (integer_literal)))))
+
+================================================================================
+bare return
+================================================================================
+
+fn f() {
+  return
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (return_statement))))
+
+================================================================================
+while loop
+================================================================================
+
+fn f() {
+  while cond {
+    step()
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (while_statement
+        condition: (identifier)
+        body: (block
+          result: (call_expression
+            function: (identifier)
+            arguments: (arguments)))))))
+
+================================================================================
+while let
+================================================================================
+
+fn f() {
+  while let some(item) = items.next() {
+    consume(item)
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (block
+      (while_statement
+        (conditional_let
+          (option_result_pattern
+            (pattern_arguments
+              (binding_pattern
+                (identifier))))
+          (call_expression
+            (field_expression
+              (identifier)
+              (identifier))
+            (arguments)))
+        (block
+          (call_expression
+            (identifier)
+            (arguments
+              (identifier))))))))
+
+================================================================================
+for loop
+================================================================================
+
+fn f() {
+  for i in items {
+    print(i)
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (for_statement
+        pattern: (binding_pattern
+          (identifier))
+        iterable: (identifier)
+        body: (block
+          result: (call_expression
+            function: (identifier)
+            arguments: (arguments
+              (identifier))))))))
+
+================================================================================
+for loop with tuple pattern
+================================================================================
+
+fn f() {
+  for (k, v) in d {
+    print(k)
+  }
+  for (_, x) in arr {
+    print(x)
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (for_statement
+        pattern: (tuple_pattern
+          (binding_pattern
+            (identifier))
+          (binding_pattern
+            (identifier)))
+        iterable: (identifier)
+        body: (block
+          result: (call_expression
+            function: (identifier)
+            arguments: (arguments
+              (identifier)))))
+      (for_statement
+        pattern: (tuple_pattern
+          (wildcard_pattern)
+          (binding_pattern
+            (identifier)))
+        iterable: (identifier)
+        body: (block
+          result: (call_expression
+            function: (identifier)
+            arguments: (arguments
+              (identifier))))))))
+
+================================================================================
+for loop with arbitrary irrefutable patterns
+================================================================================
+
+fn f() {
+  for Point { x, y } in points {
+    print(x + y)
+  }
+  for [..items] in groups {
+    print(items)
+  }
+  for whole @ (a, b) in pairs {
+    print(whole)
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (for_statement
+        pattern: (struct_pattern
+          name: (identifier)
+          (field_pattern
+            name: (identifier))
+          (field_pattern
+            name: (identifier)))
+        iterable: (identifier)
+        body: (block
+          result: (call_expression
+            function: (identifier)
+            arguments: (arguments
+              (binary_expression
+                left: (identifier)
+                right: (identifier))))))
+      (for_statement
+        pattern: (array_pattern
+          (rest_element
+            (binding_pattern
+              (identifier))))
+        iterable: (identifier)
+        body: (block
+          result: (call_expression
+            function: (identifier)
+            arguments: (arguments
+              (identifier)))))
+      (for_statement
+        pattern: (binding_subpattern
+          name: (identifier)
+          pattern: (tuple_pattern
+            (binding_pattern
+              (identifier))
+            (binding_pattern
+              (identifier))))
+        iterable: (identifier)
+        body: (block
+          result: (call_expression
+            function: (identifier)
+            arguments: (arguments
+              (identifier))))))))
+
+================================================================================
+break continue
+================================================================================
+
+fn f() {
+  while true {
+    break
+    continue
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (while_statement
+        condition: (boolean_literal)
+        body: (block
+          (break_statement)
+          (continue_statement))))))
+
+================================================================================
+labeled loop control and newline-terminated bare control
+================================================================================
+
+fn f() {
+  outer: while true {
+    rows: for row in rows {
+      continue rows
+      break outer
+    }
+  }
+  while true {
+    break
+    next_line
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (while_statement
+        label: (loop_label
+          name: (identifier))
+        condition: (boolean_literal)
+        body: (block
+          (for_statement
+            label: (loop_label
+              name: (identifier))
+            pattern: (binding_pattern
+              (identifier))
+            iterable: (identifier)
+            body: (block
+              (continue_statement
+                label: (identifier))
+              (break_statement
+                label: (identifier))))))
+      (while_statement
+        condition: (boolean_literal)
+        body: (block
+          (break_statement)
+          result: (identifier))))))
+
+================================================================================
+assignment
+================================================================================
+
+fn f() {
+  x = 5
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (assignment_statement
+        target: (identifier)
+        value: (integer_literal)))))
+
+================================================================================
+field assignment
+================================================================================
+
+fn f() {
+  p.x = 1
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (assignment_statement
+        target: (field_expression
+          object: (identifier)
+          field: (identifier))
+        value: (integer_literal)))))
+
+================================================================================
+index assignment
+================================================================================
+
+fn f() {
+  arr[0] = 9
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (assignment_statement
+        target: (index_expression
+          object: (identifier)
+          index: (integer_literal))
+        value: (integer_literal)))))
+
+================================================================================
+compound assignment
+================================================================================
+
+fn f() {
+  x += 1
+  x -= 1
+  x *= 2
+  x /= 2
+  x %= 3
+  x &= 7
+  x |= 8
+  x ^= 15
+  x <<= 2
+  x >>= 1
+  d[k] += 1
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (assignment_statement
+        target: (identifier)
+        value: (integer_literal))
+      (assignment_statement
+        target: (identifier)
+        value: (integer_literal))
+      (assignment_statement
+        target: (identifier)
+        value: (integer_literal))
+      (assignment_statement
+        target: (identifier)
+        value: (integer_literal))
+      (assignment_statement
+        target: (identifier)
+        value: (integer_literal))
+      (assignment_statement
+        target: (identifier)
+        value: (integer_literal))
+      (assignment_statement
+        target: (identifier)
+        value: (integer_literal))
+      (assignment_statement
+        target: (identifier)
+        value: (integer_literal))
+      (assignment_statement
+        target: (identifier)
+        value: (integer_literal))
+      (assignment_statement
+        target: (identifier)
+        value: (integer_literal))
+      (assignment_statement
+        target: (index_expression
+          object: (identifier)
+          index: (identifier))
+        value: (integer_literal)))))
+
+================================================================================
+expression statement
+================================================================================
+
+fn f() {
+  print(x)
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      result: (call_expression
+        function: (identifier)
+        arguments: (arguments
+          (identifier))))))
+
+================================================================================
+nested control flow
+================================================================================
+
+fn f() {
+  for i in xs {
+    if i > 0 {
+      print(i)
+    }
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (for_statement
+        pattern: (binding_pattern
+          (identifier))
+        iterable: (identifier)
+        body: (block
+          result: (if_expression
+            condition: (binary_expression
+              left: (identifier)
+              right: (integer_literal))
+            consequence: (block
+              result: (call_expression
+                function: (identifier)
+                arguments: (arguments
+                  (identifier))))))))))
+
+================================================================================
+while with match
+================================================================================
+
+fn f() {
+  while running {
+    match poll() {
+      none => break,
+      some(x) => handle(x),
+    }
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (while_statement
+        condition: (identifier)
+        body: (block
+          result: (match_expression
+            value: (call_expression
+              function: (identifier)
+              arguments: (arguments))
+            (match_arm
+              pattern: (none_pattern)
+              value: (identifier))
+            (match_arm
+              pattern: (option_result_pattern
+                (pattern_arguments
+                  (binding_pattern
+                    (identifier))))
+              value: (call_expression
+                function: (identifier)
+                arguments: (arguments
+                  (identifier))))))))))
+
+================================================================================
+block comments are extras
+================================================================================
+
+/* leading */
+fn f() {
+  /* standalone */
+  let x = 1 /* trailing */
+  println(x)
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (block_comment)
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (block_comment)
+      (let_statement
+        pattern: (identifier)
+        value: (integer_literal))
+      (block_comment)
+      result: (call_expression
+        function: (identifier)
+        arguments: (arguments
+          (identifier))))))
+
+================================================================================
+defer statements
+================================================================================
+
+fn f() {
+  defer close(h)
+  defer {
+    println("cleanup")
+  }
+  println("body")
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    name: (identifier)
+    parameters: (parameter_list)
+    body: (block
+      (defer_statement
+        (expression_statement
+          (call_expression
+            function: (identifier)
+            arguments: (arguments
+              (identifier)))))
+      (defer_statement
+        (expression_statement
+          (block
+            result: (call_expression
+              function: (identifier)
+              arguments: (arguments
+                (string
+                  (string_content)))))))
+      result: (call_expression
+        function: (identifier)
+        arguments: (arguments
+          (string
+            (string_content)))))))
+
+================================================================================
+nested block comment
+================================================================================
+
+fn m() {
+  /* outer /* inner /* deepest */ still inner */ done */
+  let x = 1
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (block
+      (block_comment)
+      (let_statement
+        (identifier)
+        (integer_literal)))))

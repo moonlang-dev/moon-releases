@@ -1,0 +1,20 @@
+# Rust
+/target/
+Cargo.lock
+
+# Node
+node_modules/
+/build/
+/prebuilds/
+*.tgz
+
+# tree-sitter / native build artifacts
+*.wasm
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+
+# editor
+.DS_Store
