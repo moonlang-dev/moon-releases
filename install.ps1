@@ -165,7 +165,7 @@ if (-not $PathReady) {
 }
 [Environment]::SetEnvironmentVariable("MOON_INSTALL", $InstallDir, "User")
 $env:MOON_INSTALL = $InstallDir
-if (($env:Path.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { $_.TrimEnd([char[]]'\') -ieq $BinDir.TrimEnd([char[]]'\') }).Count -eq 0) {
+if (@($env:Path.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { $_.TrimEnd([char[]]'\') -ieq $BinDir.TrimEnd([char[]]'\') }).Count -eq 0) {
     $env:Path = "$BinDir;$env:Path"
 }
 
