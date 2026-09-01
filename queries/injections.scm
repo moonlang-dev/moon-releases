@@ -1,15 +1,10 @@
 ; Language injections for Moon.
 
-; Re-parse the expression inside each `${ ... }` string interpolation as Moon,
-; so editors highlight interpolated code with the full grammar. Match the braced
-; form specifically (the `"${"` delimiter): the `$name` short form is a single
-; `interpolation_variable` token with no delimited expression to inject.
-((interpolation
-  "${"
-  (_) @injection.content)
+; Re-parse each `${ ... }` payload as Moon. Monogram names this wrapper after
+; the template substitution it models; `$name` is a separate external token.
+((string_literal_substitution (expr) @injection.content)
   (#set! injection.language "moon"))
 
-; Highlight `// ...` comment bodies as plain text (lets editors apply
-; comment-specific features like TODO/FIXME tagging via a `comment` injection).
+; Let editor-side TODO/FIXME helpers treat line comments as comment text.
 ((line_comment) @injection.content
   (#set! injection.language "comment"))

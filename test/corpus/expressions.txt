@@ -9,31 +9,58 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (binary_expression
-        left: (identifier)
-        right: (binary_expression
-          left: (identifier)
-          right: (binary_expression
-            left: (binary_expression
-              left: (identifier)
-              right: (identifier))
-            right: (binary_expression
-              left: (binary_expression
-                left: (identifier)
-                right: (identifier))
-              right: (binary_expression
-                left: (binary_expression
-                  left: (identifier)
-                  right: (identifier))
-                right: (binary_expression
-                  left: (identifier)
-                  right: (binary_expression
-                    left: (identifier)
-                    right: (identifier)))))))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))
+                    (expr
+                      (name
+                        (identifier))))
+                  (expr
+                    (expr
+                      (expr
+                        (name
+                          (identifier)))
+                      (expr
+                        (name
+                          (identifier))))
+                    (expr
+                      (expr
+                        (expr
+                          (name
+                            (identifier)))
+                        (expr
+                          (name
+                            (identifier))))
+                      (expr
+                        (expr
+                          (name
+                            (identifier)))
+                        (expr
+                          (expr
+                            (name
+                              (identifier)))
+                          (expr
+                            (name
+                              (identifier))))))))))))))))
 
 ================================================================================
 logical or and
@@ -46,15 +73,26 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (binary_expression
-        left: (identifier)
-        right: (binary_expression
-          left: (identifier)
-          right: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 bitwise or at equality level
@@ -67,15 +105,26 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (binary_expression
-        left: (binary_expression
-          left: (identifier)
-          right: (identifier))
-        right: (identifier)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (name
+                    (identifier))))
+              (expr
+                (name
+                  (identifier))))))))))
 
 ================================================================================
 bit and xor
@@ -88,15 +137,26 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (binary_expression
-        left: (binary_expression
-          left: (identifier)
-          right: (identifier))
-        right: (identifier)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (name
+                    (identifier))))
+              (expr
+                (name
+                  (identifier))))))))))
 
 ================================================================================
 comparison and shift
@@ -109,15 +169,26 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (binary_expression
-        left: (binary_expression
-          left: (identifier)
-          right: (identifier))
-        right: (identifier)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (name
+                    (identifier))))
+              (expr
+                (name
+                  (identifier))))))))))
 
 ================================================================================
 additive multiplicative
@@ -130,21 +201,38 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (binary_expression
-        left: (binary_expression
-          left: (identifier)
-          right: (binary_expression
-            left: (identifier)
-            right: (identifier)))
-        right: (binary_expression
-          left: (binary_expression
-            left: (identifier)
-            right: (identifier))
-          right: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (expr
+                    (name
+                      (identifier)))
+                  (expr
+                    (name
+                      (identifier)))))
+              (expr
+                (expr
+                  (expr
+                    (name
+                      (identifier)))
+                  (expr
+                    (name
+                      (identifier))))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 unary operators
@@ -158,15 +246,25 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      (expression_statement
-        (unary_expression
-          operand: (identifier)))
-      result: (unary_expression
-        operand: (identifier)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier))))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier))))))))))
 
 ================================================================================
 address of
@@ -179,12 +277,19 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (address_of_expression
-        operand: (identifier)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier))))))))))
 
 ================================================================================
 managed pointer address and dereference chains
@@ -198,17 +303,29 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      (let_statement
-        pattern: (identifier)
-        value: (address_of_expression
-          operand: (identifier)))
-      result: (dereference_expression
-        operand: (dereference_expression
-          operand: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (expr
+                (name
+                  (identifier))))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 await expression
@@ -221,14 +338,21 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (await_expression
-        operand: (call_expression
-          function: (identifier)
-          arguments: (arguments))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (call_arguments)))))))))
 
 ================================================================================
 cast chain
@@ -241,15 +365,24 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (cast_expression
-        value: (cast_expression
-          value: (identifier)
-          type: (primitive_type))
-        type: (primitive_type)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (type
+                  (primitive_type)))
+              (type
+                (primitive_type)))))))))
 
 ================================================================================
 range expression
@@ -262,13 +395,20 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (range_expression
-        start: (integer_literal)
-        end: (integer_literal)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (integer))
+              (expr
+                (integer)))))))))
 
 ================================================================================
 call expression
@@ -281,15 +421,26 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (call_expression
-        function: (identifier)
-        arguments: (arguments
-          (integer_literal)
-          (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (call_arguments
+                (argument
+                  (expr
+                    (integer)))
+                (argument
+                  (expr
+                    (integer)))))))))))
 
 ================================================================================
 turbofish call
@@ -302,16 +453,27 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (turbofish_call_expression
-        function: (identifier)
-        type_arguments: (turbofish
-          (primitive_type))
-        arguments: (arguments
-          (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (name
+                    (primitive_type))))
+              (expr
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 turbofish multiple args
@@ -324,18 +486,32 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (turbofish_call_expression
-        function: (identifier)
-        type_arguments: (turbofish
-          (primitive_type)
-          (primitive_type))
-        arguments: (arguments
-          (identifier)
-          (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (type
+                (primitive_type))
+              (type
+                (primitive_type))
+              (call_arguments
+                (argument
+                  (expr
+                    (name
+                      (identifier))))
+                (argument
+                  (expr
+                    (name
+                      (identifier))))))))))))
 
 ================================================================================
 comparison is not a turbofish
@@ -348,17 +524,30 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (binary_expression
-        left: (binary_expression
-          left: (identifier)
-          right: (identifier))
-        right: (binary_expression
-          left: (identifier)
-          right: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (name
+                    (identifier))))
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 method call chain
@@ -371,21 +560,38 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (call_expression
-        function: (field_expression
-          object: (call_expression
-            function: (field_expression
-              object: (identifier)
-              field: (identifier))
-            arguments: (arguments
-              (identifier)))
-          field: (identifier))
-        arguments: (arguments
-          (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))
+                    (method_name
+                      (name
+                        (identifier))))
+                  (call_arguments
+                    (argument
+                      (expr
+                        (name
+                          (identifier))))))
+                (method_name
+                  (name
+                    (identifier))))
+              (call_arguments
+                (argument
+                  (expr
+                    (name
+                      (identifier))))))))))))
 
 ================================================================================
 index expression
@@ -398,13 +604,21 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (index_expression
-        object: (identifier)
-        index: (integer_literal)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (expr
+                (integer)))))))))
 
 ================================================================================
 field access
@@ -417,13 +631,22 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (field_expression
-        object: (identifier)
-        field: (identifier)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (method_name
+                (name
+                  (identifier))))))))))
 
 ================================================================================
 tuple index
@@ -436,13 +659,20 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (tuple_index_expression
-        object: (identifier)
-        index: (integer_literal)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (integer))))))))
 
 ================================================================================
 nested tuple index
@@ -455,15 +685,22 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (tuple_index_expression
-        object: (tuple_index_expression
-          object: (identifier)
-          index: (integer_literal))
-        index: (integer_literal)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (integer))
+              (integer))))))))
 
 ================================================================================
 try operator
@@ -476,15 +713,25 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (try_expression
-        (call_expression
-          function: (identifier)
-          arguments: (arguments
-            (identifier)))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (call_arguments
+                  (argument
+                    (expr
+                      (name
+                        (identifier)))))))))))))
 
 ================================================================================
 path expression
@@ -497,15 +744,26 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (field_expression
-        object: (field_expression
-          object: (identifier)
-          field: (identifier))
-        field: (identifier)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (method_name
+                  (name
+                    (identifier))))
+              (method_name
+                (name
+                  (identifier))))))))))
 
 ================================================================================
 path call
@@ -518,17 +776,28 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (call_expression
-        function: (field_expression
-          object: (field_expression
-            object: (identifier)
-            field: (identifier))
-          field: (identifier))
-        arguments: (arguments)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (expr
+                    (name
+                      (identifier)))
+                  (method_name
+                    (name
+                      (identifier))))
+                (method_name
+                  (name
+                    (identifier))))
+              (call_arguments))))))))
 
 ================================================================================
 leading path
@@ -541,14 +810,21 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (field_expression
-        object: (path_expression
-          (identifier))
-        field: (identifier)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (identifier))
+              (method_name
+                (name
+                  (identifier))))))))))
 
 ================================================================================
 contextual enum shorthand positions
@@ -566,52 +842,78 @@ fn build() -> State {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (identifier)
-    (parameter_list
-      (parameter
-        (identifier)
-        (named_type
-          (identifier))))
-    (block))
-  (function_definition
-    (identifier)
-    (parameter_list)
-    (return_type
-      (named_type
-        (identifier)))
-    (block
-      (let_statement
-        (identifier)
-        (named_type
-          (identifier))
-        (path_expression
+  (item
+    (function_definition
+      (function_name
+        (name
           (identifier)))
-      (expression_statement
-        (call_expression
-          (identifier)
-          (arguments
-            (call_expression
-              (path_expression
-                (identifier))
-              (arguments
-                (integer_literal))))))
-      (let_statement
-        (identifier)
-        (array_type
-          (named_type
-            (identifier)))
-        (array_expression
-          (path_expression
+      (parameter_list
+        (parameter
+          (binding_name
             (identifier))
-          (call_expression
-            (path_expression
-              (identifier))
-            (arguments
-              (integer_literal)))))
-      (return_statement
-        (path_expression
-          (identifier))))))
+          (type
+            (named_type
+              (identifier)))))
+      (block)))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (return_type
+        (type
+          (named_type
+            (identifier))))
+      (block
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (type
+              (named_type
+                (identifier)))
+            (expr
+              (identifier))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (call_arguments
+                (argument
+                  (expr
+                    (expr
+                      (identifier))
+                    (call_arguments
+                      (argument
+                        (expr
+                          (integer))))))))))
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (type
+              (type
+                (named_type
+                  (identifier))))
+            (expr
+              (expr
+                (identifier))
+              (expr
+                (expr
+                  (identifier))
+                (call_arguments
+                  (argument
+                    (expr
+                      (integer))))))))
+        (statement
+          (return_statement
+            (expr
+              (identifier))))))))
 
 ================================================================================
 parenthesized
@@ -624,16 +926,27 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (binary_expression
-        left: (parenthesized_expression
-          (binary_expression
-            left: (identifier)
-            right: (identifier)))
-        right: (identifier)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (expr
+                    (name
+                      (identifier)))
+                  (expr
+                    (name
+                      (identifier)))))
+              (expr
+                (name
+                  (identifier))))))))))
 
 ================================================================================
 generator expression
@@ -646,33 +959,58 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (identifier)
-    (parameter_list)
-    (block
-      (generator_expression
-        (binary_expression
-          (identifier)
-          (identifier))
-        (comprehension_for_clause
-          (binding_pattern
-            (identifier))
-          (identifier))
-        (comprehension_if_clause
-          (binary_expression
-            (identifier)
-            (integer_literal)))
-        (comprehension_for_clause
-          (binding_pattern
-            (identifier))
-          (call_expression
-            (identifier)
-            (arguments
-              (identifier))))
-        (comprehension_if_clause
-          (binary_expression
-            (identifier)
-            (integer_literal)))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (name
+                    (identifier))))
+              (comprehension_clauses
+                (for_clause
+                  (pattern
+                    (name
+                      (identifier)))
+                  (expr
+                    (name
+                      (identifier))))
+                (if_clause
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))
+                    (expr
+                      (integer))))
+                (for_clause
+                  (pattern
+                    (name
+                      (identifier)))
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))
+                    (call_arguments
+                      (argument
+                        (expr
+                          (name
+                            (identifier)))))))
+                (if_clause
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))
+                    (expr
+                      (integer))))))))))))
 
 ================================================================================
 empty tuple
@@ -685,11 +1023,16 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (tuple_expression))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr)))))))
 
 ================================================================================
 tuple literal
@@ -702,14 +1045,22 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (tuple_expression
-        (integer_literal)
-        (integer_literal)
-        (integer_literal)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (integer))
+              (expr
+                (integer))
+              (expr
+                (integer)))))))))
 
 ================================================================================
 array literal
@@ -722,14 +1073,22 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (array_expression
-        (integer_literal)
-        (integer_literal)
-        (integer_literal)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (integer))
+              (expr
+                (integer))
+              (expr
+                (integer)))))))))
 
 ================================================================================
 array comprehension
@@ -742,30 +1101,50 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (identifier)
-    (parameter_list)
-    (block
-      (array_comprehension
-        (binary_expression
-          (identifier)
-          (identifier))
-        (comprehension_for_clause
-          (tuple_pattern
-            (binding_pattern
-              (identifier))
-            (wildcard_pattern))
-          (identifier))
-        (comprehension_if_clause
-          (binary_expression
-            (identifier)
-            (integer_literal)))
-        (comprehension_for_clause
-          (binding_pattern
-            (identifier))
-          (range_expression
-            (integer_literal)
-            (identifier)))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (name
+                    (identifier))))
+              (comprehension_clauses
+                (for_clause
+                  (pattern
+                    (pattern
+                      (name
+                        (identifier)))
+                    (pattern))
+                  (expr
+                    (name
+                      (identifier))))
+                (if_clause
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))
+                    (expr
+                      (integer))))
+                (for_clause
+                  (pattern
+                    (name
+                      (identifier)))
+                  (expr
+                    (expr
+                      (integer))
+                    (expr
+                      (name
+                        (identifier)))))))))))))
 
 ================================================================================
 empty array
@@ -778,11 +1157,16 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (array_expression))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr)))))))
 
 ================================================================================
 empty dict
@@ -795,11 +1179,16 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (dict_expression))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr)))))))
 
 ================================================================================
 dictionary comprehension
@@ -812,26 +1201,44 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (identifier)
-    (parameter_list)
-    (block
-      (dict_comprehension
-        (identifier)
-        (binary_expression
-          (identifier)
-          (integer_literal))
-        (comprehension_for_clause
-          (tuple_pattern
-            (binding_pattern
-              (identifier))
-            (binding_pattern
-              (identifier)))
-          (identifier))
-        (comprehension_if_clause
-          (binary_expression
-            (identifier)
-            (integer_literal)))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (integer)))
+              (comprehension_clauses
+                (for_clause
+                  (pattern
+                    (pattern
+                      (name
+                        (identifier)))
+                    (pattern
+                      (name
+                        (identifier))))
+                  (expr
+                    (name
+                      (identifier))))
+                (if_clause
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))
+                    (expr
+                      (integer))))))))))))
 
 ================================================================================
 incomplete array comprehension
@@ -844,17 +1251,28 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (identifier)
-    (parameter_list)
-    (block
-      (array_comprehension
-        (identifier)
-        (comprehension_for_clause
-          (binding_pattern
-            (identifier))
-          (identifier))
-        (MISSING "]")))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (comprehension_clauses
+                (for_clause
+                  (pattern
+                    (name
+                      (identifier)))
+                  (expr
+                    (name
+                      (identifier)))))
+              (MISSING "]"))))))))
 
 ================================================================================
 incomplete dictionary comprehension
@@ -867,22 +1285,39 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (identifier)
-    (parameter_list)
-    (block
-      (dict_comprehension
-        (field_expression
-          (identifier)
-          (identifier))
-        (field_expression
-          (identifier)
-          (identifier))
-        (comprehension_for_clause
-          (binding_pattern
-            (identifier))
+  (item
+    (function_definition
+      (function_name
+        (name
           (identifier)))
-      (MISSING "}"))))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (method_name
+                  (name
+                    (identifier))))
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (method_name
+                  (name
+                    (identifier))))
+              (comprehension_clauses
+                (for_clause
+                  (pattern
+                    (name
+                      (identifier)))
+                  (expr
+                    (name
+                      (identifier))))))))
+        (MISSING "}")))))
 
 ================================================================================
 incomplete generator expression
@@ -895,17 +1330,28 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (identifier)
-    (parameter_list)
-    (block
-      (generator_expression
-        (identifier)
-        (comprehension_for_clause
-          (binding_pattern
-            (identifier))
-          (identifier))
-        (MISSING ")")))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (comprehension_clauses
+                (for_clause
+                  (pattern
+                    (name
+                      (identifier)))
+                  (expr
+                    (name
+                      (identifier)))))
+              (MISSING ")"))))))))
 
 ================================================================================
 dict literal
@@ -918,19 +1364,28 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (dict_expression
-        (dict_entry
-          key: (string
-            (string_content))
-          value: (integer_literal))
-        (dict_entry
-          key: (string
-            (string_content))
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (dict_entry
+                (expr
+                  (string_literal
+                    (string_literal_chars)))
+                (expr
+                  (integer)))
+              (dict_entry
+                (expr
+                  (string_literal
+                    (string_literal_chars)))
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 struct literal
@@ -943,19 +1398,27 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      (expression_statement
-        (identifier))
-      result: (dict_expression
-        (dict_entry
-          key: (identifier)
-          value: (integer_literal))
-        (dict_entry
-          key: (identifier)
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (identifier)
+              (struct_literal_item
+                (field_name
+                  (identifier))
+                (expr
+                  (integer)))
+              (struct_literal_item
+                (field_name
+                  (identifier))
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 struct literal shorthand
@@ -968,17 +1431,21 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (struct_literal
-        name: (identifier)
-        body: (struct_literal_body
-          (struct_literal_field
-            name: (identifier))
-          (struct_literal_field
-            name: (identifier)))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (identifier)
+              (struct_literal_item
+                (identifier))
+              (struct_literal_item
+                (identifier)))))))))
 
 ================================================================================
 struct literal spread
@@ -991,18 +1458,26 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (struct_literal
-        name: (identifier)
-        body: (struct_literal_body
-          (struct_spread
-            (identifier))
-          (struct_literal_field
-            name: (identifier)
-            value: (integer_literal)))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (identifier)
+              (struct_literal_item
+                (expr
+                  (name
+                    (identifier))))
+              (struct_literal_item
+                (field_name
+                  (identifier))
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 closure no params
@@ -1015,13 +1490,18 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (closure_expression
-        parameters: (closure_parameters)
-        body: (integer_literal)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (integer)))))))))
 
 ================================================================================
 closure params
@@ -1034,19 +1514,29 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (closure_expression
-        parameters: (closure_parameters
-          (closure_parameter
-            name: (identifier))
-          (closure_parameter
-            name: (identifier)))
-        body: (binary_expression
-          left: (identifier)
-          right: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (closure_parameter
+                (binding_name
+                  (identifier)))
+              (closure_parameter
+                (binding_name
+                  (identifier)))
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 closure typed return
@@ -1059,20 +1549,30 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (closure_expression
-        parameters: (closure_parameters
-          (closure_parameter
-            name: (identifier)
-            type: (primitive_type)))
-        (return_type
-          type: (primitive_type))
-        body: (binary_expression
-          left: (identifier)
-          right: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (closure_parameter
+                (binding_name
+                  (identifier))
+                (type
+                  (primitive_type)))
+              (return_type
+                (type
+                  (primitive_type)))
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 if expression
@@ -1085,16 +1585,26 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (if_expression
-        condition: (identifier)
-        consequence: (block
-          result: (integer_literal))
-        alternative: (block
-          result: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (condition
+                (expr
+                  (name
+                    (identifier))))
+              (block
+                (expr
+                  (integer)))
+              (block
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 if else if
@@ -1107,20 +1617,34 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (if_expression
-        condition: (identifier)
-        consequence: (block
-          result: (integer_literal))
-        alternative: (if_expression
-          condition: (identifier)
-          consequence: (block
-            result: (integer_literal))
-          alternative: (block
-            result: (integer_literal)))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (condition
+                (expr
+                  (name
+                    (identifier))))
+              (block
+                (expr
+                  (integer)))
+              (expr
+                (condition
+                  (expr
+                    (name
+                      (identifier))))
+                (block
+                  (expr
+                    (integer)))
+                (block
+                  (expr
+                    (integer)))))))))))
 
 ================================================================================
 if let and else if let
@@ -1133,35 +1657,50 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (identifier)
-    (parameter_list)
-    (block
-      (if_expression
-        (conditional_let
-          (option_result_pattern
-            (pattern_arguments
-              (binding_pattern
-                (identifier))))
-          (call_expression
-            (identifier)
-            (arguments)))
-        (block
-          (identifier))
-        (if_expression
-          (conditional_let
-            (enum_pattern
-              (identifier)
-              (identifier)
-              (pattern_arguments
-                (binding_pattern
-                  (identifier))))
-            (identifier))
-          (block
-            (identifier))
-          (block
-            (string
-              (string_content))))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (condition
+                (pattern
+                  (pattern
+                    (name
+                      (identifier))))
+                (expr
+                  (expr
+                    (name
+                      (identifier)))
+                  (call_arguments)))
+              (block
+                (expr
+                  (name
+                    (identifier))))
+              (expr
+                (condition
+                  (pattern
+                    (qualified_variant
+                      (identifier)
+                      (identifier))
+                    (pattern
+                      (name
+                        (identifier))))
+                  (expr
+                    (name
+                      (identifier))))
+                (block
+                  (expr
+                    (name
+                      (identifier))))
+                (block
+                  (expr
+                    (string_literal
+                      (string_literal_chars))))))))))))
 
 ================================================================================
 match expression
@@ -1177,19 +1716,28 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (literal_pattern
-            (integer_literal))
-          value: (integer_literal))
-        (match_arm
-          pattern: (wildcard_pattern)
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (integer))
+                (expr
+                  (integer)))
+              (match_arm
+                (pattern)
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 some none
@@ -1203,14 +1751,24 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      (expression_statement
-        (some_expression
-          (integer_literal)))
-      result: (none_expression))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr)
+              (call_arguments
+                (argument
+                  (expr
+                    (integer)))))))
+        (statement
+          (expression_statement
+            (expr)))))))
 
 ================================================================================
 ok err
@@ -1224,17 +1782,31 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      (expression_statement
-        (ok_expression
-          (integer_literal)))
-      result: (err_expression
-        name: (identifier)
-        message: (string
-          (string_content))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr)
+              (call_arguments
+                (argument
+                  (expr
+                    (integer)))))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (identifier))
+              (call_arguments
+                (argument
+                  (expr
+                    (string_literal
+                      (string_literal_chars))))))))))))
 
 ================================================================================
 block expression
@@ -1250,19 +1822,34 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      (let_statement
-        pattern: (identifier)
-        value: (block
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
           (let_statement
-            pattern: (identifier)
-            value: (integer_literal))
-          result: (binary_expression
-            left: (identifier)
-            right: (integer_literal)))))))
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (statement
+                (let_statement
+                  (pattern
+                    (name
+                      (identifier)))
+                  (expr
+                    (integer))))
+              (statement
+                (expression_statement
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))
+                    (expr
+                      (integer))))))))))))
 
 ================================================================================
 string interpolation
@@ -1275,17 +1862,27 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (string
-        (string_content)
-        (interpolation
-          (identifier))
-        (string_content)
-        (interpolation
-          (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (string_literal
+                (string_literal_chars)
+                (string_literal_substitution
+                  (expr
+                    (name
+                      (identifier))))
+                (string_literal_chars)
+                (string_literal_substitution
+                  (expr
+                    (name
+                      (identifier))))))))))))
 
 ================================================================================
 boolean and numbers
@@ -1301,17 +1898,27 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      (expression_statement
-        (boolean_literal))
-      (expression_statement
-        (boolean_literal))
-      (expression_statement
-        (integer_literal))
-      result: (float_literal))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr)))
+        (statement
+          (expression_statement
+            (expr)))
+        (statement
+          (expression_statement
+            (expr
+              (integer))))
+        (statement
+          (expression_statement
+            (expr
+              (float))))))))
 
 ================================================================================
 numeric literal spellings
@@ -1330,23 +1937,41 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      (expression_statement
-        (integer_literal))
-      (expression_statement
-        (integer_literal))
-      (expression_statement
-        (integer_literal))
-      (expression_statement
-        (integer_literal))
-      (expression_statement
-        (float_literal))
-      (expression_statement
-        (float_literal))
-      result: (float_literal))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (hex_integer))))
+        (statement
+          (expression_statement
+            (expr
+              (binary_integer))))
+        (statement
+          (expression_statement
+            (expr
+              (octal_integer))))
+        (statement
+          (expression_statement
+            (expr
+              (integer))))
+        (statement
+          (expression_statement
+            (expr
+              (float))))
+        (statement
+          (expression_statement
+            (expr
+              (float))))
+        (statement
+          (expression_statement
+            (expr
+              (float))))))))
 
 ================================================================================
 named arguments
@@ -1359,21 +1984,31 @@ fn main() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (call_expression
-        function: (identifier)
-        arguments: (arguments
-          (string
-            (string_content))
-          (named_argument
-            name: (identifier)
-            (integer_literal))
-          (named_argument
-            name: (identifier)
-            (boolean_literal)))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (call_arguments
+                (argument
+                  (expr
+                    (string_literal
+                      (string_literal_chars))))
+                (argument
+                  (identifier)
+                  (expr
+                    (integer)))
+                (argument
+                  (identifier)
+                  (expr))))))))))
 
 ================================================================================
 match arm with block body
@@ -1393,26 +2028,41 @@ fn m() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (identifier)
-    (parameter_list)
-    (block
-      (match_expression
-        (await_expression
-          (identifier))
-        (match_arm
-          (option_result_pattern
-            (pattern_arguments
-              (binding_pattern
-                (identifier))))
-          (block
-            (identifier)))
-        (match_arm
-          (none_pattern)
-          (block
-            (binary_expression
-              (integer_literal)
-              (integer_literal))))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier))))
+              (match_arm
+                (pattern
+                  (pattern
+                    (name
+                      (identifier))))
+                (expr
+                  (statement
+                    (expression_statement
+                      (expr
+                        (name
+                          (identifier)))))))
+              (match_arm
+                (pattern)
+                (expr
+                  (statement
+                    (expression_statement
+                      (expr
+                        (expr
+                          (integer))
+                        (expr
+                          (integer))))))))))))))
 
 ================================================================================
 string with literal dollar and backslash escapes
@@ -1425,21 +2075,22 @@ fn m() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (identifier)
-    (parameter_list)
-    (block
-      (let_statement
-        (identifier)
-        (string
-          (dollar)
-          (string_content)
-          (dollar)
-          (string_content)
-          (escape_sequence)
-          (string_content)
-          (escape_sequence)
-          (escape_sequence))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (string_literal
+                (string_literal_chars)
+                (string_literal_chars)))))))))
 
 ================================================================================
 string with short and braced interpolation
@@ -1452,22 +2103,29 @@ fn m() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (identifier)
-    (parameter_list)
-    (block
-      (let_statement
-        (identifier)
-        (string
-          (string_content)
-          (interpolation
-            (interpolation_variable))
-          (string_content)
-          (interpolation
-            (binary_expression
-              (identifier)
-              (integer_literal)))
-          (string_content))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (string_literal
+                (string_literal_chars)
+                (string_literal_substitution
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))
+                    (expr
+                      (integer))))
+                (string_literal_chars)))))))))
 
 ================================================================================
 struct literal inside a control head's delimiters
@@ -1482,25 +2140,42 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (if_expression
-        condition: (call_expression
-          function: (identifier)
-          arguments: (arguments
-            (identifier)
-            (struct_literal
-              name: (identifier)
-              body: (struct_literal_body
-                (struct_literal_field
-                  name: (identifier)
-                  value: (integer_literal))))))
-        consequence: (block
-          result: (call_expression
-            function: (identifier)
-            arguments: (arguments)))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (condition
+                (expr
+                  (expr
+                    (name
+                      (identifier)))
+                  (call_arguments
+                    (argument
+                      (expr
+                        (name
+                          (identifier))))
+                    (argument
+                      (expr
+                        (identifier)
+                        (struct_literal_item
+                          (field_name
+                            (identifier))
+                          (expr
+                            (integer))))))))
+              (block
+                (statement
+                  (expression_statement
+                    (expr
+                      (expr
+                        (name
+                          (identifier)))
+                      (call_arguments))))))))))))
 
 ================================================================================
 parenthesized struct literal in a control head
@@ -1515,24 +2190,37 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (if_expression
-        condition: (binary_expression
-          left: (identifier)
-          right: (parenthesized_expression
-            (struct_literal
-              name: (identifier)
-              body: (struct_literal_body
-                (struct_literal_field
-                  name: (identifier)
-                  value: (integer_literal))))))
-        consequence: (block
-          result: (call_expression
-            function: (identifier)
-            arguments: (arguments)))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (condition
+                (expr
+                  (expr
+                    (name
+                      (identifier)))
+                  (expr
+                    (expr
+                      (identifier)
+                      (struct_literal_item
+                        (field_name
+                          (identifier))
+                        (expr
+                          (integer)))))))
+              (block
+                (statement
+                  (expression_statement
+                    (expr
+                      (expr
+                        (name
+                          (identifier)))
+                      (call_arguments))))))))))))
 
 ================================================================================
 block that proves itself a block only at a later annotated let
@@ -1552,30 +2240,54 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (literal_pattern
-            (integer_literal))
-          value: (block
-            (expression_statement
-              (if_expression
-                condition: (binary_expression
-                  left: (identifier)
-                  right: (integer_literal))
-                consequence: (block
-                  result: (call_expression
-                    function: (identifier)
-                    arguments: (arguments)))))
-            (let_statement
-              pattern: (identifier)
-              type: (primitive_type)
-              value: (integer_literal))
-            result: (identifier)))
-        (match_arm
-          pattern: (wildcard_pattern)
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (integer))
+                (expr
+                  (statement
+                    (expression_statement
+                      (expr
+                        (condition
+                          (expr
+                            (expr
+                              (name
+                                (identifier)))
+                            (expr
+                              (integer))))
+                        (block
+                          (expr
+                            (expr
+                              (name
+                                (identifier)))
+                            (call_arguments))))))
+                  (statement
+                    (let_statement
+                      (pattern
+                        (name
+                          (identifier)))
+                      (type
+                        (primitive_type))
+                      (expr
+                        (integer))))
+                  (statement
+                    (expression_statement
+                      (expr
+                        (name
+                          (identifier)))))))
+              (match_arm
+                (pattern)
+                (expr
+                  (integer))))))))))

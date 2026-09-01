@@ -9,21 +9,35 @@ fn add(a: int, b: int) -> int {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list
-      (parameter
-        name: (identifier)
-        type: (primitive_type))
-      (parameter
-        name: (identifier)
-        type: (primitive_type)))
-    (return_type
-      type: (primitive_type))
-    body: (block
-      result: (binary_expression
-        left: (identifier)
-        right: (identifier)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list
+        (parameter
+          (binding_name
+            (identifier))
+          (type
+            (primitive_type)))
+        (parameter
+          (binding_name
+            (identifier))
+          (type
+            (primitive_type))))
+      (return_type
+        (type
+          (primitive_type)))
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (expr
+                (name
+                  (identifier))))))))))
 
 ================================================================================
 public function
@@ -36,17 +50,27 @@ pub fn greet(name: string) -> string {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (visibility)
-    name: (identifier)
-    parameters: (parameter_list
-      (parameter
-        name: (identifier)
-        type: (primitive_type)))
-    (return_type
-      type: (primitive_type))
-    body: (block
-      result: (identifier))))
+  (item
+    (function_definition
+      (visibility)
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list
+        (parameter
+          (binding_name
+            (identifier))
+          (type
+            (primitive_type))))
+      (return_type
+        (type
+          (primitive_type)))
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (name
+                (identifier)))))))))
 
 ================================================================================
 async function
@@ -59,16 +83,24 @@ async fn fetch() -> int {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    (return_type
-      type: (primitive_type))
-    body: (block
-      result: (await_expression
-        operand: (call_expression
-          function: (identifier)
-          arguments: (arguments))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (return_type
+        (type
+          (primitive_type)))
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (call_arguments)))))))))
 
 ================================================================================
 async main with a future chain
@@ -83,34 +115,50 @@ async fn main() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (identifier)
-    (parameter_list)
-    (block
-      (let_statement
-        (identifier)
-        (await_expression
-          (call_expression
-            (field_expression
-              (call_expression
-                (field_expression
-                  (call_expression
-                    (identifier)
-                    (arguments))
-                  (identifier))
-                (arguments
-                  (closure_expression
-                    (closure_parameters
-                      (closure_parameter
-                        (identifier)))
-                    (identifier))))
-              (identifier))
-            (arguments
-              (closure_expression
-                (closure_parameters
-                  (closure_parameter
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (expr
+                (expr
+                  (name
                     (identifier)))
-                (integer_literal)))))))))
+                (call_arguments)))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (identifier))
+              (call_arguments
+                (argument
+                  (expr
+                    (closure_parameter
+                      (binding_name
+                        (identifier)))
+                    (expr
+                      (name
+                        (identifier)))))))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (identifier))
+              (call_arguments
+                (argument
+                  (expr
+                    (closure_parameter
+                      (binding_name))
+                    (expr
+                      (integer))))))))))))
 
 ================================================================================
 const function
@@ -123,13 +171,20 @@ const fn pi() -> float {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    (return_type
-      type: (primitive_type))
-    body: (block
-      result: (float_literal))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (return_type
+        (type
+          (primitive_type)))
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (float))))))))
 
 ================================================================================
 generic function
@@ -142,21 +197,31 @@ fn id<T>(x: T) -> T {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    (type_parameters
-      (type_parameter
-        name: (identifier)))
-    parameters: (parameter_list
-      (parameter
-        name: (identifier)
-        type: (named_type
-          (identifier))))
-    (return_type
-      type: (named_type
-        (identifier)))
-    body: (block
-      result: (identifier))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (type_parameters
+        (type_parameter
+          (identifier)))
+      (parameter_list
+        (parameter
+          (binding_name
+            (identifier))
+          (type
+            (named_type
+              (identifier)))))
+      (return_type
+        (type
+          (named_type
+            (identifier))))
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (name
+                (identifier)))))))))
 
 ================================================================================
 extern function
@@ -167,14 +232,19 @@ extern fn sqrt(x: float) -> float
 --------------------------------------------------------------------------------
 
 (program
-  (extern_function
-    name: (identifier)
-    parameters: (extern_parameter_list
-      (parameter
-        name: (identifier)
-        type: (primitive_type)))
-    (return_type
-      type: (primitive_type))))
+  (item
+    (extern_function
+      (method_name
+        (name
+          (identifier)))
+      (extern_parameter_list
+        (extern_parameter
+          (identifier)
+          (type
+            (primitive_type))))
+      (return_type
+        (type
+          (primitive_type))))))
 
 ================================================================================
 extern varargs
@@ -185,15 +255,19 @@ extern fn printf(fmt: string, ...) -> int
 --------------------------------------------------------------------------------
 
 (program
-  (extern_function
-    name: (identifier)
-    parameters: (extern_parameter_list
-      (parameter
-        name: (identifier)
-        type: (primitive_type))
-      (variadic))
-    (return_type
-      type: (primitive_type))))
+  (item
+    (extern_function
+      (method_name
+        (name
+          (identifier)))
+      (extern_parameter_list
+        (extern_parameter
+          (identifier)
+          (type
+            (primitive_type))))
+      (return_type
+        (type
+          (primitive_type))))))
 
 ================================================================================
 extern lone varargs
@@ -204,10 +278,12 @@ extern fn log(...)
 --------------------------------------------------------------------------------
 
 (program
-  (extern_function
-    name: (identifier)
-    parameters: (extern_parameter_list
-      (variadic))))
+  (item
+    (extern_function
+      (method_name
+        (name
+          (identifier)))
+      (extern_parameter_list))))
 
 ================================================================================
 struct definition
@@ -221,15 +297,19 @@ struct Point {
 --------------------------------------------------------------------------------
 
 (program
-  (struct_definition
-    name: (identifier)
-    body: (field_declaration_list
-      (field_declaration
-        name: (identifier)
-        type: (primitive_type))
-      (field_declaration
-        name: (identifier)
-        type: (primitive_type)))))
+  (item
+    (struct_definition
+      (identifier)
+      (field
+        (field_name
+          (identifier))
+        (type
+          (primitive_type)))
+      (field
+        (field_name
+          (identifier))
+        (type
+          (primitive_type))))))
 
 ================================================================================
 public struct
@@ -242,14 +322,16 @@ pub struct Vec {
 --------------------------------------------------------------------------------
 
 (program
-  (struct_definition
-    (visibility)
-    name: (identifier)
-    body: (field_declaration_list
-      (field_declaration
-        name: (identifier)
-        type: (array_type
-          (primitive_type))))))
+  (item
+    (struct_definition
+      (visibility)
+      (identifier)
+      (field
+        (field_name
+          (identifier))
+        (type
+          (type
+            (primitive_type)))))))
 
 ================================================================================
 C struct attribute
@@ -263,13 +345,14 @@ struct CData {
 --------------------------------------------------------------------------------
 
 (program
-  (struct_definition
-    (struct_attribute)
-    name: (identifier)
-    body: (field_declaration_list
-      (field_declaration
-        name: (identifier)
-        type: (primitive_type)))))
+  (item
+    (struct_definition
+      (identifier)
+      (field
+        (field_name
+          (identifier))
+        (type
+          (primitive_type))))))
 
 ================================================================================
 packed struct attribute
@@ -283,13 +366,14 @@ struct Bits {
 --------------------------------------------------------------------------------
 
 (program
-  (struct_definition
-    (struct_attribute)
-    name: (identifier)
-    body: (field_declaration_list
-      (field_declaration
-        name: (identifier)
-        type: (numeric_width_type)))))
+  (item
+    (struct_definition
+      (identifier)
+      (field
+        (field_name
+          (identifier))
+        (type
+          (numeric_width_type))))))
 
 ================================================================================
 generic struct
@@ -302,16 +386,18 @@ struct Box<T> {
 --------------------------------------------------------------------------------
 
 (program
-  (struct_definition
-    name: (identifier)
-    (type_parameters
-      (type_parameter
-        name: (identifier)))
-    body: (field_declaration_list
-      (field_declaration
-        name: (identifier)
-        type: (named_type
-          (identifier))))))
+  (item
+    (struct_definition
+      (identifier)
+      (type_parameters
+        (type_parameter
+          (identifier)))
+      (field
+        (field_name
+          (identifier))
+        (type
+          (named_type
+            (identifier)))))))
 
 ================================================================================
 enum definition
@@ -326,15 +412,15 @@ enum Color {
 --------------------------------------------------------------------------------
 
 (program
-  (enum_definition
-    name: (identifier)
-    body: (variant_list
+  (item
+    (enum_definition
+      (identifier)
       (variant
-        name: (identifier))
+        (identifier))
       (variant
-        name: (identifier))
+        (identifier))
       (variant
-        name: (identifier)))))
+        (identifier)))))
 
 ================================================================================
 enum with payloads
@@ -348,16 +434,19 @@ enum Shape {
 --------------------------------------------------------------------------------
 
 (program
-  (enum_definition
-    name: (identifier)
-    body: (variant_list
+  (item
+    (enum_definition
+      (identifier)
       (variant
-        name: (identifier)
-        (primitive_type))
+        (identifier)
+        (type
+          (primitive_type)))
       (variant
-        name: (identifier)
-        (primitive_type)
-        (primitive_type)))))
+        (identifier)
+        (type
+          (primitive_type))
+        (type
+          (primitive_type))))))
 
 ================================================================================
 generic enum
@@ -371,18 +460,19 @@ enum Option<T> {
 --------------------------------------------------------------------------------
 
 (program
-  (enum_definition
-    name: (identifier)
-    (type_parameters
-      (type_parameter
-        name: (identifier)))
-    body: (variant_list
-      (variant
-        name: (identifier)
-        (named_type
+  (item
+    (enum_definition
+      (identifier)
+      (type_parameters
+        (type_parameter
           (identifier)))
       (variant
-        name: (identifier)))))
+        (identifier)
+        (type
+          (named_type
+            (identifier))))
+      (variant
+        (identifier)))))
 
 ================================================================================
 type alias
@@ -393,9 +483,11 @@ type Id = int
 --------------------------------------------------------------------------------
 
 (program
-  (type_alias
-    name: (identifier)
-    type: (primitive_type)))
+  (item
+    (type_alias
+      (identifier)
+      (type
+        (primitive_type)))))
 
 ================================================================================
 generic type alias
@@ -406,16 +498,19 @@ type Pair<T> = (T, T)
 --------------------------------------------------------------------------------
 
 (program
-  (type_alias
-    name: (identifier)
-    (type_parameters
-      (type_parameter
-        name: (identifier)))
-    type: (tuple_type
-      (named_type
-        (identifier))
-      (named_type
-        (identifier)))))
+  (item
+    (type_alias
+      (identifier)
+      (type_parameters
+        (type_parameter
+          (identifier)))
+      (type
+        (type
+          (named_type
+            (identifier)))
+        (type
+          (named_type
+            (identifier)))))))
 
 ================================================================================
 const declaration
@@ -426,9 +521,11 @@ const MAX = 100
 --------------------------------------------------------------------------------
 
 (program
-  (const_definition
-    name: (identifier)
-    value: (integer_literal)))
+  (item
+    (const_definition
+      (identifier)
+      (expr
+        (integer)))))
 
 ================================================================================
 const with type
@@ -439,10 +536,13 @@ const PI: float = 3.14159
 --------------------------------------------------------------------------------
 
 (program
-  (const_definition
-    name: (identifier)
-    type: (primitive_type)
-    value: (float_literal)))
+  (item
+    (const_definition
+      (identifier)
+      (type
+        (primitive_type))
+      (expr
+        (float)))))
 
 ================================================================================
 let item
@@ -453,9 +553,11 @@ let answer = 42
 --------------------------------------------------------------------------------
 
 (program
-  (const_definition
-    name: (identifier)
-    value: (integer_literal)))
+  (item
+    (const_definition
+      (identifier)
+      (expr
+        (integer)))))
 
 ================================================================================
 use simple
@@ -466,10 +568,12 @@ use std.io
 --------------------------------------------------------------------------------
 
 (program
-  (use_declaration
-    (use_path
-      (identifier)
-      (identifier))))
+  (item
+    (use_declaration
+      (name
+        (identifier))
+      (name
+        (identifier)))))
 
 ================================================================================
 use wildcard
@@ -480,12 +584,13 @@ use std.math.*
 --------------------------------------------------------------------------------
 
 (program
-  (use_declaration
-    (use_path
-      (identifier)
-      (identifier)
-      (use_tail
-        (use_wildcard)))))
+  (item
+    (use_declaration
+      (name
+        (identifier))
+      (name
+        (identifier))
+      (use_tail))))
 
 ================================================================================
 use single alias
@@ -496,14 +601,18 @@ use std.collections.Vec as List
 --------------------------------------------------------------------------------
 
 (program
-  (use_declaration
-    (use_path
-      (identifier)
-      (identifier)
+  (item
+    (use_declaration
+      (name
+        (identifier))
+      (name
+        (identifier))
       (use_tail
-        (use_single
-          (identifier)
-          alias: (identifier))))))
+        (use_leaf
+          (name
+            (identifier))
+          (name
+            (identifier)))))))
 
 ================================================================================
 use group
@@ -514,15 +623,18 @@ use std.io.{read, write}
 --------------------------------------------------------------------------------
 
 (program
-  (use_declaration
-    (use_path
-      (identifier)
-      (identifier)
+  (item
+    (use_declaration
+      (name
+        (identifier))
+      (name
+        (identifier))
       (use_tail
-        (use_group
-          (use_leaf
-            (identifier))
-          (use_leaf
+        (use_leaf
+          (name
+            (identifier)))
+        (use_leaf
+          (name
             (identifier)))))))
 
 ================================================================================
@@ -534,16 +646,20 @@ use std.fmt.{Display as Show, Debug}
 --------------------------------------------------------------------------------
 
 (program
-  (use_declaration
-    (use_path
-      (identifier)
-      (identifier)
+  (item
+    (use_declaration
+      (name
+        (identifier))
+      (name
+        (identifier))
       (use_tail
-        (use_group
-          (use_leaf
-            (identifier)
-            alias: (identifier))
-          (use_leaf
+        (use_leaf
+          (name
+            (identifier))
+          (name
+            (identifier)))
+        (use_leaf
+          (name
             (identifier)))))))
 
 ================================================================================
@@ -557,16 +673,23 @@ interface Drawable {
 --------------------------------------------------------------------------------
 
 (program
-  (interface_definition
-    name: (identifier)
-    (interface_method
-      name: (identifier)
-      parameters: (parameter_list
-        (parameter
-          name: (identifier)
-          type: (primitive_type)))
-      (return_type
-        type: (primitive_type)))))
+  (item
+    (interface_definition
+      (identifier)
+      (interface_item
+        (interface_method
+          (function_name
+            (name
+              (identifier)))
+          (parameter_list
+            (parameter
+              (binding_name
+                (identifier))
+              (type
+                (primitive_type))))
+          (return_type
+            (type
+              (primitive_type))))))))
 
 ================================================================================
 interface with assoc type
@@ -580,19 +703,27 @@ interface Iterator {
 --------------------------------------------------------------------------------
 
 (program
-  (interface_definition
-    name: (identifier)
-    (associated_type
-      name: (identifier))
-    (interface_method
-      name: (identifier)
-      parameters: (parameter_list
-        (parameter
-          name: (identifier)
-          type: (primitive_type)))
-      (return_type
-        type: (named_type
-          (identifier))))))
+  (item
+    (interface_definition
+      (identifier)
+      (interface_item
+        (interface_associated_type
+          (identifier)))
+      (interface_item
+        (interface_method
+          (function_name
+            (name
+              (identifier)))
+          (parameter_list
+            (parameter
+              (binding_name
+                (identifier))
+              (type
+                (primitive_type))))
+          (return_type
+            (type
+              (named_type
+                (identifier)))))))))
 
 ================================================================================
 impl inherent
@@ -607,21 +738,34 @@ impl Point {
 --------------------------------------------------------------------------------
 
 (program
-  (impl_definition
-    interface: (identifier)
-    (impl_method
-      name: (identifier)
-      parameters: (parameter_list
-        (parameter
-          name: (identifier)
-          type: (named_type
-            (identifier))))
-      (return_type
-        type: (primitive_type))
-      body: (block
-        result: (field_expression
-          object: (identifier)
-          field: (identifier))))))
+  (item
+    (impl_definition
+      (impl_target
+        (identifier))
+      (impl_method
+        (function_name
+          (name
+            (identifier)))
+        (parameter_list
+          (parameter
+            (binding_name
+              (identifier))
+            (type
+              (named_type
+                (identifier)))))
+        (return_type
+          (type
+            (primitive_type)))
+        (block
+          (statement
+            (expression_statement
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (method_name
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 impl interface for type
@@ -636,23 +780,37 @@ impl Drawable for Point {
 --------------------------------------------------------------------------------
 
 (program
-  (impl_definition
-    interface: (identifier)
-    type: (identifier)
-    (impl_method
-      name: (identifier)
-      parameters: (parameter_list
-        (parameter
-          name: (identifier)
-          type: (named_type
-            (identifier))))
-      (return_type
-        type: (primitive_type))
-      body: (block
-        result: (call_expression
-          function: (identifier)
-          arguments: (arguments
-            (identifier)))))))
+  (item
+    (impl_definition
+      (identifier)
+      (impl_target
+        (identifier))
+      (impl_method
+        (function_name
+          (name
+            (identifier)))
+        (parameter_list
+          (parameter
+            (binding_name
+              (identifier))
+            (type
+              (named_type
+                (identifier)))))
+        (return_type
+          (type
+            (primitive_type)))
+        (block
+          (statement
+            (expression_statement
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (call_arguments
+                  (argument
+                    (expr
+                      (name
+                        (identifier)))))))))))))
 
 ================================================================================
 impl with assoc binding
@@ -668,25 +826,39 @@ impl Iterator for Counter {
 --------------------------------------------------------------------------------
 
 (program
-  (impl_definition
-    interface: (identifier)
-    type: (identifier)
-    (associated_type_binding
-      name: (identifier)
-      type: (primitive_type))
-    (impl_method
-      name: (identifier)
-      parameters: (parameter_list
-        (parameter
-          name: (identifier)
-          type: (named_type
-            (identifier))))
-      (return_type
-        type: (primitive_type))
-      body: (block
-        result: (field_expression
-          object: (identifier)
-          field: (identifier))))))
+  (item
+    (impl_definition
+      (identifier)
+      (impl_target
+        (identifier))
+      (impl_associated_type
+        (identifier)
+        (type
+          (primitive_type)))
+      (impl_method
+        (function_name
+          (name
+            (identifier)))
+        (parameter_list
+          (parameter
+            (binding_name
+              (identifier))
+            (type
+              (named_type
+                (identifier)))))
+        (return_type
+          (type
+            (primitive_type)))
+        (block
+          (statement
+            (expression_statement
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (method_name
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 include directive paren header
@@ -697,10 +869,13 @@ include directive paren header
 --------------------------------------------------------------------------------
 
 (program
-  (directive
-    name: (identifier)
-    argument: (directive_argument
-      (include_path))))
+  (item
+    (directive
+      (include_path
+        (name
+          (identifier))
+        (name
+          (identifier))))))
 
 ================================================================================
 include directive bare header
@@ -711,10 +886,13 @@ include directive bare header
 --------------------------------------------------------------------------------
 
 (program
-  (directive
-    name: (identifier)
-    argument: (directive_argument
-      (include_path))))
+  (item
+    (directive
+      (include_path
+        (name
+          (identifier))
+        (name
+          (identifier))))))
 
 ================================================================================
 link directive
@@ -725,11 +903,10 @@ link directive
 --------------------------------------------------------------------------------
 
 (program
-  (directive
-    name: (identifier)
-    argument: (directive_argument
-      (string
-        (string_content)))))
+  (item
+    (directive
+      (string_literal
+        (string_literal_chars)))))
 
 ================================================================================
 link os-specific
@@ -740,11 +917,10 @@ link os-specific
 --------------------------------------------------------------------------------
 
 (program
-  (directive
-    name: (identifier)
-    argument: (directive_argument
-      (string
-        (string_content)))))
+  (item
+    (directive
+      (string_literal
+        (string_literal_chars)))))
 
 ================================================================================
 default parameter values
@@ -757,24 +933,39 @@ fn connect(host: string, port: int = 8080, secure: bool = false) -> string {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list
-      (parameter
-        name: (identifier)
-        type: (primitive_type))
-      (parameter
-        name: (identifier)
-        type: (primitive_type)
-        default: (integer_literal))
-      (parameter
-        name: (identifier)
-        type: (primitive_type)
-        default: (boolean_literal)))
-    (return_type
-      type: (primitive_type))
-    body: (block
-      result: (identifier))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list
+        (parameter
+          (binding_name
+            (identifier))
+          (type
+            (primitive_type)))
+        (parameter
+          (binding_name
+            (identifier))
+          (type
+            (primitive_type))
+          (expr
+            (integer)))
+        (parameter
+          (binding_name
+            (identifier))
+          (type
+            (primitive_type))
+          (expr)))
+      (return_type
+        (type
+          (primitive_type)))
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (name
+                (identifier)))))))))
 
 ================================================================================
 variadic parameter
@@ -787,20 +978,31 @@ fn sum(base: int, xs: ...int) -> int {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list
-      (parameter
-        name: (identifier)
-        type: (primitive_type))
-      (parameter
-        name: (identifier)
-        (variadic)
-        type: (primitive_type)))
-    (return_type
-      type: (primitive_type))
-    body: (block
-      result: (identifier))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list
+        (parameter
+          (binding_name
+            (identifier))
+          (type
+            (primitive_type)))
+        (parameter
+          (binding_name
+            (identifier))
+          (type
+            (primitive_type))))
+      (return_type
+        (type
+          (primitive_type)))
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (name
+                (identifier)))))))))
 
 ================================================================================
 generic function with interface bound
@@ -813,24 +1015,33 @@ fn heavier<T: Weight>(p: Pair<T>) -> int {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (identifier)
-    (type_parameters
-      (type_parameter
-        (identifier)
-        (identifier)))
-    (parameter_list
-      (parameter
-        (identifier)
-        (generic_type
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (type_parameters
+        (type_parameter
           (identifier)
-          (type_arguments
+          (identifier)))
+      (parameter_list
+        (parameter
+          (binding_name
+            (identifier))
+          (type
             (named_type
-              (identifier))))))
-    (return_type
-      (primitive_type))
-    (block
-      (integer_literal))))
+              (identifier)
+              (type
+                (named_type
+                  (identifier)))))))
+      (return_type
+        (type
+          (primitive_type)))
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (integer))))))))
 
 ================================================================================
 generic function with multiple bounds
@@ -841,19 +1052,24 @@ fn show<T: Display + Clone>(x: T) {}
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (identifier)
-    (type_parameters
-      (type_parameter
-        (identifier)
-        (identifier)
-        (identifier)))
-    (parameter_list
-      (parameter
-        (identifier)
-        (named_type
-          (identifier))))
-    (block)))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (type_parameters
+        (type_parameter
+          (identifier)
+          (identifier)
+          (identifier)))
+      (parameter_list
+        (parameter
+          (binding_name
+            (identifier))
+          (type
+            (named_type
+              (identifier)))))
+      (block))))
 
 ================================================================================
 interface with default method body
@@ -869,27 +1085,43 @@ interface Greet {
 --------------------------------------------------------------------------------
 
 (program
-  (interface_definition
-    (identifier)
-    (interface_method
+  (item
+    (interface_definition
       (identifier)
-      (parameter_list
-        (parameter
-          (identifier)
-          (primitive_type)))
-      (return_type
-        (primitive_type)))
-    (interface_method
-      (identifier)
-      (parameter_list
-        (parameter
-          (identifier)
-          (primitive_type)))
-      (return_type
-        (primitive_type))
-      (block
-        (string
-          (string_content))))))
+      (interface_item
+        (interface_method
+          (function_name
+            (name
+              (identifier)))
+          (parameter_list
+            (parameter
+              (binding_name
+                (identifier))
+              (type
+                (primitive_type))))
+          (return_type
+            (type
+              (primitive_type)))))
+      (interface_item
+        (interface_method
+          (function_name
+            (name
+              (identifier)))
+          (parameter_list
+            (parameter
+              (binding_name
+                (identifier))
+              (type
+                (primitive_type))))
+          (return_type
+            (type
+              (primitive_type)))
+          (block
+            (statement
+              (expression_statement
+                (expr
+                  (string_literal
+                    (string_literal_chars)))))))))))
 
 ================================================================================
 struct with layout attribute and visibility
@@ -903,17 +1135,20 @@ struct with layout attribute and visibility
 --------------------------------------------------------------------------------
 
 (program
-  (struct_definition
-    (struct_attribute)
-    (visibility)
-    (identifier)
-    (field_declaration_list
-      (field_declaration
-        (identifier)
-        (numeric_width_type))
-      (field_declaration
-        (identifier)
-        (numeric_width_type)))))
+  (item
+    (struct_definition
+      (visibility)
+      (identifier)
+      (field
+        (field_name
+          (identifier))
+        (type
+          (numeric_width_type)))
+      (field
+        (field_name
+          (identifier))
+        (type
+          (numeric_width_type))))))
 
 ================================================================================
 postfix optional type shorthand
@@ -925,43 +1160,61 @@ fn f(a: int?, b: [string]?, c: int??, p: *int?) -> Result<int?, Error>? {}
 --------------------------------------------------------------------------------
 
 (program
-  (type_alias
-    name: (identifier)
-    (type_parameters
-      (type_parameter
-        name: (identifier)))
-    type: (optional_type
-      type: (named_type
-        (identifier))))
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list
-      (parameter
-        name: (identifier)
-        type: (optional_type
-          type: (primitive_type)))
-      (parameter
-        name: (identifier)
-        type: (optional_type
-          type: (array_type
-            (primitive_type))))
-      (parameter
-        name: (identifier)
-        type: (optional_type
-          type: (primitive_type)))
-      (parameter
-        name: (identifier)
-        type: (optional_type
-          type: (pointer_type
-            (primitive_type)))))
-    (return_type
-      type: (optional_type
-        type: (generic_type
-          (type_arguments
-            (optional_type
-              type: (primitive_type))
-            (named_type)))))
-    body: (block)))
+  (item
+    (type_alias
+      (identifier)
+      (type_parameters
+        (type_parameter
+          (identifier)))
+      (type
+        (type
+          (named_type
+            (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list
+        (parameter
+          (binding_name
+            (identifier))
+          (type
+            (type
+              (primitive_type))))
+        (parameter
+          (binding_name
+            (identifier))
+          (type
+            (type
+              (type
+                (primitive_type)))))
+        (parameter
+          (binding_name
+            (identifier))
+          (type
+            (type
+              (type
+                (primitive_type)))))
+        (parameter
+          (binding_name
+            (identifier))
+          (type
+            (type
+              (type
+                (primitive_type))))))
+      (return_type
+        (type
+          (type
+            (named_type
+              (identifier)
+              (type
+                (type
+                  (primitive_type)))
+              (type
+                (named_type
+                  (identifier)))))))
+      (block))))
 
 ================================================================================
 keyword-named function declarations (plan 100)
@@ -976,36 +1229,55 @@ interface Cell {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    (visibility)
-    name: (identifier)
-    parameters: (parameter_list
-      (parameter
-        name: (identifier)
-        type: (primitive_type)))
-    (return_type
-      type: (primitive_type))
-    body: (block))
-  (extern_function
-    (visibility)
-    name: (identifier)
-    parameters: (extern_parameter_list
-      (parameter
-        name: (identifier)
-        type: (named_type
-          (identifier)))
-      (parameter
-        name: (identifier)
-        type: (primitive_type)))
-    (return_type
-      type: (primitive_type)))
-  (interface_definition
-    name: (identifier)
-    (interface_method
-      name: (identifier)
-      parameters: (parameter_list
+  (item
+    (function_definition
+      (visibility)
+      (function_name
+        (name
+          (primitive_type)))
+      (parameter_list
         (parameter
-          name: (identifier)
-          type: (primitive_type)))
+          (binding_name
+            (identifier))
+          (type
+            (primitive_type))))
       (return_type
-        type: (primitive_type)))))
+        (type
+          (primitive_type)))
+      (block)))
+  (item
+    (extern_function
+      (visibility)
+      (method_name
+        (name
+          (primitive_type)))
+      (extern_parameter_list
+        (extern_parameter
+          (identifier)
+          (type
+            (named_type
+              (identifier))))
+        (extern_parameter
+          (identifier)
+          (type
+            (primitive_type))))
+      (return_type
+        (type
+          (primitive_type)))))
+  (item
+    (interface_definition
+      (identifier)
+      (interface_item
+        (interface_method
+          (function_name
+            (name
+              (primitive_type)))
+          (parameter_list
+            (parameter
+              (binding_name
+                (identifier))
+              (type
+                (primitive_type))))
+          (return_type
+            (type
+              (primitive_type))))))))

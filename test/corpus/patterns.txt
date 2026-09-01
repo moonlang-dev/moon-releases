@@ -11,15 +11,23 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (wildcard_pattern)
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern)
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 binding
@@ -34,16 +42,26 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (binding_pattern
-            (identifier))
-          value: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (name
+                    (identifier)))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 binding subpattern
@@ -58,19 +76,28 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (binding_subpattern
-            name: (identifier)
-            pattern: (range_pattern
-              start: (integer_literal)
-              end: (integer_literal)))
-          value: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (identifier)
+                  (pattern
+                    (integer)
+                    (integer)))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 integer literal
@@ -85,16 +112,24 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (literal_pattern
-            (integer_literal))
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (integer))
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 negative integer
@@ -109,16 +144,24 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (literal_pattern
-            (integer_literal))
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (integer))
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 boolean literal
@@ -134,20 +177,27 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (literal_pattern
-            (boolean_literal))
-          value: (integer_literal))
-        (match_arm
-          pattern: (literal_pattern
-            (boolean_literal))
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern)
+                (expr
+                  (integer)))
+              (match_arm
+                (pattern)
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 string literal
@@ -162,17 +212,25 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (literal_pattern
-            (string
-              (string_content)))
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (string_literal
+                    (string_literal_chars)))
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 range exclusive
@@ -187,17 +245,25 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (range_pattern
-            start: (integer_literal)
-            end: (integer_literal))
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (integer)
+                  (integer))
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 range inclusive
@@ -212,17 +278,25 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (range_pattern
-            start: (integer_literal)
-            end: (integer_literal))
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (integer)
+                  (integer))
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 range negative
@@ -237,17 +311,25 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (range_pattern
-            start: (integer_literal)
-            end: (integer_literal))
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (integer)
+                  (integer))
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 string prefix
@@ -262,17 +344,25 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (string_prefix_pattern
-            (string
-              (string_content)))
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (string_literal
+                    (string_literal_chars)))
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 string suffix
@@ -287,17 +377,25 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (string_suffix_pattern
-            (string
-              (string_content)))
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (string_literal
+                    (string_literal_chars)))
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 string contains
@@ -312,17 +410,25 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (string_contains_pattern
-            (string
-              (string_content)))
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (string_literal
+                    (string_literal_chars)))
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 tuple pattern
@@ -337,19 +443,30 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (tuple_pattern
-            (binding_pattern
-              (identifier))
-            (binding_pattern
-              (identifier)))
-          value: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (pattern
+                    (name
+                      (identifier)))
+                  (pattern
+                    (name
+                      (identifier))))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 struct pattern
@@ -364,20 +481,29 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (struct_pattern
-            name: (identifier)
-            (field_pattern
-              name: (identifier))
-            (field_pattern
-              name: (identifier)))
-          value: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (identifier)
+                  (struct_pattern_item
+                    (identifier))
+                  (struct_pattern_item
+                    (identifier)))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 struct pattern rest
@@ -392,19 +518,28 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (struct_pattern
-            name: (identifier)
-            (field_pattern
-              name: (identifier))
-            (rest_pattern))
-          value: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (identifier)
+                  (struct_pattern_item
+                    (identifier))
+                  (struct_pattern_item))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 enum pattern
@@ -419,20 +554,30 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (enum_pattern
-            enum: (identifier)
-            variant: (identifier)
-            (pattern_arguments
-              (binding_pattern
-                (identifier))))
-          value: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (qualified_variant
+                    (identifier)
+                    (identifier))
+                  (pattern
+                    (name
+                      (identifier))))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 enum shorthand variant
@@ -447,16 +592,24 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (enum_pattern
-            variant: (identifier))
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (identifier))
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 tuple-struct enum pattern
@@ -471,19 +624,28 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (enum_pattern
-            variant: (identifier)
-            (pattern_arguments
-              (binding_pattern
-                (identifier))))
-          value: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (identifier)
+                  (pattern
+                    (name
+                      (identifier))))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 option patterns
@@ -499,21 +661,31 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (option_result_pattern
-            (pattern_arguments
-              (binding_pattern
-                (identifier))))
-          value: (identifier))
-        (match_arm
-          pattern: (none_pattern)
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (pattern
+                    (name
+                      (identifier))))
+                (expr
+                  (name
+                    (identifier))))
+              (match_arm
+                (pattern)
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 result patterns
@@ -529,24 +701,35 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (option_result_pattern
-            (pattern_arguments
-              (binding_pattern
-                (identifier))))
-          value: (identifier))
-        (match_arm
-          pattern: (option_result_pattern
-            (pattern_arguments
-              (binding_pattern
-                (identifier))))
-          value: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (pattern
+                    (name
+                      (identifier))))
+                (expr
+                  (name
+                    (identifier))))
+              (match_arm
+                (pattern
+                  (pattern
+                    (name
+                      (identifier))))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 array pattern
@@ -561,21 +744,33 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (array_pattern
-            (binding_pattern
-              (identifier))
-            (binding_pattern
-              (identifier))
-            (binding_pattern
-              (identifier)))
-          value: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (pattern
+                    (name
+                      (identifier)))
+                  (pattern
+                    (name
+                      (identifier)))
+                  (pattern
+                    (name
+                      (identifier))))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 array pattern rest
@@ -590,20 +785,29 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (array_pattern
-            (binding_pattern
-              (identifier))
-            (rest_element
-              (binding_pattern
-                (identifier))))
-          value: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (pattern
+                    (name
+                      (identifier)))
+                  (rest_pattern
+                    (identifier)))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 array pattern middle rest
@@ -618,20 +822,31 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (array_pattern
-            (binding_pattern
-              (identifier))
-            (rest_element)
-            (binding_pattern
-              (identifier)))
-          value: (identifier))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (pattern
+                    (name
+                      (identifier)))
+                  (rest_pattern)
+                  (pattern
+                    (name
+                      (identifier))))
+                (expr
+                  (name
+                    (identifier)))))))))))
 
 ================================================================================
 or patterns
@@ -647,23 +862,32 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (literal_pattern
-            (integer_literal))
-          pattern: (literal_pattern
-            (integer_literal))
-          pattern: (literal_pattern
-            (integer_literal))
-          value: (integer_literal))
-        (match_arm
-          pattern: (wildcard_pattern)
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (integer))
+                (pattern
+                  (integer))
+                (pattern
+                  (integer))
+                (expr
+                  (integer)))
+              (match_arm
+                (pattern)
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 guard
@@ -679,22 +903,35 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (binding_pattern
-            (identifier))
-          guard: (binary_expression
-            left: (identifier)
-            right: (integer_literal))
-          value: (integer_literal))
-        (match_arm
-          pattern: (wildcard_pattern)
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (name
+                    (identifier)))
+                (expr
+                  (expr
+                    (name
+                      (identifier)))
+                  (expr
+                    (integer)))
+                (expr
+                  (integer)))
+              (match_arm
+                (pattern)
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 nested patterns
@@ -710,25 +947,35 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (enum_pattern
-            variant: (identifier)
-            (pattern_arguments
-              (tuple_pattern
-                (literal_pattern
-                  (integer_literal))
-                (binding_pattern
-                  (identifier)))))
-          value: (identifier))
-        (match_arm
-          pattern: (wildcard_pattern)
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (identifier)
+                  (pattern
+                    (pattern
+                      (integer))
+                    (pattern
+                      (name
+                        (identifier)))))
+                (expr
+                  (name
+                    (identifier))))
+              (match_arm
+                (pattern)
+                (expr
+                  (integer))))))))))
 
 ================================================================================
 arm returns
@@ -744,17 +991,26 @@ fn f() {
 --------------------------------------------------------------------------------
 
 (program
-  (function_definition
-    name: (identifier)
-    parameters: (parameter_list)
-    body: (block
-      result: (match_expression
-        value: (identifier)
-        (match_arm
-          pattern: (literal_pattern
-            (integer_literal))
-          value: (return_statement
-            value: (integer_literal)))
-        (match_arm
-          pattern: (wildcard_pattern)
-          value: (integer_literal))))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (integer))
+                (return_statement
+                  (expr
+                    (integer))))
+              (match_arm
+                (pattern)
+                (expr
+                  (integer))))))))))
