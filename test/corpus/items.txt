@@ -607,12 +607,10 @@ use std.collections.Vec as List
         (identifier))
       (name
         (identifier))
-      (use_tail
-        (use_leaf
-          (name
-            (identifier))
-          (name
-            (identifier)))))))
+      (name
+        (identifier))
+      (name
+        (identifier)))))
 
 ================================================================================
 use group
@@ -917,6 +915,35 @@ link os-specific
 --------------------------------------------------------------------------------
 
 (program
+  (item
+    (directive
+      (string_literal
+        (string_literal_chars)))))
+
+================================================================================
+static link directives
+================================================================================
+
+@link_static("codec")
+@link_static_linux("dl")
+@link_static_macos("framework")
+@link_static_windows("native")
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (directive
+      (string_literal
+        (string_literal_chars))))
+  (item
+    (directive
+      (string_literal
+        (string_literal_chars))))
+  (item
+    (directive
+      (string_literal
+        (string_literal_chars))))
   (item
     (directive
       (string_literal
@@ -1281,3 +1308,115 @@ interface Cell {
           (return_type
             (type
               (primitive_type))))))))
+
+================================================================================
+use whole-path alias with visibility
+================================================================================
+
+pub use helper.add as sum
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (use_declaration
+      (visibility)
+      (name
+        (identifier))
+      (name
+        (identifier))
+      (name
+        (identifier)))))
+
+================================================================================
+string-valued enum variant
+================================================================================
+
+pub enum DownloadStatus {
+    Pending = "pending",
+    Done(int),
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (enum_definition
+      (visibility)
+      (identifier)
+      (variant
+        (identifier)
+        (string_literal
+          (string_literal_chars)))
+      (variant
+        (identifier)
+        (type
+          (primitive_type))))))
+
+================================================================================
+bare self and mut self receivers (plan 212)
+================================================================================
+
+impl Registry {
+    fn claim(mut self, video_id: string) {
+        self.last = video_id
+    }
+    fn snapshot(self) -> [int] {
+        self.items
+    }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (impl_definition
+      (impl_target
+        (identifier))
+      (impl_method
+        (function_name
+          (name
+            (identifier)))
+        (parameter_list
+          (parameter
+            (identifier))
+          (parameter
+            (binding_name
+              (identifier))
+            (type
+              (primitive_type))))
+        (block
+          (statement
+            (assignment_statement
+              (lvalue
+                (lvalue
+                  (name
+                    (identifier)))
+                (method_name
+                  (name
+                    (identifier))))
+              (assignment_operator)
+              (expr
+                (name
+                  (identifier)))))))
+      (impl_method
+        (function_name
+          (name
+            (identifier)))
+        (parameter_list
+          (parameter
+            (identifier)))
+        (return_type
+          (type
+            (type
+              (primitive_type))))
+        (block
+          (statement
+            (expression_statement
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (method_name
+                  (name
+                    (identifier)))))))))))

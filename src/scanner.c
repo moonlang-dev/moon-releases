@@ -17,6 +17,7 @@ enum TokenType {
   STRING_LITERAL_VARIABLE,
   BLOCK_COMMENT,
   STATEMENT_END,
+  BRACE_END,
 };
 
 // The scanner is stateless — tree-sitter's `valid_symbols` already encodes
@@ -169,6 +170,20 @@ static bool scan_statement_end(TSLexer *lexer) {
   return true;
 }
 
+// `let` and assignment statements cannot be a block's value, so a closing
+// brace ends them as well (`{ going = false }` on one line). The brace is
+// left for the block rule, which makes this token zero-width; the parser asks
+// for it only right after such a statement and never twice at one position,
+// so it cannot loop. Expression statements do not take it: `{ x }` stays a
+// block whose value is `x`.
+static bool scan_brace_end(TSLexer *lexer) {
+  while (lexer->lookahead == ' ' || lexer->lookahead == '\t') skip(lexer);
+  if (lexer->lookahead != '}') return false;
+  lexer->mark_end(lexer);
+  lexer->result_symbol = BRACE_END;
+  return true;
+}
+
 bool tree_sitter_moon_external_scanner_scan(void *payload, TSLexer *lexer,
                                                           const bool *valid_symbols) {
   (void)payload;
@@ -183,6 +198,8 @@ bool tree_sitter_moon_external_scanner_scan(void *payload, TSLexer *lexer,
   }
 
   if (valid_symbols[STATEMENT_END] && scan_statement_end(lexer)) return true;
+
+  if (valid_symbols[BRACE_END] && scan_brace_end(lexer)) return true;
 
   if (valid_symbols[BLOCK_COMMENT] && scan_block_comment(lexer)) return true;
 

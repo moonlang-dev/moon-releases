@@ -1138,3 +1138,51 @@ fn m() {
                 (identifier)))
             (expr
               (integer))))))))
+
+================================================================================
+assignment and let closed by a brace on one line
+================================================================================
+
+fn main() {
+    if done { going = false }
+    let v = { let x = 1 }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (condition
+                (expr
+                  (name
+                    (identifier))))
+              (block
+                (statement
+                  (assignment_statement
+                    (lvalue
+                      (name
+                        (identifier)))
+                    (assignment_operator)
+                    (expr)))))))
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (statement
+                (let_statement
+                  (pattern
+                    (name
+                      (identifier)))
+                  (expr
+                    (integer)))))))))))

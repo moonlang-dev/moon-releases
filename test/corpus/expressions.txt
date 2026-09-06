@@ -2291,3 +2291,52 @@ fn f() {
                 (pattern)
                 (expr
                   (integer))))))))))
+
+================================================================================
+module-qualified struct literal
+================================================================================
+
+fn main() {
+    let r = cv.Rect { x: 1, ...base }
+    let p = Point { x: 1 }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (identifier)
+              (identifier)
+              (struct_literal_item
+                (field_name
+                  (identifier))
+                (expr
+                  (integer)))
+              (struct_literal_item
+                (expr
+                  (name
+                    (identifier)))))))
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (identifier)
+              (struct_literal_item
+                (field_name
+                  (identifier))
+                (expr
+                  (integer))))))))))

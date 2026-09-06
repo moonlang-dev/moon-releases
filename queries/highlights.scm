@@ -49,11 +49,11 @@
 
 ;; Keyword, operator, and punctuation literals.
 [
-  "ffi_retain_callbacks" "link_windows" "link_macos" "link_linux" "interface" "continue" "blocking" "include"
-  "return" "struct" "extern" "packed" "match" "while" "break" "await"
-  "const" "async" "defer" "else" "enum" "impl" "type" "link"
-  "for" "pub" "let" "mut" "if" "in" "fn" "_"
-  "C"
+  "ffi_retain_callbacks" "link_static_windows" "link_static_macos" "link_static_linux" "link_windows" "link_static" "link_macos" "link_linux"
+  "interface" "continue" "blocking" "include" "return" "struct" "extern" "packed"
+  "match" "while" "break" "await" "const" "async" "defer" "else"
+  "enum" "impl" "type" "link" "for" "pub" "let" "mut"
+  "if" "in" "fn" "_" "C"
 ] @keyword
 [
   "use" "as"

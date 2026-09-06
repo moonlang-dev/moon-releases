@@ -1149,6 +1149,10 @@
           "named": true
         },
         {
+          "type": "identifier",
+          "named": true
+        },
+        {
           "type": "type",
           "named": true
         }
@@ -1606,6 +1610,10 @@
           "named": true
         },
         {
+          "type": "string_literal",
+          "named": true
+        },
+        {
           "type": "type",
           "named": true
         }
@@ -1996,6 +2004,22 @@
   },
   {
     "type": "link_macos",
+    "named": false
+  },
+  {
+    "type": "link_static",
+    "named": false
+  },
+  {
+    "type": "link_static_linux",
+    "named": false
+  },
+  {
+    "type": "link_static_macos",
+    "named": false
+  },
+  {
+    "type": "link_static_windows",
     "named": false
   },
   {
