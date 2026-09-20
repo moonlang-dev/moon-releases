@@ -44,6 +44,6 @@ packages from being updated.
 
 All five launch `moon lsp`, so install the Moon toolchain first. The Neovim
 bundle includes its tree-sitter parser source and installer. Zed builds the
-same grammar from an immutable component-version tag such as
-`tree-sitter-moon-v0.2.0` published in this repository; that branch contains
+same grammar from an immutable component-version tag
+(`tree-sitter-moon-vX.Y.Z`) published in this repository; that branch contains
 only the public grammar, never compiler source.
