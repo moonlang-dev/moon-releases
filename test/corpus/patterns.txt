@@ -1014,3 +1014,96 @@ fn f() {
                 (pattern)
                 (expr
                   (integer))))))))))
+
+================================================================================
+mutable binding
+================================================================================
+
+fn f() {
+  match x {
+    State.Open(mut n) => n,
+    mut whole @ State.Closed => whole,
+    Point { mut x, y: mut z } => x,
+  }
+  if let some(mut v) = y {
+  }
+  for (k, mut v) in table {
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern
+                  (qualified_variant
+                    (identifier)
+                    (identifier))
+                  (pattern
+                    (name
+                      (identifier))))
+                (expr
+                  (name
+                    (identifier))))
+              (match_arm
+                (pattern
+                  (identifier)
+                  (pattern
+                    (qualified_variant
+                      (identifier)
+                      (identifier))))
+                (expr
+                  (name
+                    (identifier))))
+              (match_arm
+                (pattern
+                  (identifier)
+                  (struct_pattern_item
+                    (identifier))
+                  (struct_pattern_item
+                    (field_name
+                      (identifier))
+                    (pattern
+                      (name
+                        (identifier)))))
+                (expr
+                  (name
+                    (identifier)))))))
+        (statement
+          (expression_statement
+            (expr
+              (condition
+                (pattern
+                  (pattern
+                    (name
+                      (identifier))))
+                (expr
+                  (name
+                    (identifier))))
+              (block))))
+        (statement
+          (for_statement
+            (pattern
+              (pattern
+                (name
+                  (identifier)))
+              (pattern
+                (name
+                  (identifier))))
+            (expr
+              (name
+                (identifier)))
+            (block)))))))

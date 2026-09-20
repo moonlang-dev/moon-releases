@@ -869,11 +869,14 @@ include directive paren header
 (program
   (item
     (directive
-      (include_path
-        (name
-          (identifier))
-        (name
-          (identifier))))))
+      (identifier)
+      (directive_arguments
+        (directive_value
+          (include_path
+            (name
+              (identifier))
+            (name
+              (identifier))))))))
 
 ================================================================================
 include directive bare header
@@ -886,6 +889,7 @@ include directive bare header
 (program
   (item
     (directive
+      (identifier)
       (include_path
         (name
           (identifier))
@@ -903,8 +907,11 @@ link directive
 (program
   (item
     (directive
-      (string_literal
-        (string_literal_chars)))))
+      (identifier)
+      (directive_arguments
+        (directive_value
+          (string_literal
+            (string_literal_chars)))))))
 
 ================================================================================
 link os-specific
@@ -917,8 +924,11 @@ link os-specific
 (program
   (item
     (directive
-      (string_literal
-        (string_literal_chars)))))
+      (identifier)
+      (directive_arguments
+        (directive_value
+          (string_literal
+            (string_literal_chars)))))))
 
 ================================================================================
 static link directives
@@ -934,20 +944,186 @@ static link directives
 (program
   (item
     (directive
-      (string_literal
-        (string_literal_chars))))
+      (identifier)
+      (directive_arguments
+        (directive_value
+          (string_literal
+            (string_literal_chars))))))
   (item
     (directive
-      (string_literal
-        (string_literal_chars))))
+      (identifier)
+      (directive_arguments
+        (directive_value
+          (string_literal
+            (string_literal_chars))))))
   (item
     (directive
-      (string_literal
-        (string_literal_chars))))
+      (identifier)
+      (directive_arguments
+        (directive_value
+          (string_literal
+            (string_literal_chars))))))
   (item
     (directive
-      (string_literal
-        (string_literal_chars)))))
+      (identifier)
+      (directive_arguments
+        (directive_value
+          (string_literal
+            (string_literal_chars)))))))
+
+================================================================================
+memory contract directive
+================================================================================
+
+@memory(borrow(context))
+extern fn ctx_inventory(context: *void) -> string
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (directive
+      (identifier)
+      (directive_arguments
+        (directive_value
+          (name
+            (identifier))
+          (directive_value
+            (name
+              (identifier)))))))
+  (item
+    (extern_function
+      (method_name
+        (name
+          (identifier)))
+      (extern_parameter_list
+        (extern_parameter
+          (identifier)
+          (type
+            (type
+              (primitive_type)))))
+      (return_type
+        (type
+          (primitive_type))))))
+
+================================================================================
+memory type role directive
+================================================================================
+
+@memory_type(allocator)
+pub struct Heap { marker: int }
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (directive
+      (identifier)
+      (directive_arguments
+        (directive_value
+          (name
+            (identifier))))))
+  (item
+    (struct_definition
+      (visibility)
+      (identifier)
+      (field
+        (field_name
+          (identifier))
+        (type
+          (primitive_type))))))
+
+================================================================================
+impl method directive
+================================================================================
+
+impl Buffer {
+  @memory(view(result, self.bytes))
+  pub fn view(self) -> string {
+    self.raw
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (impl_definition
+      (impl_target
+        (identifier))
+      (impl_method
+        (directive
+          (identifier)
+          (directive_arguments
+            (directive_value
+              (name
+                (identifier))
+              (directive_value
+                (name
+                  (identifier)))
+              (directive_value
+                (name
+                  (identifier))
+                (name
+                  (identifier))))))
+        (visibility)
+        (function_name
+          (name
+            (identifier)))
+        (parameter_list
+          (parameter
+            (identifier)))
+        (return_type
+          (type
+            (primitive_type)))
+        (block
+          (statement
+            (expression_statement
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (method_name
+                  (name
+                    (identifier)))))))))))
+
+================================================================================
+directive names and arguments are open
+================================================================================
+
+@ffi_retain_callbacks
+@future_directive(a.b, verb(c), capacity: 8, "text", true)
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (directive
+      (identifier)))
+  (item
+    (directive
+      (identifier)
+      (directive_arguments
+        (directive_value
+          (name
+            (identifier))
+          (name
+            (identifier)))
+        (directive_value
+          (name
+            (identifier))
+          (directive_value
+            (name
+              (identifier))))
+        (directive_value
+          (name
+            (identifier))
+          (directive_value
+            (integer)))
+        (directive_value
+          (string_literal
+            (string_literal_chars)))
+        (directive_value)))))
 
 ================================================================================
 default parameter values

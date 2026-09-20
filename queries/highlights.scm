@@ -27,6 +27,7 @@
 (field (field_name (identifier) @property))
 (loop_label (identifier) @label)
 (string_literal_variable) @variable
+(directive (identifier) @keyword)
 ((identifier) @type.builtin
   (#any-of? @type.builtin "Error" "Range" "Future" "Optional" "Result" "Iterator" "NdArray"))
 
@@ -49,11 +50,10 @@
 
 ;; Keyword, operator, and punctuation literals.
 [
-  "ffi_retain_callbacks" "link_static_windows" "link_static_macos" "link_static_linux" "link_windows" "link_static" "link_macos" "link_linux"
-  "interface" "continue" "blocking" "include" "return" "struct" "extern" "packed"
+  "interface" "continue" "errdefer" "blocking" "return" "struct" "extern" "packed"
   "match" "while" "break" "await" "const" "async" "defer" "else"
-  "enum" "impl" "type" "link" "for" "pub" "let" "mut"
-  "if" "in" "fn" "_" "C"
+  "enum" "impl" "type" "for" "pub" "let" "mut" "if"
+  "in" "fn" "_" "C"
 ] @keyword
 [
   "use" "as"

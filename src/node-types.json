@@ -244,11 +244,81 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
+          "type": "directive_arguments",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
           "type": "include_path",
+          "named": true
+        },
+        {
+          "type": "string_literal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "directive_arguments",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "directive_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "directive_value",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "binary_integer",
+          "named": true
+        },
+        {
+          "type": "directive_value",
+          "named": true
+        },
+        {
+          "type": "float",
+          "named": true
+        },
+        {
+          "type": "hex_integer",
+          "named": true
+        },
+        {
+          "type": "include_path",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        },
+        {
+          "type": "name",
+          "named": true
+        },
+        {
+          "type": "octal_integer",
           "named": true
         },
         {
@@ -768,6 +838,10 @@
       "types": [
         {
           "type": "block",
+          "named": true
+        },
+        {
+          "type": "directive",
           "named": true
         },
         {
@@ -1898,6 +1972,10 @@
     "named": false
   },
   {
+    "type": "errdefer",
+    "named": false
+  },
+  {
     "type": "extern",
     "named": false
   },
@@ -1911,10 +1989,6 @@
   },
   {
     "type": "false",
-    "named": false
-  },
-  {
-    "type": "ffi_retain_callbacks",
     "named": false
   },
   {
@@ -1970,10 +2044,6 @@
     "named": false
   },
   {
-    "type": "include",
-    "named": false
-  },
-  {
     "type": "int",
     "named": false
   },
@@ -1993,38 +2063,6 @@
     "type": "line_comment",
     "named": true,
     "extra": true
-  },
-  {
-    "type": "link",
-    "named": false
-  },
-  {
-    "type": "link_linux",
-    "named": false
-  },
-  {
-    "type": "link_macos",
-    "named": false
-  },
-  {
-    "type": "link_static",
-    "named": false
-  },
-  {
-    "type": "link_static_linux",
-    "named": false
-  },
-  {
-    "type": "link_static_macos",
-    "named": false
-  },
-  {
-    "type": "link_static_windows",
-    "named": false
-  },
-  {
-    "type": "link_windows",
-    "named": false
   },
   {
     "type": "match",

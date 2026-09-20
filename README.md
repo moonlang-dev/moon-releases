@@ -49,7 +49,7 @@ Keep `../monogram/moon.ts` aligned with these language sources:
 | Tokens and contextual keywords | `../../src/frontend/token.zig` |
 | Lexical rules | `../../src/frontend/lexer.zig` |
 | Items, expressions, patterns, and precedence | `../../src/frontend/parser.zig` |
-| Canonical language grammar | `../../moon.md`, **Formal Grammar** |
+| Canonical language grammar | `../../language-reference/formal-grammar.md` |
 
 Moon's `|` operator shares equality precedence with `==` and `!=`; `..`
 shares comparison precedence. The generated grammar retains those rules.
@@ -80,7 +80,8 @@ comments, interpolation, declarations, expressions, patterns, and statements.
 
 - Neovim and Helix can build the parser and install the three queries under
   their `moon` runtime query directory.
-- Zed fetches the immutable `tree-sitter-moon-v0.2.0` public mirror tag.
+- Zed fetches the immutable `tree-sitter-moon-vX.Y.Z` public mirror tag naming
+  this package's version; `editors/zed/extension.toml` must pin exactly that tag.
 - Node, Rust, Go, Python, Swift, and C consumers can use the generated bindings
   and metadata shipped by this package.
 

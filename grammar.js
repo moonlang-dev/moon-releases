@@ -65,7 +65,7 @@ module.exports = grammar({
 
     method_name: $ => choice($.name, "let", "ok", "err", "some", "none"),
 
-    field_name: $ => choice($.identifier, "as", "async", "await", "break", "const", "continue", "defer", "else", "enum", "err", "extern", "false", "fn", "for", "if", "impl", "in", "interface", "let", "match", "mut", "none", "ok", "pub", "return", "some", "struct", "true", "type", "use", "while", $.primitive_type),
+    field_name: $ => choice($.identifier, "as", "async", "await", "break", "const", "continue", "defer", "else", "enum", "err", "errdefer", "extern", "false", "fn", "for", "if", "impl", "in", "interface", "let", "match", "mut", "none", "ok", "pub", "return", "some", "struct", "true", "type", "use", "while", $.primitive_type),
 
     include_path: $ => seq("<", repeat1(choice($.name, ".", "/", "-", "_")), ">"),
 
@@ -87,15 +87,15 @@ module.exports = grammar({
 
     extern_parameter_list: $ => seq("(", choice("...", seq($.extern_parameter, repeat(seq(",", $.extern_parameter)), optional(seq(",", "...")), optional(",")), blank()), ")"),
 
-    pattern: $ => choice("_", "none", $.name, seq($.identifier, "@", $.pattern), seq(choice("some", "ok", "err"), optional(seq("(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")"))), $.integer, seq("-", $.integer), $.float, "true", "false", $.string_literal, seq(optional("-"), $.integer, choice("..", "..="), optional("-"), $.integer), seq($.string_literal, ".."), seq("..", $.string_literal, optional("..")), seq("(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")"), seq($.identifier, "{", optional(seq($.struct_pattern_item, repeat(seq(",", $.struct_pattern_item)), optional(","))), optional(","), "}"), seq($.identifier, "(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")"), seq($.qualified_variant, optional(seq("(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")"))), seq(".", $.identifier, optional(seq("(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")"))), seq("[", choice(seq(optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), $.rest_pattern, optional(seq(",", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))))), optional(",")), seq(optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","))), "]")),
+    pattern: $ => choice("_", "none", $.name, seq($.identifier, "@", $.pattern), seq("mut", $.name), seq("mut", $.identifier, "@", $.pattern), seq(choice("some", "ok", "err"), optional(seq("(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")"))), $.integer, seq("-", $.integer), $.float, "true", "false", $.string_literal, seq(optional("-"), $.integer, choice("..", "..="), optional("-"), $.integer), seq($.string_literal, ".."), seq("..", $.string_literal, optional("..")), seq("(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")"), seq($.identifier, "{", optional(seq($.struct_pattern_item, repeat(seq(",", $.struct_pattern_item)), optional(","))), optional(","), "}"), seq($.identifier, "(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")"), seq($.qualified_variant, optional(seq("(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")"))), seq(".", $.identifier, optional(seq("(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")"))), seq("[", choice(seq(optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), $.rest_pattern, optional(seq(",", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))))), optional(",")), seq(optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","))), "]")),
 
     qualified_variant: $ => seq($.identifier, repeat1(seq(".", $.identifier))),
 
-    struct_pattern_item: $ => choice($.identifier, seq($.field_name, ":", $.pattern), choice("..", "...")),
+    struct_pattern_item: $ => choice($.identifier, seq("mut", $.identifier), seq($.field_name, ":", $.pattern), choice("..", "...")),
 
     rest_pattern: $ => seq(choice("..", "..."), optional($.identifier)),
 
-    argument: $ => seq(optional(seq($.identifier, ":")), $.expr),
+    argument: $ => seq(optional(seq($.identifier, choice(":", "="))), $.expr),
 
     call_arguments: $ => seq("(", optional(seq($.argument, repeat(seq(",", $.argument)), optional(","))), optional(","), ")"),
 
@@ -174,7 +174,7 @@ module.exports = grammar({
 
     return_statement: $ => seq("return", optional($.expr), optional(";")),
 
-    defer_statement: $ => seq("defer", $.statement),
+    defer_statement: $ => choice(seq("defer", $.statement), seq("errdefer", $.statement)),
 
     loop_label: $ => seq($.identifier, ":"),
 
@@ -228,13 +228,17 @@ module.exports = grammar({
 
     impl_associated_type: $ => seq("type", $.identifier, "=", $.type),
 
-    impl_method: $ => seq(optional($.visibility), optional(choice("async", "const")), "fn", $.function_name, optional($.type_parameters), $.parameter_list, optional($.return_type), $.block),
+    impl_method: $ => seq(repeat($.directive), optional($.visibility), optional(choice("async", "const")), "fn", $.function_name, optional($.type_parameters), $.parameter_list, optional($.return_type), $.block),
 
     impl_target: $ => choice($.identifier, $.primitive_type, seq("[", $.type, "]"), seq("{", $.type, ":", $.type, "}")),
 
     impl_definition: $ => seq("impl", optional($.type_parameters), choice(seq($.identifier, "for", $.impl_target), $.impl_target), "{", repeat(choice($.impl_method, $.impl_associated_type)), "}"),
 
-    directive: $ => seq("@", choice("include", "link", "link_static", "link_macos", "link_linux", "link_windows", "link_static_macos", "link_static_linux", "link_static_windows", "ffi_retain_callbacks"), choice($.string_literal, $.include_path, seq("(", choice($.string_literal, $.include_path), ")"))),
+    directive_value: $ => choice($.string_literal, $.include_path, $.hex_integer, $.binary_integer, $.octal_integer, $.float, $.integer, "true", "false", seq($.name, repeat(seq(".", $.name)), optional(choice(seq("(", optional(seq($.directive_value, repeat(seq(",", $.directive_value)), optional(","))), optional(","), ")"), seq(":", $.directive_value))))),
+
+    directive_arguments: $ => seq("(", optional(seq($.directive_value, repeat(seq(",", $.directive_value)), optional(","))), optional(","), ")"),
+
+    directive: $ => seq("@", $.identifier, optional(choice($.directive_arguments, $.string_literal, $.include_path))),
 
     item: $ => choice($.function_definition, $.extern_function, $.struct_definition, $.enum_definition, $.type_alias, $.const_definition, $.use_declaration, $.interface_definition, $.impl_definition, $.directive),
 

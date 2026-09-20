@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-moon",
-  "version": "0.2.1",
+  "version": "0.3.3",
   "description": "Moon grammar for tree-sitter",
   "repository": {
     "type": "git",
