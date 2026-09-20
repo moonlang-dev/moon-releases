@@ -1,6 +1,6 @@
-# Moon releases
+# moon releases
 
-This repository is Moon's public binary-release mirror. It contains only the
+This repository is moon's public binary-release mirror. It contains only the
 installers and tagged toolchain archives; the compiler source is maintained in
 a private repository.
 
@@ -19,7 +19,7 @@ irm https://raw.githubusercontent.com/moonlang-dev/moon-releases/main/install.ps
 ```
 
 The installers require an x86-64 host, select its archive, verify the SHA-256
-sidecar, and install Moon under `~/.moon`. Download an installer first and pass
+sidecar, and install moon under `~/.moon`. Download an installer first and pass
 a `vX.Y.Z` argument to pin a specific tagged release. macOS and ARM packages
 are temporarily unavailable.
 
@@ -42,7 +42,7 @@ packages from being updated.
 | Neovim | [`moon-neovim.zip`](https://github.com/moonlang-dev/moon-releases/releases/download/editors/moon-neovim.zip) | Extract it, then run `editors/nvim/setup.sh` or `setup.ps1` |
 | Zed | [`moon-zed.zip`](https://github.com/moonlang-dev/moon-releases/releases/download/editors/moon-zed.zip) | Extract it, run **zed: install dev extension**, and select `moon-zed` |
 
-All five launch `moon lsp`, so install the Moon toolchain first. The Neovim
+All five launch `moon lsp`, so install the moon toolchain first. The Neovim
 bundle includes its tree-sitter parser source and installer. Zed builds the
 same grammar from an immutable component-version tag
 (`tree-sitter-moon-vX.Y.Z`) published in this repository; that branch contains
