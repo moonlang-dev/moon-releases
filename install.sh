@@ -44,13 +44,13 @@ case "$requested_version" in
         ;;
     v[0-9]*.[0-9]*.[0-9]* | [0-9]*.[0-9]*.[0-9]*)
         if [[ ! $requested_version =~ ^v?[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
-            error "invalid Moon version '$requested_version'"
+            error "invalid moon version '$requested_version'"
         fi
         tag=${requested_version#v}
         release_path="download/v$tag"
         ;;
     *)
-        error "invalid Moon version '$requested_version' (use latest or vX.Y.Z)"
+        error "invalid moon version '$requested_version' (use latest or vX.Y.Z)"
         ;;
 esac
 
@@ -58,16 +58,16 @@ os=$(uname -s)
 arch=$(uname -m)
 case "$os" in
     Linux) os=linux ;;
-    Darwin) error "Moon tagged releases do not currently include macOS builds" ;;
-    *) error "Moon tagged releases do not support $(uname -s) through this installer" ;;
+    Darwin) error "moon tagged releases do not currently include macOS builds" ;;
+    *) error "moon tagged releases do not support $(uname -s) through this installer" ;;
 esac
 case "$arch" in
     x86_64 | amd64) arch=x86_64 ;;
-    *) error "Moon tagged releases currently support only x86_64 (detected '$arch')" ;;
+    *) error "moon tagged releases currently support only x86_64 (detected '$arch')" ;;
 esac
 
 for command in curl tar; do
-    command -v "$command" >/dev/null 2>&1 || error "$command is required to install Moon"
+    command -v "$command" >/dev/null 2>&1 || error "$command is required to install moon"
 done
 
 github=${MOON_GITHUB:-$DEFAULT_GITHUB}
@@ -130,7 +130,7 @@ elif command -v shasum >/dev/null 2>&1; then
 elif command -v openssl >/dev/null 2>&1; then
     actual_checksum=$(openssl dgst -sha256 "$archive" | awk '{print $NF}')
 else
-    error "sha256sum, shasum, or openssl is required to verify Moon"
+    error "sha256sum, shasum, or openssl is required to verify moon"
 fi
 actual_checksum=$(printf '%s' "$actual_checksum" | tr '[:upper:]' '[:lower:]')
 [[ $actual_checksum == "$expected_checksum" ]] ||
@@ -165,16 +165,16 @@ staged_dir="$extract_dir/moon"
 chmod +x "$staged_dir/bin/moon"
 
 if [[ -d $install_dir ]]; then
-    mv -- "$install_dir" "$backup_dir" || error "failed to stage the existing Moon installation"
+    mv -- "$install_dir" "$backup_dir" || error "failed to stage the existing moon installation"
 fi
 replacement_started=true
 if ! mv -- "$staged_dir" "$install_dir"; then
-    error "failed to install Moon to '$install_dir'"
+    error "failed to install moon to '$install_dir'"
 fi
 
 exe="$install_dir/bin/moon"
 if ! version_output=$("$exe" version 2>&1); then
-    error "installed Moon could not start:\n$version_output"
+    error "installed moon could not start:\n$version_output"
 fi
 committed=true
 rm -rf -- "$backup_dir"
@@ -214,13 +214,13 @@ fish_add_path --global --move \"\$MOON_INSTALL/bin\""
         mkdir -p -- "$(dirname -- "$profile")"
         touch -- "$profile"
         if ! grep -Fq "$bin_dir" "$profile" && ! grep -Fq '"$MOON_INSTALL/bin' "$profile"; then
-            printf '\n# Moon\n%s\n' "$profile_line" >>"$profile"
+            printf '\n# moon\n%s\n' "$profile_line" >>"$profile"
             info "Added $bin_dir to PATH in $profile"
         fi
     fi
 fi
 
-success "Moon was installed successfully to $exe"
+success "moon was installed successfully to $exe"
 printf '%s\n' "$version_output" | sed -n '1p'
 if [[ $path_ready == true ]]; then
     printf "Run '%smoon --help%s' to get started.\n" "$color_bold" "$color_reset"

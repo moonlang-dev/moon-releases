@@ -20,11 +20,11 @@ elseif ($Target -match '^v?(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)$') {
     $ReleasePath = "download/v$($Matches[1])"
 }
 else {
-    throw "Invalid Moon version '$Target' (use latest or vX.Y.Z)."
+    throw "Invalid moon version '$Target' (use latest or vX.Y.Z)."
 }
 
 if (-not [Environment]::Is64BitOperatingSystem) {
-    throw "Moon releases require 64-bit Windows."
+    throw "moon releases require 64-bit Windows."
 }
 if (-not [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform(
         [System.Runtime.InteropServices.OSPlatform]::Windows)) {
@@ -34,7 +34,7 @@ if (-not [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform(
 $Architecture = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
 switch ($Architecture) {
     "X64" { $Architecture = "x86_64" }
-    default { throw "Moon tagged releases currently support only Windows x86_64 (detected '$Architecture')." }
+    default { throw "moon tagged releases currently support only Windows x86_64 (detected '$Architecture')." }
 }
 
 $GitHub = if ($env:MOON_GITHUB) { $env:MOON_GITHUB.TrimEnd('/') } else { $DefaultGitHub }
@@ -119,7 +119,7 @@ try {
     $Exe = Join-Path $InstallDir "bin\moon.exe"
     $VersionOutput = & $Exe version 2>&1
     if ($LASTEXITCODE -ne 0) {
-        throw "Installed Moon could not start (exit code $LASTEXITCODE):`n$($VersionOutput -join "`n")"
+        throw "Installed moon could not start (exit code $LASTEXITCODE):`n$($VersionOutput -join "`n")"
     }
     $Installed = $true
     $Committed = $true
@@ -146,7 +146,7 @@ finally {
 }
 
 if (-not $Installed) {
-    throw "Moon installation did not complete."
+    throw "moon installation did not complete."
 }
 
 $BinDir = Join-Path $InstallDir "bin"
@@ -170,7 +170,7 @@ if (@($env:Path.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | Where-Obj
 }
 
 Write-Output ""
-Write-Output "Moon was installed successfully to $(Join-Path $BinDir 'moon.exe')"
+Write-Output "moon was installed successfully to $(Join-Path $BinDir 'moon.exe')"
 Write-Output ($VersionOutput | Select-Object -First 1)
 if ($PathReady) {
     Write-Output "Run 'moon --help' to get started."
