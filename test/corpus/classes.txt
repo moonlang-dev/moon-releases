@@ -1,0 +1,82 @@
+================================================================================
+class fields, inline methods and cleanup
+================================================================================
+
+class Counter {
+  value: int;
+  fn increment(self) { self.value += 1 }
+  deinit {}
+  total: int
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (class_definition
+      (identifier)
+      (class_member
+        (field
+          (field_name
+            (identifier))
+          (type
+            (primitive_type))))
+      (class_member
+        (class_method
+          (function_name
+            (name
+              (identifier)))
+          (parameter_list
+            (parameter
+              (identifier)))
+          (block
+            (statement
+              (assignment_statement
+                (lvalue
+                  (lvalue
+                    (name
+                      (identifier)))
+                  (method_name
+                    (name
+                      (identifier))))
+                (assignment_operator)
+                (expr
+                  (integer)))))))
+      (class_member
+        (deinitializer
+          (block)))
+      (class_member
+        (field
+          (field_name
+            (identifier))
+          (type
+            (primitive_type)))))))
+
+================================================================================
+struct fields and cleanup
+================================================================================
+
+struct Resource {
+  value: int;
+  deinit {}
+  tag: int
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (struct_definition
+      (identifier)
+      (field
+        (field_name
+          (identifier))
+        (type
+          (primitive_type)))
+      (deinitializer
+        (block))
+      (field
+        (field_name
+          (identifier))
+        (type
+          (primitive_type))))))

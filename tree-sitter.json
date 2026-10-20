@@ -3,7 +3,7 @@
   "grammars": [
     {
       "name": "moon",
-      "camelcase": "Moon",
+      "camelcase": "moon",
       "scope": "source.moon",
       "path": ".",
       "file-types": [
@@ -21,12 +21,12 @@
     }
   ],
   "metadata": {
-    "version": "0.3.3",
+    "version": "0.3.6",
     "license": "MIT",
-    "description": "Moon grammar for tree-sitter",
+    "description": "moon grammar for tree-sitter",
     "authors": [
       {
-        "name": "Moon contributors"
+        "name": "moon contributors"
       }
     ],
     "links": {

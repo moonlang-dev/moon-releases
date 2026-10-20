@@ -1,6 +1,6 @@
-; Language injections for Moon.
+; Language injections for moon.
 
-; Re-parse each `${ ... }` payload as Moon. Monogram names this wrapper after
+; Re-parse each `${ ... }` payload as moon. Monogram names this wrapper after
 ; the template substitution it models; `$name` is a separate external token.
 ((string_literal_substitution (expr) @injection.content)
   (#set! injection.language "moon"))

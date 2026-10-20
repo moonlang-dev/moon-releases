@@ -1,8 +1,8 @@
 [package]
 name = "tree-sitter-moon"
-description = "Moon grammar for tree-sitter"
-version = "0.3.3"
-authors = ["Moon contributors"]
+description = "moon grammar for tree-sitter"
+version = "0.3.6"
+authors = ["moon contributors"]
 license = "MIT"
 readme = "README.md"
 keywords = ["incremental", "parsing", "tree-sitter", "moon"]

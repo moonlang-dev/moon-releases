@@ -90,7 +90,7 @@ static bool scan_template_chars(TSLexer *lexer) {
   return true; // token end already frozen by the last mark_end
 }
 
-// Moon block comments nest to arbitrary depth. This external token is the one
+// moon block comments nest to arbitrary depth. This external token is the one
 // target-specific adaptation Monogram's regular token IR cannot express.
 static bool scan_block_comment(TSLexer *lexer) {
   while (lexer->lookahead == ' ' || lexer->lookahead == '\t' ||
@@ -129,7 +129,7 @@ static bool scan_block_comment(TSLexer *lexer) {
   return false;
 }
 
-// Preserve Moon's short string interpolation as a structural token too.
+// Preserve moon's short string interpolation as a structural token too.
 static bool scan_template_dollar(TSLexer *lexer, bool emit_variable) {
   if (lexer->lookahead != '$') return false;
   advance(lexer);
@@ -153,7 +153,7 @@ static bool scan_template_dollar(TSLexer *lexer, bool emit_variable) {
 }
 
 // Expression statements without semicolons end at a physical newline. Keeping this
-// as a hidden Tree-sitter-only token preserves Moon's statement boundary
+// as a hidden Tree-sitter-only token preserves moon's statement boundary
 // without making newline significant to Monogram's other generated targets.
 static bool scan_statement_end(TSLexer *lexer) {
   while (lexer->lookahead == ' ' || lexer->lookahead == '\t') skip(lexer);

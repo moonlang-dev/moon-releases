@@ -161,32 +161,6 @@ async fn main() {
                       (integer))))))))))))
 
 ================================================================================
-const function
-================================================================================
-
-const fn pi() -> float {
-  3.14
-}
-
---------------------------------------------------------------------------------
-
-(program
-  (item
-    (function_definition
-      (function_name
-        (name
-          (identifier)))
-      (parameter_list)
-      (return_type
-        (type
-          (primitive_type)))
-      (block
-        (statement
-          (expression_statement
-            (expr
-              (float))))))))
-
-================================================================================
 generic function
 ================================================================================
 
@@ -332,48 +306,6 @@ pub struct Vec {
         (type
           (type
             (primitive_type)))))))
-
-================================================================================
-C struct attribute
-================================================================================
-
-@C
-struct CData {
-  flag: int,
-}
-
---------------------------------------------------------------------------------
-
-(program
-  (item
-    (struct_definition
-      (identifier)
-      (field
-        (field_name
-          (identifier))
-        (type
-          (primitive_type))))))
-
-================================================================================
-packed struct attribute
-================================================================================
-
-@packed
-struct Bits {
-  b: u8,
-}
-
---------------------------------------------------------------------------------
-
-(program
-  (item
-    (struct_definition
-      (identifier)
-      (field
-        (field_name
-          (identifier))
-        (type
-          (numeric_width_type))))))
 
 ================================================================================
 generic struct
@@ -859,273 +791,6 @@ impl Iterator for Counter {
                     (identifier)))))))))))
 
 ================================================================================
-include directive paren header
-================================================================================
-
-@include(<math.h>)
-
---------------------------------------------------------------------------------
-
-(program
-  (item
-    (directive
-      (identifier)
-      (directive_arguments
-        (directive_value
-          (include_path
-            (name
-              (identifier))
-            (name
-              (identifier))))))))
-
-================================================================================
-include directive bare header
-================================================================================
-
-@include <stdio.h>
-
---------------------------------------------------------------------------------
-
-(program
-  (item
-    (directive
-      (identifier)
-      (include_path
-        (name
-          (identifier))
-        (name
-          (identifier))))))
-
-================================================================================
-link directive
-================================================================================
-
-@link("m")
-
---------------------------------------------------------------------------------
-
-(program
-  (item
-    (directive
-      (identifier)
-      (directive_arguments
-        (directive_value
-          (string_literal
-            (string_literal_chars)))))))
-
-================================================================================
-link os-specific
-================================================================================
-
-@link_linux("dl")
-
---------------------------------------------------------------------------------
-
-(program
-  (item
-    (directive
-      (identifier)
-      (directive_arguments
-        (directive_value
-          (string_literal
-            (string_literal_chars)))))))
-
-================================================================================
-static link directives
-================================================================================
-
-@link_static("codec")
-@link_static_linux("dl")
-@link_static_macos("framework")
-@link_static_windows("native")
-
---------------------------------------------------------------------------------
-
-(program
-  (item
-    (directive
-      (identifier)
-      (directive_arguments
-        (directive_value
-          (string_literal
-            (string_literal_chars))))))
-  (item
-    (directive
-      (identifier)
-      (directive_arguments
-        (directive_value
-          (string_literal
-            (string_literal_chars))))))
-  (item
-    (directive
-      (identifier)
-      (directive_arguments
-        (directive_value
-          (string_literal
-            (string_literal_chars))))))
-  (item
-    (directive
-      (identifier)
-      (directive_arguments
-        (directive_value
-          (string_literal
-            (string_literal_chars)))))))
-
-================================================================================
-memory contract directive
-================================================================================
-
-@memory(borrow(context))
-extern fn ctx_inventory(context: *void) -> string
-
---------------------------------------------------------------------------------
-
-(program
-  (item
-    (directive
-      (identifier)
-      (directive_arguments
-        (directive_value
-          (name
-            (identifier))
-          (directive_value
-            (name
-              (identifier)))))))
-  (item
-    (extern_function
-      (method_name
-        (name
-          (identifier)))
-      (extern_parameter_list
-        (extern_parameter
-          (identifier)
-          (type
-            (type
-              (primitive_type)))))
-      (return_type
-        (type
-          (primitive_type))))))
-
-================================================================================
-memory type role directive
-================================================================================
-
-@memory_type(allocator)
-pub struct Heap { marker: int }
-
---------------------------------------------------------------------------------
-
-(program
-  (item
-    (directive
-      (identifier)
-      (directive_arguments
-        (directive_value
-          (name
-            (identifier))))))
-  (item
-    (struct_definition
-      (visibility)
-      (identifier)
-      (field
-        (field_name
-          (identifier))
-        (type
-          (primitive_type))))))
-
-================================================================================
-impl method directive
-================================================================================
-
-impl Buffer {
-  @memory(view(result, self.bytes))
-  pub fn view(self) -> string {
-    self.raw
-  }
-}
-
---------------------------------------------------------------------------------
-
-(program
-  (item
-    (impl_definition
-      (impl_target
-        (identifier))
-      (impl_method
-        (directive
-          (identifier)
-          (directive_arguments
-            (directive_value
-              (name
-                (identifier))
-              (directive_value
-                (name
-                  (identifier)))
-              (directive_value
-                (name
-                  (identifier))
-                (name
-                  (identifier))))))
-        (visibility)
-        (function_name
-          (name
-            (identifier)))
-        (parameter_list
-          (parameter
-            (identifier)))
-        (return_type
-          (type
-            (primitive_type)))
-        (block
-          (statement
-            (expression_statement
-              (expr
-                (expr
-                  (name
-                    (identifier)))
-                (method_name
-                  (name
-                    (identifier)))))))))))
-
-================================================================================
-directive names and arguments are open
-================================================================================
-
-@ffi_retain_callbacks
-@future_directive(a.b, verb(c), capacity: 8, "text", true)
-
---------------------------------------------------------------------------------
-
-(program
-  (item
-    (directive
-      (identifier)))
-  (item
-    (directive
-      (identifier)
-      (directive_arguments
-        (directive_value
-          (name
-            (identifier))
-          (name
-            (identifier)))
-        (directive_value
-          (name
-            (identifier))
-          (directive_value
-            (name
-              (identifier))))
-        (directive_value
-          (name
-            (identifier))
-          (directive_value
-            (integer)))
-        (directive_value
-          (string_literal
-            (string_literal_chars)))
-        (directive_value)))))
-
-================================================================================
 default parameter values
 ================================================================================
 
@@ -1234,9 +899,10 @@ fn heavier<T: Weight>(p: Pair<T>) -> int {
           (type
             (named_type
               (identifier)
-              (type
-                (named_type
-                  (identifier)))))))
+              (type_argument
+                (type
+                  (named_type
+                    (identifier))))))))
       (return_type
         (type
           (primitive_type)))
@@ -1327,33 +993,6 @@ interface Greet {
                     (string_literal_chars)))))))))))
 
 ================================================================================
-struct with layout attribute and visibility
-================================================================================
-
-@C pub struct Vector2 {
-  x: f32,
-  y: f32,
-}
-
---------------------------------------------------------------------------------
-
-(program
-  (item
-    (struct_definition
-      (visibility)
-      (identifier)
-      (field
-        (field_name
-          (identifier))
-        (type
-          (numeric_width_type)))
-      (field
-        (field_name
-          (identifier))
-        (type
-          (numeric_width_type))))))
-
-================================================================================
 postfix optional type shorthand
 ================================================================================
 
@@ -1404,19 +1043,21 @@ fn f(a: int?, b: [string]?, c: int??, p: *int?) -> Result<int?, Error>? {}
             (identifier))
           (type
             (type
-              (type
+              (prefix_type
                 (primitive_type))))))
       (return_type
         (type
           (type
             (named_type
               (identifier)
-              (type
+              (type_argument
                 (type
-                  (primitive_type)))
-              (type
-                (named_type
-                  (identifier)))))))
+                  (type
+                    (primitive_type))))
+              (type_argument
+                (type
+                  (named_type
+                    (identifier))))))))
       (block))))
 
 ================================================================================
@@ -1596,3 +1237,245 @@ impl Registry {
                 (method_name
                   (name
                     (identifier)))))))))))
+
+================================================================================
+test declaration
+================================================================================
+
+test "adds two numbers" {
+  let n = 1 + 2
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (test_declaration
+      (string_literal
+        (string_literal_chars))
+      (block
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (expr
+                (integer))
+              (expr
+                (integer)))))))))
+
+================================================================================
+extern struct and C bindings
+================================================================================
+
+pub extern struct Handle {
+  lower: c.ULong,
+  upper: c.ULong,
+}
+extern "C" fn fcntl(fd: c.Int, command: c.Int, ...) -> c.Int
+pub extern "C" fn client() -> Optional<Context> = "tls_client"
+pub extern "C" let environment: c.Pointer<c.Pointer<c.Char>> = "environ"
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (struct_definition
+      (visibility)
+      (identifier)
+      (field
+        (field_name
+          (identifier))
+        (type
+          (named_type
+            (identifier)
+            (name
+              (identifier)))))
+      (field
+        (field_name
+          (identifier))
+        (type
+          (named_type
+            (identifier)
+            (name
+              (identifier)))))))
+  (item
+    (extern_function
+      (string_literal
+        (string_literal_chars))
+      (method_name
+        (name
+          (identifier)))
+      (extern_parameter_list
+        (extern_parameter
+          (identifier)
+          (type
+            (named_type
+              (identifier)
+              (name
+                (identifier)))))
+        (extern_parameter
+          (identifier)
+          (type
+            (named_type
+              (identifier)
+              (name
+                (identifier))))))
+      (return_type
+        (type
+          (named_type
+            (identifier)
+            (name
+              (identifier)))))))
+  (item
+    (extern_function
+      (visibility)
+      (string_literal
+        (string_literal_chars))
+      (method_name
+        (name
+          (identifier)))
+      (extern_parameter_list)
+      (return_type
+        (type
+          (named_type
+            (identifier)
+            (type_argument
+              (type
+                (named_type
+                  (identifier)))))))
+      (string_literal
+        (string_literal_chars))))
+  (item
+    (extern_global
+      (visibility)
+      (string_literal
+        (string_literal_chars))
+      (identifier)
+      (type
+        (named_type
+          (identifier)
+          (name
+            (identifier))
+          (type_argument
+            (type
+              (named_type
+                (identifier)
+                (name
+                  (identifier))
+                (type_argument
+                  (type
+                    (named_type
+                      (identifier)
+                      (name
+                        (identifier))))))))))
+      (string_literal
+        (string_literal_chars)))))
+
+================================================================================
+private members and async methods
+================================================================================
+
+class Worker {
+  priv count: int
+  priv async fn work(self) -> int { 1 }
+  async fn run(self) -> int { 2 }
+}
+impl Worker {
+  priv fn reset(self) {}
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (class_definition
+      (identifier)
+      (class_member
+        (field
+          (field_name
+            (identifier))
+          (type
+            (primitive_type))))
+      (class_member
+        (class_method
+          (function_name
+            (name
+              (identifier)))
+          (parameter_list
+            (parameter
+              (identifier)))
+          (return_type
+            (type
+              (primitive_type)))
+          (block
+            (expr
+              (integer)))))
+      (class_member
+        (class_method
+          (function_name
+            (name
+              (identifier)))
+          (parameter_list
+            (parameter
+              (identifier)))
+          (return_type
+            (type
+              (primitive_type)))
+          (block
+            (expr
+              (integer)))))))
+  (item
+    (impl_definition
+      (impl_target
+        (identifier))
+      (impl_method
+        (function_name
+          (name
+            (identifier)))
+        (parameter_list
+          (parameter
+            (identifier)))
+        (block)))))
+
+================================================================================
+integer generic arguments and value parameters
+================================================================================
+
+struct Matrix<T, R: int, C: int> { cells: [T] }
+type Small = Matrix<float, 2, 3>
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (struct_definition
+      (identifier)
+      (type_parameters
+        (type_parameter
+          (identifier))
+        (type_parameter
+          (identifier))
+        (type_parameter
+          (identifier)))
+      (field
+        (field_name
+          (identifier))
+        (type
+          (type
+            (named_type
+              (identifier)))))))
+  (item
+    (type_alias
+      (identifier)
+      (type
+        (named_type
+          (identifier)
+          (type_argument
+            (type
+              (primitive_type)))
+          (type_argument
+            (integer))
+          (type_argument
+            (integer)))))))

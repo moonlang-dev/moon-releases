@@ -1,4 +1,4 @@
-; Local scopes, definitions, and references for Moon.
+; Local scopes, definitions, and references for moon.
 ; Monogram emits deliberately regular rule names, so these queries stay at
 ; the semantic wrappers instead of depending on target-specific field names.
 

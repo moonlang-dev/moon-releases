@@ -1186,3 +1186,258 @@ fn main() {
                       (identifier)))
                   (expr
                     (integer)))))))))))
+
+================================================================================
+yield, for await and async defer
+================================================================================
+
+fn f() {
+  for i in 1..=limit { yield i * i }
+  for await item in source {
+    g(item)
+  }
+  async defer close()
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (for_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (expr
+                (integer))
+              (expr
+                (name
+                  (identifier))))
+            (block
+              (statement
+                (yield_statement
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))
+                    (expr
+                      (name
+                        (identifier)))))))))
+        (statement
+          (for_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (name
+                (identifier)))
+            (block
+              (statement
+                (expression_statement
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))
+                    (call_arguments
+                      (argument
+                        (expr
+                          (name
+                            (identifier)))))))))))
+        (statement
+          (defer_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (call_arguments))))))))
+
+================================================================================
+return in a match arm and tuple rest pattern
+================================================================================
+
+fn f() {
+  let (head, ..) = (a, b, c)
+  match x {
+    none => return none,
+    some(v) => v,
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (let_statement
+            (pattern
+              (pattern
+                (name
+                  (identifier))))
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (expr
+                (name
+                  (identifier)))
+              (expr
+                (name
+                  (identifier))))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (match_arm
+                (pattern)
+                (return_statement
+                  (expr)))
+              (match_arm
+                (pattern
+                  (pattern
+                    (name
+                      (identifier))))
+                (expr
+                  (name
+                    (identifier)))))))))))
+
+================================================================================
+statements starting with a dereference or a parenthesis
+================================================================================
+
+fn f() {
+  let a = slot()
+  *a += 10
+  (*state).raw_eof = 1
+  self.slots.get(i).sessions = []
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (call_arguments))))
+        (statement
+          (assignment_statement
+            (lvalue
+              (expr
+                (name
+                  (identifier))))
+            (assignment_operator)
+            (expr
+              (integer))))
+        (statement
+          (assignment_statement
+            (lvalue
+              (lvalue
+                (expr
+                  (expr
+                    (name
+                      (identifier)))))
+              (method_name
+                (name
+                  (identifier))))
+            (assignment_operator)
+            (expr
+              (integer))))
+        (statement
+          (assignment_statement
+            (lvalue
+              (lvalue
+                (lvalue
+                  (lvalue
+                    (lvalue
+                      (name
+                        (identifier)))
+                    (method_name
+                      (name
+                        (identifier))))
+                  (method_name
+                    (name
+                      (identifier))))
+                (call_arguments
+                  (argument
+                    (expr
+                      (name
+                        (identifier))))))
+              (method_name
+                (name
+                  (identifier))))
+            (assignment_operator)
+            (expr)))))))
+
+================================================================================
+interpolation format specifications
+================================================================================
+
+fn f() {
+  println("[${pi:.3}] [${255:#^8x}] [${"moon":>6}]")
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (call_arguments
+                (argument
+                  (expr
+                    (string_literal
+                      (string_literal_chars)
+                      (string_literal_substitution
+                        (expr
+                          (name
+                            (identifier)))
+                        (format_spec))
+                      (string_literal_chars)
+                      (string_literal_substitution
+                        (expr
+                          (integer))
+                        (format_spec))
+                      (string_literal_chars)
+                      (string_literal_substitution
+                        (expr
+                          (string_literal
+                            (string_literal_chars)))
+                        (format_spec))
+                      (string_literal_chars))))))))))))

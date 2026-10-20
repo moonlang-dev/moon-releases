@@ -14,6 +14,7 @@
 (type_parameter (identifier) @type)
 (expr (method_name (name (identifier) @property)))
 (extern_parameter (identifier) @variable.parameter (type))
+(extern_global (identifier) @variable (type))
 (parameter (binding_name (identifier) @variable.parameter))
 (closure_parameter (binding_name (identifier) @variable.parameter))
 (function_definition (function_name (name (identifier) @function)))
@@ -27,7 +28,7 @@
 (field (field_name (identifier) @property))
 (loop_label (identifier) @label)
 (string_literal_variable) @variable
-(directive (identifier) @keyword)
+(format_spec) @string.special
 ((identifier) @type.builtin
   (#any-of? @type.builtin "Error" "Range" "Future" "Optional" "Result" "Iterator" "NdArray"))
 
@@ -50,10 +51,10 @@
 
 ;; Keyword, operator, and punctuation literals.
 [
-  "interface" "continue" "errdefer" "blocking" "return" "struct" "extern" "packed"
-  "match" "while" "break" "await" "const" "async" "defer" "else"
-  "enum" "impl" "type" "for" "pub" "let" "mut" "if"
-  "in" "fn" "_" "C"
+  "interface" "continue" "errdefer" "return" "struct" "extern" "deinit" "unsafe"
+  "match" "while" "break" "await" "yield" "class" "const" "async"
+  "defer" "else" "enum" "impl" "type" "test" "priv" "copy"
+  "for" "pub" "let" "mut" "if" "in" "fn" "_"
 ] @keyword
 [
   "use" "as"
@@ -66,11 +67,11 @@
   "false" "true" "some" "none" "err" "ok"
 ] @constant.builtin
 [
-  ">>>=" "<<=" ">>=" ">>>" "+=" "-=" "*=" "/="
-  "%=" "&=" "|=" "^=" "&&" "||" "==" "!="
-  "<=" ">=" "<<" ">>" "->" "=>" "=" "!"
-  "<" ">" "+" "-" "*" "/" "%" "&"
-  "|" "^" "?"
+  ">>>=" "<..=" "<<=" ">>=" ">>>" "<.." "+=" "-="
+  "*=" "/=" "%=" "&=" "|=" "^=" "&&" "||"
+  "==" "!=" "<=" ">=" "<<" ">>" "->" "=>"
+  "=" "!" "<" ">" "+" "-" "*" "/"
+  "%" "&" "|" "^" "?"
 ] @operator
 [
   "(" ")" "{" "}" "[" "]"
