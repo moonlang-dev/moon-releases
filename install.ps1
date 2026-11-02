@@ -37,10 +37,15 @@ switch ($Architecture) {
     default { throw "moon tagged releases currently support only Windows x86_64 (detected '$Architecture')." }
 }
 
+$Tar = Join-Path $env:SystemRoot "System32\tar.exe"
+if (-not (Test-Path -LiteralPath $Tar -PathType Leaf)) {
+    throw "The Windows tar tool ($Tar) is required to install moon."
+}
+
 $GitHub = if ($env:MOON_GITHUB) { $env:MOON_GITHUB.TrimEnd('/') } else { $DefaultGitHub }
 $Repository = if ($env:MOON_GITHUB_REPO) { $env:MOON_GITHUB_REPO.Trim('/') } else { $DefaultRepository }
-$Asset = "moon-windows-$Architecture.zip"
-$Url = "$GitHub/$Repository/releases/$ReleasePath/$Asset"
+$HostName = "$Architecture-windows"
+$BaseUrl = "$GitHub/$Repository/releases/$ReleasePath"
 
 $InstallInput = if ($env:MOON_INSTALL) { $env:MOON_INSTALL } else { Join-Path $HOME ".moon" }
 $InstallDir = [IO.Path]::GetFullPath($InstallInput)
@@ -61,53 +66,78 @@ New-Item -ItemType Directory -Force -Path $InstallParent | Out-Null
 $WorkDir = Join-Path $InstallParent (".moon-install-" + [IO.Path]::GetRandomFileName())
 New-Item -ItemType Directory -Path $WorkDir | Out-Null
 
-$Archive = Join-Path $WorkDir $Asset
-$ChecksumFile = "$Archive.sha256"
+$SumsFile = Join-Path $WorkDir "SHA256SUMS"
 $BackupDir = Join-Path $WorkDir "previous"
 $Installed = $false
 $ReplacementStarted = $false
 $Committed = $false
 
 try {
+    # SHA256SUMS names each host's `moon-<version>-<host>.tar.gz`, so the
+    # latest release needs no separate version lookup.
+    try {
+        Invoke-WebRequest -UseBasicParsing -Uri "$BaseUrl/SHA256SUMS" -OutFile $SumsFile
+    }
+    catch {
+        throw "No moon release found at '$BaseUrl' ($($_.Exception.Message.Split("`n")[0].Trim()))."
+    }
+    $Asset = $null
+    $ExpectedChecksum = $null
+    foreach ($Line in Get-Content -LiteralPath $SumsFile) {
+        if ($Line -cmatch '^\s*([0-9a-fA-F]{64})\s+\*?(moon-[0-9A-Za-z.+-]+-' + [regex]::Escape($HostName) + '\.tar\.gz)\s*$') {
+            $ExpectedChecksum = $Matches[1].ToLowerInvariant()
+            $Asset = $Matches[2]
+            break
+        }
+    }
+    if (-not $Asset) {
+        throw "The release at '$BaseUrl' has no archive for $HostName."
+    }
+    $Root = $Asset.Substring(0, $Asset.Length - ".tar.gz".Length)
+    $Url = "$BaseUrl/$Asset"
+    $Archive = Join-Path $WorkDir $Asset
+
     Write-Output "Downloading $Url"
     Invoke-WebRequest -UseBasicParsing -Uri $Url -OutFile $Archive
-    Invoke-WebRequest -UseBasicParsing -Uri "$Url.sha256" -OutFile $ChecksumFile
-
-    $ChecksumText = Get-Content -LiteralPath $ChecksumFile -Raw
-    if ($ChecksumText -notmatch '(?im)^\s*([0-9a-f]{64})(?:\s|$)') {
-        throw "Checksum asset does not start with a SHA-256 digest."
-    }
-    $ExpectedChecksum = $Matches[1].ToLowerInvariant()
     $ActualChecksum = (Get-FileHash -LiteralPath $Archive -Algorithm SHA256).Hash.ToLowerInvariant()
     if ($ActualChecksum -ne $ExpectedChecksum) {
         throw "Checksum verification failed for '$Asset'."
     }
 
-    Add-Type -AssemblyName System.IO.Compression.FileSystem
-    $Zip = [IO.Compression.ZipFile]::OpenRead($Archive)
-    try {
-        foreach ($Entry in $Zip.Entries) {
-            $Name = $Entry.FullName.Replace('\', '/')
-            $Segments = $Name.Split('/', [StringSplitOptions]::RemoveEmptyEntries)
-            if ($Name.StartsWith('/') -or $Segments.Count -eq 0 -or $Segments[0] -ne "moon" -or $Segments -contains "..") {
-                throw "Release archive contains an unexpected path: '$Name'."
-            }
+    # Reject absolute paths, parent traversal, links and anything outside the
+    # one top-level directory before asking tar to write anything.
+    $Entries = & $Tar -tzf $Archive
+    if ($LASTEXITCODE -ne 0) {
+        throw "Release archive '$Asset' could not be read."
+    }
+    foreach ($Name in $Entries) {
+        $Name = $Name.Replace('\', '/')
+        if ($Name.StartsWith('./')) { $Name = $Name.Substring(2) }
+        $Segments = $Name.Split('/', [StringSplitOptions]::RemoveEmptyEntries)
+        if ($Name.StartsWith('/') -or $Name -match '^[A-Za-z]:' -or $Segments.Count -eq 0 -or $Segments[0] -cne $Root -or $Segments -contains "..") {
+            throw "Release archive contains an unexpected path: '$Name'."
         }
     }
-    finally {
-        $Zip.Dispose()
+    foreach ($Listing in (& $Tar -tvzf $Archive)) {
+        if ($Listing.Length -eq 0 -or "-d".IndexOf($Listing[0]) -lt 0) {
+            throw "Release archive contains a link or special file."
+        }
     }
 
     $ExtractDir = Join-Path $WorkDir "extracted"
-    Expand-Archive -LiteralPath $Archive -DestinationPath $ExtractDir
-    $StagedDir = Join-Path $ExtractDir "moon"
+    New-Item -ItemType Directory -Path $ExtractDir | Out-Null
+    & $Tar -xzf $Archive -C $ExtractDir
+    if ($LASTEXITCODE -ne 0) {
+        throw "Release archive '$Asset' could not be extracted."
+    }
+    $StagedDir = Join-Path $ExtractDir $Root
     $StagedExe = Join-Path $StagedDir "bin\moon.exe"
     if (-not (Test-Path -LiteralPath $StagedExe -PathType Leaf)) {
-        throw "Release archive does not contain moon/bin/moon.exe."
+        throw "Release archive does not contain $Root/bin/moon.exe."
     }
-    foreach ($Directory in "lib", "include") {
+    foreach ($Directory in "lib\moon\targets", "include\moon\std") {
         if (-not (Test-Path -LiteralPath (Join-Path $StagedDir $Directory) -PathType Container)) {
-            throw "Release archive does not contain moon/$Directory."
+            throw "Release archive does not contain $Root/$($Directory.Replace('\', '/'))."
         }
     }
 
@@ -117,7 +147,7 @@ try {
     $ReplacementStarted = $true
     Move-Item -LiteralPath $StagedDir -Destination $InstallDir
     $Exe = Join-Path $InstallDir "bin\moon.exe"
-    $VersionOutput = & $Exe version 2>&1
+    $VersionOutput = & $Exe --version 2>&1
     if ($LASTEXITCODE -ne 0) {
         throw "Installed moon could not start (exit code $LASTEXITCODE):`n$($VersionOutput -join "`n")"
     }

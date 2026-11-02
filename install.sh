@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Release archives contain one top-level `moon/` install tree with bin/, lib/,
-# and include/. Every archive has a sibling `<archive>.sha256` release asset.
+# Each release holds `moon-<version>-<host>.tar.gz` per host, with one
+# top-level `moon-<version>-<host>/` tree (bin/, lib/moon/targets/,
+# include/moon/std/), and a `SHA256SUMS` asset listing every archive.
 
 readonly DEFAULT_GITHUB="https://github.com"
 readonly DEFAULT_REPOSITORY="moonlang-dev/moon-releases"
@@ -56,14 +57,13 @@ esac
 
 os=$(uname -s)
 arch=$(uname -m)
-case "$os" in
-    Linux) os=linux ;;
-    Darwin) error "moon tagged releases do not currently include macOS builds" ;;
-    *) error "moon tagged releases do not support $(uname -s) through this installer" ;;
-esac
-case "$arch" in
-    x86_64 | amd64) arch=x86_64 ;;
-    *) error "moon tagged releases currently support only x86_64 (detected '$arch')" ;;
+case "$os/$arch" in
+    Linux/x86_64 | Linux/amd64) host=x86_64-linux ;;
+    Darwin/arm64 | Darwin/aarch64) host=aarch64-macos ;;
+    Linux/* | Darwin/*)
+        error "moon releases support x86-64 Linux and Apple silicon macOS (detected $os $arch)"
+        ;;
+    *) error "moon releases do not support $os through this installer; use install.ps1 on Windows" ;;
 esac
 
 for command in curl tar; do
@@ -72,8 +72,7 @@ done
 
 github=${MOON_GITHUB:-$DEFAULT_GITHUB}
 repository=${MOON_GITHUB_REPO:-$DEFAULT_REPOSITORY}
-asset="moon-$os-$arch.tar.gz"
-url="$github/$repository/releases/$release_path/$asset"
+base_url="$github/$repository/releases/$release_path"
 
 install_input=${MOON_INSTALL:-$HOME/.moon}
 [[ -n $install_input ]] || error "MOON_INSTALL must not be empty"
@@ -107,21 +106,31 @@ cleanup() {
 }
 trap cleanup EXIT
 
+# SHA256SUMS names each host's archive, so the latest release needs no
+# separate version lookup.
+sums_file="$work_dir/SHA256SUMS"
+curl --fail --location --retry 3 --silent --show-error \
+    --output "$sums_file" "$base_url/SHA256SUMS" ||
+    error "failed to download '$base_url/SHA256SUMS'"
+asset=""
+expected_checksum=""
+while read -r digest name _ || [[ -n ${digest:-} ]]; do
+    name=${name//$'\r'/}
+    name=${name#\*}
+    if [[ $digest =~ ^[0-9a-fA-F]{64}$ && $name =~ ^moon-[0-9A-Za-z.+-]+-$host\.tar\.gz$ ]]; then
+        expected_checksum=$(printf '%s' "$digest" | tr '[:upper:]' '[:lower:]')
+        asset=$name
+        break
+    fi
+done <"$sums_file"
+[[ -n $asset ]] || error "the release at '$base_url' has no archive for $host"
+root=${asset%.tar.gz}
+url="$base_url/$asset"
 archive="$work_dir/$asset"
-checksum_file="$archive.sha256"
+
 info "Downloading $url"
 curl --fail --location --retry 3 --progress-bar --output "$archive" "$url" ||
     error "failed to download '$url'"
-curl --fail --location --retry 3 --silent --show-error \
-    --output "$checksum_file" "$url.sha256" ||
-    error "failed to download '$url.sha256'"
-
-read -r expected_checksum _ <"$checksum_file" ||
-    error "checksum asset is empty: '$url.sha256'"
-expected_checksum=${expected_checksum//$'\r'/}
-expected_checksum=$(printf '%s' "$expected_checksum" | tr '[:upper:]' '[:lower:]')
-[[ $expected_checksum =~ ^[0-9a-f]{64}$ ]] ||
-    error "checksum asset does not start with a SHA-256 digest"
 
 if command -v sha256sum >/dev/null 2>&1; then
     actual_checksum=$(sha256sum "$archive" | awk '{print $1}')
@@ -144,7 +153,7 @@ while IFS= read -r entry; do
         */../*) error "release archive contains parent traversal: '$entry'" ;;
     esac
     case "$entry" in
-        moon | moon/*) ;;
+        "$root" | "$root"/*) ;;
         *) error "release archive contains an unexpected path: '$entry'" ;;
     esac
 done < <(tar -tzf "$archive")
@@ -158,11 +167,11 @@ done < <(tar -tvzf "$archive")
 extract_dir="$work_dir/extracted"
 mkdir -p -- "$extract_dir"
 tar -xzf "$archive" -C "$extract_dir" || error "failed to extract '$asset'"
-staged_dir="$extract_dir/moon"
-[[ -f $staged_dir/bin/moon ]] || error "release archive does not contain moon/bin/moon"
-[[ -d $staged_dir/lib ]] || error "release archive does not contain moon/lib"
-[[ -d $staged_dir/include ]] || error "release archive does not contain moon/include"
-chmod +x "$staged_dir/bin/moon"
+staged_dir="$extract_dir/$root"
+[[ -f $staged_dir/bin/moon ]] || error "release archive does not contain $root/bin/moon"
+[[ -d $staged_dir/lib/moon/targets ]] || error "release archive does not contain $root/lib/moon/targets"
+[[ -d $staged_dir/include/moon/std ]] || error "release archive does not contain $root/include/moon/std"
+chmod +x "$staged_dir/bin/moon" "$staged_dir/bin/moon-c-import-worker"
 
 if [[ -d $install_dir ]]; then
     mv -- "$install_dir" "$backup_dir" || error "failed to stage the existing moon installation"
@@ -173,7 +182,7 @@ if ! mv -- "$staged_dir" "$install_dir"; then
 fi
 
 exe="$install_dir/bin/moon"
-if ! version_output=$("$exe" version 2>&1); then
+if ! version_output=$("$exe" --version 2>&1); then
     error "installed moon could not start:\n$version_output"
 fi
 committed=true
