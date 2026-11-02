@@ -6,7 +6,7 @@ a private repository.
 
 ## Install
 
-x86-64 Linux and Apple silicon macOS:
+x86-64 Linux:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/moonlang-dev/moon-releases/main/install.sh | bash
@@ -18,16 +18,13 @@ x86-64 Windows PowerShell:
 irm https://raw.githubusercontent.com/moonlang-dev/moon-releases/main/install.ps1 | iex
 ```
 
-The installers select the host's archive from the release's `SHA256SUMS`,
-verify its checksum, install moon under `~/.moon` (or `MOON_INSTALL`) and put
-its `bin/` on `PATH`. Download an installer first and pass a `vX.Y.Z` argument
-(or set `MOON_VERSION`) to pin a specific tagged release.
+The installers require an x86-64 host, select its archive, verify the SHA-256
+sidecar, and install moon under `~/.moon`. Download an installer first and pass
+a `vX.Y.Z` argument to pin a specific tagged release. macOS and ARM packages
+are temporarily unavailable.
 
-Each release holds `moon-<version>-<host>.tar.gz` for `x86_64-linux`,
-`x86_64-windows` and `aarch64-macos`. An archive contains one relocatable
-`moon-<version>-<host>/` tree: `bin/` (`moon` and its C import worker),
-`include/moon/std/`, `lib/moon/targets/` and `NOTICE.md`. `run`, `build` and
-`test` also need an LLVM 23 installation.
+Release archives contain the complete relocatable `moon/` tree: `bin/`,
+`lib/`, and `include/`.
 
 ## Editor integrations
 
