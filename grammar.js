@@ -24,7 +24,9 @@ module.exports = grammar({
     $.string_literal_variable,
     $.block_comment,
     $._statement_end,
-    $._brace_end
+    $._brace_end,
+    $._multiline_string_chars,
+    $.raw_string_literal
   ],
 
   conflicts: $ => [
@@ -36,6 +38,8 @@ module.exports = grammar({
     [$.name, $.named_type, $.loop_label],
     [$.name, $.type],
     [$.name, $.prefix_type],
+    [$.name, $.qualified_variant],
+    [$.name, $.pattern],
     [$.prefix_type, $.expr],
     [$.prefix_type, $.type],
     [$.expr, $.lvalue],
@@ -76,9 +80,11 @@ module.exports = grammar({
 
     named_type: $ => choice(seq($.identifier, repeat(seq(".", $.name)), "<", optional(seq($.type_argument, repeat(seq(",", $.type_argument)), optional(","))), optional(","), ">"), seq($.identifier, repeat(seq(".", $.name)))),
 
-    prefix_type: $ => choice($.primitive_type, $.numeric_width_type, $.named_type, seq("&", optional("mut"), $.prefix_type), seq("*", optional("mut"), $.prefix_type), seq("fn", "(", optional(seq($.type, repeat(seq(",", $.type)), optional(","))), optional(","), ")", "->", $.type), seq("[", $.type, "]"), seq("{", $.type, ":", $.type, "}"), seq("(", optional(seq($.type, repeat(seq(",", $.type)), optional(","))), optional(","), ")")),
+    named_tuple_element: $ => seq($.identifier, ":", $.type),
 
-    type: $ => choice($.primitive_type, $.numeric_width_type, $.named_type, seq("&", optional("mut"), $.prefix_type), seq("*", optional("mut"), $.prefix_type), seq("fn", "(", optional(seq($.type, repeat(seq(",", $.type)), optional(","))), optional(","), ")", "->", $.type), seq("[", $.type, "]"), seq("{", $.type, ":", $.type, "}"), seq("(", optional(seq($.type, repeat(seq(",", $.type)), optional(","))), optional(","), ")"), seq($.type, "?")),
+    prefix_type: $ => choice($.primitive_type, $.numeric_width_type, $.named_type, seq("&", optional("mut"), $.prefix_type), seq("*", optional("mut"), $.prefix_type), seq("fn", "(", optional(seq($.type, repeat(seq(",", $.type)), optional(","))), optional(","), ")", "->", $.type), seq("[", $.type, "]"), seq("{", $.type, ":", $.type, "}"), seq("(", $.named_tuple_element, repeat(seq(",", $.named_tuple_element)), optional(","), ")"), seq("(", optional(seq($.type, repeat(seq(",", $.type)), optional(","))), optional(","), ")")),
+
+    type: $ => choice($.primitive_type, $.numeric_width_type, $.named_type, seq("&", optional("mut"), $.prefix_type), seq("*", optional("mut"), $.prefix_type), seq("fn", "(", optional(seq($.type, repeat(seq(",", $.type)), optional(","))), optional(","), ")", "->", $.type), seq("[", $.type, "]"), seq("{", $.type, ":", $.type, "}"), seq("(", $.named_tuple_element, repeat(seq(",", $.named_tuple_element)), optional(","), ")"), seq("(", optional(seq($.type, repeat(seq(",", $.type)), optional(","))), optional(","), ")"), seq($.type, "?"), seq($.type, "??")),
 
     type_parameters: $ => seq("<", optional(seq($.type_parameter, repeat(seq(",", $.type_parameter)), optional(","))), optional(","), ">"),
 
@@ -94,9 +100,9 @@ module.exports = grammar({
 
     extern_parameter_list: $ => seq("(", choice("...", seq($.extern_parameter, repeat(seq(",", $.extern_parameter)), optional(seq(",", "...")), optional(",")), blank()), ")"),
 
-    pattern: $ => choice("_", "none", $.name, seq($.identifier, "@", $.pattern), seq("mut", $.name), seq("mut", $.identifier, "@", $.pattern), seq(choice("some", "ok", "err"), optional(seq("(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")"))), $.integer, seq("-", $.integer), $.float, "true", "false", $.string_literal, seq(optional("-"), $.integer, choice("..", "..="), optional("-"), $.integer), seq($.string_literal, ".."), seq("..", $.string_literal, optional("..")), seq("(", optional(seq(choice($.pattern, ".."), repeat(seq(",", choice($.pattern, ".."))), optional(","))), optional(","), ")"), seq($.identifier, "{", optional(seq($.struct_pattern_item, repeat(seq(",", $.struct_pattern_item)), optional(","))), optional(","), "}"), seq($.identifier, "(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")"), seq($.qualified_variant, optional(seq("(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")"))), seq(".", $.identifier, optional(seq("(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")"))), seq("[", choice(seq(optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), $.rest_pattern, optional(seq(",", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))))), optional(",")), seq(optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","))), "]")),
+    pattern: $ => choice("_", "none", $.name, seq($.identifier, "@", $.pattern), seq("mut", $.name), seq("mut", $.identifier, "@", $.pattern), seq(choice("some", "ok", "err"), optional(prec.dynamic(1, seq("(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")")))), $.integer, seq("-", $.integer), $.float, "true", "false", $.string_literal, $.raw_string_literal, seq(optional("-"), $.integer, choice("..", "..="), optional("-"), $.integer), seq($.string_literal, ".."), seq("..", $.string_literal, optional("..")), seq("(", optional(seq(choice($.pattern, ".."), repeat(seq(",", choice($.pattern, ".."))), optional(","))), optional(","), ")"), seq($.identifier, "{", optional(seq($.struct_pattern_item, repeat(seq(",", $.struct_pattern_item)), optional(","))), optional(","), "}"), prec.dynamic(1, seq($.identifier, "(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")")), seq($.qualified_variant, optional(prec.dynamic(1, seq("(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")")))), seq(".", $.identifier, optional(prec.dynamic(1, seq("(", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), ")")))), seq("[", choice(seq(optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","), $.rest_pattern, optional(seq(",", optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))))), optional(",")), seq(optional(seq($.pattern, repeat(seq(",", $.pattern)), optional(","))), optional(","))), "]")),
 
-    qualified_variant: $ => seq($.identifier, repeat1(seq(".", $.identifier))),
+    qualified_variant: $ => prec.right(seq($.identifier, repeat1(seq(".", $.identifier)))),
 
     struct_pattern_item: $ => choice($.identifier, seq("mut", $.identifier), seq($.field_name, ":", $.pattern), choice("..", "...")),
 
@@ -122,18 +128,21 @@ module.exports = grammar({
 
     match_arm: $ => seq($.pattern, repeat(seq("|", $.pattern)), optional(seq("if", $.expr)), "=>", choice($.return_statement, $.expr)),
 
-    borrow_operand: $ => choice(seq(choice("-", "!", "*", "await"), $.borrow_operand), seq("&", optional("mut"), $.borrow_operand), "true", "false", "none", "some", "ok", "err", $.hex_integer, $.binary_integer, $.octal_integer, $.float, $.integer, $.string_literal, $.name, seq(".", $.identifier), seq($.borrow_operand, $.call_arguments), seq($.borrow_operand, "<", optional(seq($.type, repeat(seq(",", $.type)), optional(","))), optional(","), ">", $.call_arguments), seq($.borrow_operand, ".", $.method_name, optional($.call_arguments)), seq($.borrow_operand, ".", $.integer), seq($.borrow_operand, "[", $.expr, "]"), seq($.borrow_operand, "?"), seq("(", ")"), seq("(", $.expr, ")"), seq("(", $.expr, ",", optional(seq($.expr, repeat(seq(",", $.expr)), optional(","))), optional(","), ")"), seq("{", repeat($.statement), optional($.expr), "}"), seq("unsafe", $.block), seq("if", $.condition, $.block, optional(seq("else", choice($.expr, $.block)))), seq("match", $.expr, "{", repeat(seq($.match_arm, optional(","))), "}"), seq("[", optional(seq($.expr, repeat(seq(",", $.expr)), optional(","))), optional(","), "]"), seq("[", $.expr, $.comprehension_clauses, "]"), seq("{:", "}"), seq("{", optional(seq($.dict_entry, repeat(seq(",", $.dict_entry)), optional(","))), optional(","), "}"), seq("{", $.expr, ":", $.expr, $.comprehension_clauses, "}"), seq("(", $.expr, $.comprehension_clauses, ")"), seq("||", optional($.return_type), $.expr), seq("|", optional(seq($.closure_parameter, repeat(seq(",", $.closure_parameter)), optional(","))), optional(","), "|", optional($.return_type), $.expr), seq($.borrow_operand, "{", optional(seq($.struct_literal_item, repeat(seq(",", $.struct_literal_item)), optional(","))), optional(","), "}"), seq("some", "(", $.expr, optional(","), ")"), seq("ok", "(", $.expr, optional(","), ")"), seq("err", ".", $.identifier, optional(seq("(", $.expr, optional(","), ")")))),
+    borrow_operand: $ => choice(seq(choice("-", "!", "~", "*", "await", "..."), $.borrow_operand), seq("&", optional("mut"), $.borrow_operand), "true", "false", "none", "some", "ok", "err", $.hex_integer, $.binary_integer, $.octal_integer, $.float, $.integer, $.string_literal, $.raw_string_literal, $.name, seq(".", $.identifier), seq($.borrow_operand, $.call_arguments), seq($.borrow_operand, "<", optional(seq($.type, repeat(seq(",", $.type)), optional(","))), optional(","), ">", $.call_arguments), seq($.borrow_operand, ".", $.method_name, optional($.call_arguments)), seq($.borrow_operand, ".", $.integer), seq($.borrow_operand, "[", $.expr, repeat(seq(",", $.expr)), optional(","), "]"), seq($.borrow_operand, "[", choice("..", "..="), $.expr, "]"), seq($.borrow_operand, "[", $.expr, "..", "]"), seq($.borrow_operand, "?"), seq($.borrow_operand, "??"), seq("(", ")"), seq("(", $.expr, ")"), seq("(", $.expr, ",", optional(seq($.expr, repeat(seq(",", $.expr)), optional(","))), optional(","), ")"), seq("{", repeat($.statement), optional($.expr), "}"), seq("unsafe", $.block), seq("if", $.condition, $.block, optional(seq("else", choice($.expr, $.block)))), seq("match", $.expr, "{", repeat(seq($.match_arm, optional(","))), "}"), seq("[", optional(seq($.expr, repeat(seq(",", $.expr)), optional(","))), optional(","), "]"), seq("[", $.expr, $.comprehension_clauses, "]"), seq("{:", "}"), seq("{", optional(seq($.dict_entry, repeat(seq(",", $.dict_entry)), optional(","))), optional(","), "}"), seq("{", $.expr, ":", $.expr, $.comprehension_clauses, "}"), seq("(", $.expr, $.comprehension_clauses, ")"), seq(optional("async"), "||", optional($.return_type), $.expr), seq(optional("async"), "|", optional(seq($.closure_parameter, repeat(seq(",", $.closure_parameter)), optional(","))), optional(","), "|", optional($.return_type), $.expr), seq("async", $.block), seq($.borrow_operand, "{", optional(seq($.struct_literal_item, repeat(seq(",", $.struct_literal_item)), optional(","))), optional(","), "}"), seq("some", "(", $.expr, optional(","), ")"), seq("ok", "(", $.expr, optional(","), ")"), seq("err", ".", $.identifier, optional(seq("(", $.expr, optional(","), ")")))),
 
     expr: $ => choice(
       prec.left(1, seq($.expr, field('operator', "||"), $.expr)),
       prec.left(2, seq($.expr, field('operator', "&&"), $.expr)),
-      prec.left(3, seq($.expr, field('operator', choice("==", "!=", "|")), $.expr)),
-      prec.left(4, seq($.expr, field('operator', choice("&", "^")), $.expr)),
-      prec.left(5, seq($.expr, field('operator', choice("<", "<=", ">", ">=", "<<", ">>", ">>>", "..", "..=", "<..", "<..=")), $.expr)),
-      prec.left(6, seq($.expr, field('operator', choice("+", "-")), $.expr)),
-      prec.left(7, seq($.expr, field('operator', choice("*", "/", "%")), $.expr)),
+      prec.left(3, seq($.expr, field('operator', choice("==", "!=", "<", "<=", ">", ">=", "in")), $.expr)),
+      prec.left(4, seq($.expr, field('operator', choice("..", "..=", "<..", "<..=")), $.expr)),
+      prec.right(5, seq($.expr, field('operator', "??"), $.expr)),
+      prec.left(6, seq($.expr, field('operator', choice("+", "-", "|", "^")), $.expr)),
+      prec.left(7, seq($.expr, field('operator', choice("*", "/", "%", "<<", ">>", ">>>", "&")), $.expr)),
       prec.left(8, seq($.expr, field('operator', "as"), $.expr)),
-      prec.right(9, seq(field('operator', choice("-", "!", "&", "*", "await")), $.expr)),
+      prec.right(9, seq(field('operator', choice("-", "!", "~", "&", "*", "await", "...")), $.expr)),
+      prec.left(10, seq($.expr, "??", choice($.return_statement, $.break_statement, $.continue_statement))),
+      prec.left(3, seq($.expr, "is", $.pattern)),
+      prec.left(3, seq($.expr, "not", "in", $.expr)),
       prec.right(9, seq("&", "mut", $.expr)),
       prec.left(10, seq($.expr, "as", $.type)),
       "true",
@@ -148,14 +157,18 @@ module.exports = grammar({
       $.float,
       $.integer,
       $.string_literal,
+      $.raw_string_literal,
       $.name,
       seq(".", $.identifier),
       prec.left(10, seq($.expr, $.call_arguments)),
       prec.left(10, seq($.expr, "<", optional(seq($.type, repeat(seq(",", $.type)), optional(","))), optional(","), ">", $.call_arguments)),
       prec.left(10, seq($.expr, ".", $.method_name, optional($.call_arguments))),
       prec.left(10, seq($.expr, ".", $.integer)),
-      prec.left(10, seq($.expr, "[", $.expr, "]")),
+      prec.left(10, seq($.expr, "[", $.expr, repeat(seq(",", $.expr)), optional(","), "]")),
+      prec.left(10, seq($.expr, "[", choice("..", "..="), $.expr, "]")),
+      prec.left(10, seq($.expr, "[", $.expr, "..", "]")),
       prec.left(10, seq($.expr, "?")),
+      prec.left(10, seq($.expr, "??")),
       seq("(", ")"),
       seq("(", $.expr, ")"),
       seq("(", $.expr, ",", optional(seq($.expr, repeat(seq(",", $.expr)), optional(","))), optional(","), ")"),
@@ -169,15 +182,16 @@ module.exports = grammar({
       seq("{", optional(seq($.dict_entry, repeat(seq(",", $.dict_entry)), optional(","))), optional(","), "}"),
       seq("{", $.expr, ":", $.expr, $.comprehension_clauses, "}"),
       seq("(", $.expr, $.comprehension_clauses, ")"),
-      seq("||", optional($.return_type), $.expr),
-      seq("|", optional(seq($.closure_parameter, repeat(seq(",", $.closure_parameter)), optional(","))), optional(","), "|", optional($.return_type), $.expr),
+      seq(optional("async"), "||", optional($.return_type), $.expr),
+      seq(optional("async"), "|", optional(seq($.closure_parameter, repeat(seq(",", $.closure_parameter)), optional(","))), optional(","), "|", optional($.return_type), $.expr),
+      seq("async", $.block),
       prec.dynamic(-1, seq($.identifier, repeat(seq(".", $.identifier)), "{", optional(seq($.struct_literal_item, repeat(seq(",", $.struct_literal_item)), optional(","))), optional(","), "}")),
       seq("some", "(", $.expr, optional(","), ")"),
       seq("ok", "(", $.expr, optional(","), ")"),
       seq("err", ".", $.identifier, optional(seq("(", $.expr, optional(","), ")")))
     ),
 
-    lvalue: $ => choice($.name, "some", "ok", "err", seq("*", $.expr), seq("(", $.expr, ")"), seq($.lvalue, ".", $.method_name), seq($.lvalue, $.call_arguments), seq($.lvalue, "[", $.expr, "]")),
+    lvalue: $ => choice($.name, "some", "ok", "err", seq("*", $.expr), seq("(", $.expr, ")"), seq($.lvalue, ".", $.method_name), seq($.lvalue, $.call_arguments), seq($.lvalue, "[", $.expr, repeat(seq(",", $.expr)), optional(","), "]")),
 
     assignment_operator: $ => choice("=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "<<=", ">>=", ">>>="),
 
@@ -207,19 +221,33 @@ module.exports = grammar({
 
     block: $ => seq("{", repeat($.statement), optional($.expr), "}"),
 
+    annotation_number: $ => choice($.hex_integer, $.binary_integer, $.octal_integer, $.float, $.integer),
+
+    annotation_value: $ => choice($.string_literal, $.raw_string_literal, "true", "false", seq(optional("-"), $.annotation_number), seq("[", optional(seq($.annotation_value, repeat(seq(",", $.annotation_value)), optional(","))), "]")),
+
+    annotation_named_argument: $ => seq($.field_name, "=", $.annotation_value),
+
+    annotation_arguments: $ => seq("(", choice(seq($.annotation_value, repeat(seq(",", $.annotation_value)), repeat(seq(",", $.annotation_named_argument)), optional(",")), seq($.annotation_named_argument, repeat(seq(",", $.annotation_named_argument)), optional(",")), blank()), ")"),
+
+    annotation: $ => seq($.annotation_name, optional($.annotation_arguments)),
+
     visibility: $ => "pub",
 
     function_definition: $ => seq(optional($.visibility), optional("async"), "fn", $.function_name, optional($.type_parameters), $.parameter_list, optional($.return_type), $.block),
 
-    extern_function: $ => seq(optional($.visibility), "extern", optional($.string_literal), "fn", $.method_name, optional($.type_parameters), $.extern_parameter_list, optional($.return_type), optional(seq("=", $.string_literal))),
+    exported_function: $ => seq("export", "fn", $.function_name, $.parameter_list, optional($.return_type), optional(seq("=", $.string_literal)), $.block),
 
-    extern_global: $ => seq(optional($.visibility), "extern", $.string_literal, "let", $.identifier, ":", $.type, optional(seq("=", $.string_literal))),
+    extern_function: $ => seq(optional($.visibility), choice("extern", "builtin"), "fn", $.method_name, optional($.type_parameters), $.extern_parameter_list, optional($.return_type), optional(seq("in", $.string_literal)), optional(seq("=", $.string_literal))),
+
+    extern_global: $ => seq(optional($.visibility), "extern", "let", $.identifier, ":", $.type, optional(seq("=", $.string_literal))),
 
     test_declaration: $ => seq("test", $.string_literal, $.block),
 
-    field: $ => seq(optional("priv"), $.field_name, ":", $.type),
+    extern_field: $ => seq(optional("priv"), $.field_name, ":", $.type, optional(seq("=", $.expr))),
 
-    struct_definition: $ => seq(optional($.visibility), optional("extern"), "struct", $.identifier, optional($.type_parameters), "{", repeat(choice($.copy_block, $.deinitializer, seq($.field, optional(choice(",", ";"))))), "}"),
+    field: $ => seq(repeat($.annotation), optional("priv"), $.field_name, ":", $.type, optional(seq("=", $.expr))),
+
+    struct_definition: $ => choice(seq(repeat($.annotation), optional($.visibility), "struct", $.identifier, optional($.type_parameters), "{", repeat(choice($.class_method, $.copy_block, $.deinitializer, seq($.field, optional(choice(",", ";"))))), "}"), seq(optional($.visibility), "extern", choice(seq("struct", "packed", optional($.identifier)), seq("struct", $.identifier), seq("union", $.identifier)), optional($.type_parameters), "{", repeat(choice($.copy_block, $.deinitializer, seq($.extern_field, optional(choice(",", ";"))))), "}")),
 
     class_method: $ => seq(optional(choice("pub", "priv")), optional("async"), "fn", $.function_name, optional($.type_parameters), $.parameter_list, optional($.return_type), $.block),
 
@@ -229,11 +257,13 @@ module.exports = grammar({
 
     class_member: $ => choice($.class_method, $.deinitializer, seq($.field, optional(choice(",", ";")))),
 
-    class_definition: $ => seq(optional($.visibility), "class", $.identifier, optional($.type_parameters), "{", repeat($.class_member), "}"),
+    class_definition: $ => seq(repeat($.annotation), optional($.visibility), "class", $.identifier, optional($.type_parameters), "{", repeat($.class_member), "}"),
 
-    variant: $ => seq($.identifier, optional(seq("(", optional(seq($.type, repeat(seq(",", $.type)), optional(","))), optional(","), ")")), optional(seq("=", $.string_literal))),
+    variant_field: $ => seq($.field_name, ":", $.type),
 
-    enum_definition: $ => seq(optional($.visibility), "enum", $.identifier, optional($.type_parameters), "{", optional(seq($.variant, repeat(seq(",", $.variant)), optional(","))), optional(","), "}"),
+    variant: $ => seq(repeat($.annotation), $.identifier, optional(choice(seq("(", optional(seq($.type, repeat(seq(",", $.type)), optional(","))), optional(","), ")"), seq("{", optional(seq($.variant_field, repeat(seq(",", $.variant_field)), optional(","))), "}"))), optional(seq("=", $.string_literal))),
+
+    enum_definition: $ => seq(repeat($.annotation), optional($.visibility), "enum", $.identifier, optional($.type_parameters), "{", repeat(seq($.variant, optional(","))), "}"),
 
     type_alias: $ => seq(optional($.visibility), "type", $.identifier, optional($.type_parameters), "=", $.type),
 
@@ -247,7 +277,7 @@ module.exports = grammar({
 
     interface_associated_type: $ => seq("type", $.identifier, optional(seq("=", $.type))),
 
-    interface_method: $ => seq("fn", $.function_name, optional($.type_parameters), $.parameter_list, optional($.return_type), optional($.block)),
+    interface_method: $ => seq(optional("async"), "fn", $.function_name, optional($.type_parameters), $.parameter_list, optional($.return_type), optional($.block)),
 
     interface_item: $ => choice($.interface_method, $.interface_associated_type),
 
@@ -257,13 +287,16 @@ module.exports = grammar({
 
     impl_method: $ => seq(optional(choice("pub", "priv")), optional("async"), "fn", $.function_name, optional($.type_parameters), $.parameter_list, optional($.return_type), $.block),
 
-    impl_target: $ => choice($.identifier, $.primitive_type, seq("[", $.type, "]"), seq("{", $.type, ":", $.type, "}")),
+    impl_type_arguments: $ => seq("<", optional(seq($.type_argument, repeat(seq(",", $.type_argument)), optional(","))), optional(","), ">"),
 
-    impl_definition: $ => seq("impl", optional($.type_parameters), choice(seq($.identifier, "for", $.impl_target), $.impl_target), "{", repeat(choice($.impl_method, $.impl_associated_type)), "}"),
+    impl_target: $ => choice(seq($.identifier, optional($.impl_type_arguments)), $.primitive_type, seq("[", $.type, "]"), seq("{", $.type, ":", $.type, "}")),
 
-    item: $ => choice($.function_definition, $.extern_function, $.extern_global, $.test_declaration, $.struct_definition, $.class_definition, $.enum_definition, $.type_alias, $.const_definition, $.use_declaration, $.interface_definition, $.impl_definition),
+    impl_definition: $ => seq("impl", optional($.type_parameters), choice(seq($.identifier, optional($.impl_type_arguments), "for", $.impl_target), $.impl_target), "{", repeat(choice($.impl_method, $.impl_associated_type)), "}"),
+
+    item: $ => choice($.function_definition, $.exported_function, $.extern_function, $.extern_global, $.test_declaration, $.struct_definition, $.class_definition, $.enum_definition, $.type_alias, $.const_definition, $.use_declaration, $.interface_definition, $.impl_definition),
 
     line_comment: $ => token(/\/\/[^\n]*/),
+
 
 
     identifier: $ => token(/[a-zA-Z_][a-zA-Z_0-9]*/),
@@ -278,10 +311,19 @@ module.exports = grammar({
 
     integer: $ => token(/[0-9]+(?:_?[0-9])*/),
 
-    string_literal: $ => seq(
-      "\"",
-      repeat(choice($.string_literal_chars, $.string_literal_variable, $.string_literal_substitution)),
-      "\""
+    annotation_name: $ => token(/@[a-zA-Z_][a-zA-Z_0-9]*(?:\.[a-zA-Z_][a-zA-Z_0-9]*)+/),
+
+    string_literal: $ => choice(
+      seq(
+        "\"",
+        repeat(choice($.string_literal_chars, $.string_literal_variable, $.string_literal_substitution)),
+        "\""
+      ),
+      seq(
+        "\"\"\"",
+        repeat(choice(alias($._multiline_string_chars, $.string_literal_chars), $.string_literal_variable, $.string_literal_substitution)),
+        "\"\"\""
+      )
     ),
 
     string_literal_substitution: $ => seq("${", $.expr, optional($.format_spec), "}"),

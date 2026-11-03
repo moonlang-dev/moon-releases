@@ -1036,8 +1036,7 @@ fn f(a: int?, b: [string]?, c: int??, p: *int?) -> Result<int?, Error>? {}
             (identifier))
           (type
             (type
-              (type
-                (primitive_type)))))
+              (primitive_type))))
         (parameter
           (binding_name
             (identifier))
@@ -1273,9 +1272,10 @@ pub extern struct Handle {
   lower: c.ULong,
   upper: c.ULong,
 }
-extern "C" fn fcntl(fd: c.Int, command: c.Int, ...) -> c.Int
-pub extern "C" fn client() -> Optional<Context> = "tls_client"
-pub extern "C" let environment: c.Pointer<c.Pointer<c.Char>> = "environ"
+extern fn fcntl(fd: c.Int, command: c.Int, ...) -> c.Int
+pub extern fn client() -> Optional<Context> = "tls_client"
+pub extern let environment: c.Pointer<c.Pointer<c.Char>> = "environ"
+builtin fn supplied(value: int) -> int
 
 --------------------------------------------------------------------------------
 
@@ -1284,7 +1284,7 @@ pub extern "C" let environment: c.Pointer<c.Pointer<c.Char>> = "environ"
     (struct_definition
       (visibility)
       (identifier)
-      (field
+      (extern_field
         (field_name
           (identifier))
         (type
@@ -1292,7 +1292,7 @@ pub extern "C" let environment: c.Pointer<c.Pointer<c.Char>> = "environ"
             (identifier)
             (name
               (identifier)))))
-      (field
+      (extern_field
         (field_name
           (identifier))
         (type
@@ -1302,8 +1302,6 @@ pub extern "C" let environment: c.Pointer<c.Pointer<c.Char>> = "environ"
               (identifier)))))))
   (item
     (extern_function
-      (string_literal
-        (string_literal_chars))
       (method_name
         (name
           (identifier)))
@@ -1331,8 +1329,6 @@ pub extern "C" let environment: c.Pointer<c.Pointer<c.Char>> = "environ"
   (item
     (extern_function
       (visibility)
-      (string_literal
-        (string_literal_chars))
       (method_name
         (name
           (identifier)))
@@ -1350,8 +1346,6 @@ pub extern "C" let environment: c.Pointer<c.Pointer<c.Char>> = "environ"
   (item
     (extern_global
       (visibility)
-      (string_literal
-        (string_literal_chars))
       (identifier)
       (type
         (named_type
@@ -1371,7 +1365,20 @@ pub extern "C" let environment: c.Pointer<c.Pointer<c.Char>> = "environ"
                       (name
                         (identifier))))))))))
       (string_literal
-        (string_literal_chars)))))
+        (string_literal_chars))))
+  (item
+    (extern_function
+      (method_name
+        (name
+          (identifier)))
+      (extern_parameter_list
+        (extern_parameter
+          (identifier)
+          (type
+            (primitive_type))))
+      (return_type
+        (type
+          (primitive_type))))))
 
 ================================================================================
 private members and async methods
@@ -1479,3 +1486,279 @@ type Small = Matrix<float, 2, 3>
             (integer))
           (type_argument
             (integer)))))))
+
+================================================================================
+annotations on declarations, fields and variants
+================================================================================
+
+@db.table("videos")
+@ui.grid(columns = 3, sizes = [1, -2])
+pub struct Video {
+  @db.primary_key
+  id: int,
+  @ui.label("Views", width = 8)
+  views: int = 0,
+}
+
+@ui.panel
+class Player {
+  @ui.hidden
+  video: Video,
+}
+
+enum Command {
+  @cli.command_alias("s")
+  Serve(int),
+}
+
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (struct_definition
+      (annotation
+        (annotation_name)
+        (annotation_arguments
+          (annotation_value
+            (string_literal
+              (string_literal_chars)))))
+      (annotation
+        (annotation_name)
+        (annotation_arguments
+          (annotation_named_argument
+            (field_name
+              (identifier))
+            (annotation_value
+              (annotation_number
+                (integer))))
+          (annotation_named_argument
+            (field_name
+              (identifier))
+            (annotation_value
+              (annotation_value
+                (annotation_number
+                  (integer)))
+              (annotation_value
+                (annotation_number
+                  (integer)))))))
+      (visibility)
+      (identifier)
+      (field
+        (annotation
+          (annotation_name))
+        (field_name
+          (identifier))
+        (type
+          (primitive_type)))
+      (field
+        (annotation
+          (annotation_name)
+          (annotation_arguments
+            (annotation_value
+              (string_literal
+                (string_literal_chars)))
+            (annotation_named_argument
+              (field_name
+                (identifier))
+              (annotation_value
+                (annotation_number
+                  (integer))))))
+        (field_name
+          (identifier))
+        (type
+          (primitive_type))
+        (expr
+          (integer)))))
+  (item
+    (class_definition
+      (annotation
+        (annotation_name))
+      (identifier)
+      (class_member
+        (field
+          (annotation
+            (annotation_name))
+          (field_name
+            (identifier))
+          (type
+            (named_type
+              (identifier)))))))
+  (item
+    (enum_definition
+      (identifier)
+      (variant
+        (annotation
+          (annotation_name)
+          (annotation_arguments
+            (annotation_value
+              (string_literal
+                (string_literal_chars)))))
+        (identifier)
+        (type
+          (primitive_type))))))
+
+================================================================================
+packed structs, unions and named tuples
+================================================================================
+
+extern struct packed Header { tag: u8 }
+extern union Word { whole: u32 }
+extern struct packed { tag: u8 }
+fn f() -> (head: int, tail: [int]) {}
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (struct_definition
+      (identifier)
+      (extern_field
+        (field_name
+          (identifier))
+        (type
+          (numeric_width_type)))))
+  (item
+    (struct_definition
+      (identifier)
+      (extern_field
+        (field_name
+          (identifier))
+        (type
+          (numeric_width_type)))))
+  (item
+    (struct_definition
+      (extern_field
+        (field_name
+          (identifier))
+        (type
+          (numeric_width_type)))))
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (return_type
+        (type
+          (named_tuple_element
+            (identifier)
+            (type
+              (primitive_type)))
+          (named_tuple_element
+            (identifier)
+            (type
+              (type
+                (primitive_type))))))
+      (block))))
+
+================================================================================
+enum variants with fields and without commas
+================================================================================
+
+enum E {
+  A { x: int, y: [int] }
+  B(int)
+  C = "c"
+  @a.b
+  D,
+}
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (enum_definition
+      (identifier)
+      (variant
+        (identifier)
+        (variant_field
+          (field_name
+            (identifier))
+          (type
+            (primitive_type)))
+        (variant_field
+          (field_name
+            (identifier))
+          (type
+            (type
+              (primitive_type)))))
+      (variant
+        (identifier)
+        (type
+          (primitive_type)))
+      (variant
+        (identifier)
+        (string_literal
+          (string_literal_chars)))
+      (variant
+        (annotation
+          (annotation_name))
+        (identifier)))))
+
+================================================================================
+methods in a struct body
+================================================================================
+
+struct S {
+  x: int
+  fn get(self) -> int { self.x }
+  y: int = 1,
+  pub async fn run(self) {}
+  priv fn hide(self) {}
+  priv z: int
+}
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (struct_definition
+      (identifier)
+      (field
+        (field_name
+          (identifier))
+        (type
+          (primitive_type)))
+      (class_method
+        (function_name
+          (name
+            (identifier)))
+        (parameter_list
+          (parameter
+            (identifier)))
+        (return_type
+          (type
+            (primitive_type)))
+        (block
+          (expr
+            (expr
+              (name
+                (identifier)))
+            (method_name
+              (name
+                (identifier))))))
+      (field
+        (field_name
+          (identifier))
+        (type
+          (primitive_type))
+        (expr
+          (integer)))
+      (class_method
+        (function_name
+          (name
+            (identifier)))
+        (parameter_list
+          (parameter
+            (identifier)))
+        (block))
+      (class_method
+        (function_name
+          (name
+            (identifier)))
+        (parameter_list
+          (parameter
+            (identifier)))
+        (block))
+      (field
+        (field_name
+          (identifier))
+        (type
+          (primitive_type))))))

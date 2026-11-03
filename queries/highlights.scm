@@ -13,6 +13,7 @@
 (named_type (identifier) @type)
 (type_parameter (identifier) @type)
 (expr (method_name (name (identifier) @property)))
+(named_tuple_element (identifier) @property (type))
 (extern_parameter (identifier) @variable.parameter (type))
 (extern_global (identifier) @variable (type))
 (parameter (binding_name (identifier) @variable.parameter))
@@ -21,11 +22,15 @@
 (extern_function (method_name (name (identifier) @function)))
 (interface_method (function_name (name (identifier) @function)))
 (impl_method (function_name (name (identifier) @function.method)))
+(class_method (function_name (name (identifier) @function.method)))
 (struct_definition (identifier) @type)
 (enum_definition (identifier) @type)
 (interface_definition (identifier) @type.interface)
 (type_alias (identifier) @type)
 (field (field_name (identifier) @property))
+(extern_field (field_name (identifier) @property))
+(variant_field (field_name (identifier) @property))
+(annotation_named_argument (field_name (identifier) @variable.parameter))
 (loop_label (identifier) @label)
 (string_literal_variable) @variable
 (format_spec) @string.special
@@ -35,13 +40,16 @@
 ;; Literal token nodes.
 (line_comment) @comment
 (block_comment) @comment
+(raw_string_literal) @string
 (hex_integer) @number
 (binary_integer) @number
 (octal_integer) @number
 (float) @number
 (integer) @number
 (string_literal_chars) @string
+(annotation_name) @attribute
 (string_literal "\"") @string
+(string_literal "\"\"\"") @string
 (string_literal_substitution "${") @punctuation.special
 (string_literal_substitution "}") @punctuation.special
 
@@ -51,10 +59,11 @@
 
 ;; Keyword, operator, and punctuation literals.
 [
-  "interface" "continue" "errdefer" "return" "struct" "extern" "deinit" "unsafe"
-  "match" "while" "break" "await" "yield" "class" "const" "async"
-  "defer" "else" "enum" "impl" "type" "test" "priv" "copy"
-  "for" "pub" "let" "mut" "if" "in" "fn" "_"
+  "interface" "continue" "errdefer" "builtin" "return" "struct" "extern" "export"
+  "packed" "deinit" "unsafe" "match" "while" "break" "await" "yield"
+  "union" "class" "const" "async" "defer" "else" "enum" "impl"
+  "type" "test" "priv" "copy" "for" "pub" "let" "mut"
+  "if" "in" "fn" "_"
 ] @keyword
 [
   "use" "as"
@@ -67,11 +76,12 @@
   "false" "true" "some" "none" "err" "ok"
 ] @constant.builtin
 [
-  ">>>=" "<..=" "<<=" ">>=" ">>>" "<.." "+=" "-="
-  "*=" "/=" "%=" "&=" "|=" "^=" "&&" "||"
-  "==" "!=" "<=" ">=" "<<" ">>" "->" "=>"
-  "=" "!" "<" ">" "+" "-" "*" "/"
-  "%" "&" "|" "^" "?"
+  ">>>=" "<..=" "<<=" ">>=" ">>>" "not" "<.." "+="
+  "-=" "*=" "/=" "%=" "&=" "|=" "^=" "&&"
+  "||" "==" "!=" "<=" ">=" "<<" ">>" "is"
+  "??" "->" "=>" "=" "!" "<" ">" "+"
+  "-" "*" "/" "%" "&" "|" "^" "~"
+  "?"
 ] @operator
 [
   "(" ")" "{" "}" "[" "]"

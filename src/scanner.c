@@ -18,6 +18,8 @@ enum TokenType {
   BLOCK_COMMENT,
   STATEMENT_END,
   BRACE_END,
+  MULTILINE_STRING_CHARS,
+  RAW_STRING_LITERAL,
 };
 
 // The scanner is stateless — tree-sitter's `valid_symbols` already encodes
@@ -130,7 +132,7 @@ static bool scan_block_comment(TSLexer *lexer) {
 }
 
 // Preserve moon's short string interpolation as a structural token too.
-static bool scan_template_dollar(TSLexer *lexer, bool emit_variable) {
+static bool scan_template_dollar(TSLexer *lexer, bool emit_variable, enum TokenType text) {
   if (lexer->lookahead != '$') return false;
   advance(lexer);
   if (lexer->lookahead == '{') return false;
@@ -148,7 +150,7 @@ static bool scan_template_dollar(TSLexer *lexer, bool emit_variable) {
   lexer->mark_end(lexer);
   lexer->result_symbol = identifier && emit_variable
     ? STRING_LITERAL_VARIABLE
-    : STRING_LITERAL_CHARS;
+    : text;
   return true;
 }
 
@@ -184,6 +186,86 @@ static bool scan_brace_end(TSLexer *lexer) {
   return true;
 }
 
+// The text of a `"""` string, stopping before its closing delimiter and before
+// any `$`, which the dollar scan or the substitution rule takes next.
+static bool scan_multiline_string_chars(TSLexer *lexer) {
+  bool has_content = false;
+  for (;;) {
+    lexer->mark_end(lexer);
+    int32_t c = lexer->lookahead;
+    if (c == 0) return false;
+    if (c == '$') break;
+    if (c == '"') {
+      advance(lexer);
+      if (lexer->lookahead == '"') {
+        advance(lexer);
+        if (lexer->lookahead == '"') break;
+      }
+      has_content = true;
+      continue;
+    }
+    if (c == '\\') {
+      advance(lexer);
+      if (lexer->lookahead != 0) advance(lexer);
+      has_content = true;
+      continue;
+    }
+    advance(lexer);
+    has_content = true;
+  }
+  if (!has_content) return false;
+  lexer->result_symbol = MULTILINE_STRING_CHARS;
+  return true;
+}
+
+// Raw strings end at their first closing delimiter; only `r"""` spans lines.
+// The lexer stands on the `r`, and a failure leaves it to the identifier token.
+static bool scan_raw_string(TSLexer *lexer) {
+  advance(lexer);
+  bool hashed = lexer->lookahead == '#';
+  if (hashed) advance(lexer);
+  if (lexer->lookahead != '"') return false;
+  advance(lexer);
+  lexer->result_symbol = RAW_STRING_LITERAL;
+  if (hashed) {
+    while (lexer->lookahead != 0 && lexer->lookahead != '\n') {
+      bool quote = lexer->lookahead == '"';
+      advance(lexer);
+      if (quote && lexer->lookahead == '#') {
+        advance(lexer);
+        lexer->mark_end(lexer);
+        return true;
+      }
+    }
+    return false;
+  }
+  if (lexer->lookahead == '"') {
+    advance(lexer);
+    lexer->mark_end(lexer);
+    if (lexer->lookahead != '"') return true;
+    advance(lexer);
+    unsigned quotes = 0;
+    while (lexer->lookahead != 0) {
+      quotes = lexer->lookahead == '"' ? quotes + 1 : 0;
+      advance(lexer);
+      if (quotes == 3) {
+        lexer->mark_end(lexer);
+        return true;
+      }
+    }
+    return false;
+  }
+  while (lexer->lookahead != 0 && lexer->lookahead != '\n') {
+    bool quote = lexer->lookahead == '"';
+    advance(lexer);
+    if (quote) {
+      lexer->mark_end(lexer);
+      return true;
+    }
+  }
+  return false;
+}
+
 bool tree_sitter_moon_external_scanner_scan(void *payload, TSLexer *lexer,
                                                           const bool *valid_symbols) {
   (void)payload;
@@ -192,14 +274,30 @@ bool tree_sitter_moon_external_scanner_scan(void *payload, TSLexer *lexer,
   // so it must NOT be skipped (unlike the regex path below).
   if (valid_symbols[STRING_LITERAL_CHARS]) {
     if (lexer->lookahead == '$') {
-      return scan_template_dollar(lexer, valid_symbols[STRING_LITERAL_VARIABLE]);
+      return scan_template_dollar(lexer, valid_symbols[STRING_LITERAL_VARIABLE], STRING_LITERAL_CHARS);
     }
     if (scan_template_chars(lexer)) return true;
+  }
+
+  if (valid_symbols[MULTILINE_STRING_CHARS]) {
+    if (lexer->lookahead == '$') {
+      return scan_template_dollar(lexer, valid_symbols[STRING_LITERAL_VARIABLE], MULTILINE_STRING_CHARS);
+    }
+    if (scan_multiline_string_chars(lexer)) return true;
+    return false;
   }
 
   if (valid_symbols[STATEMENT_END] && scan_statement_end(lexer)) return true;
 
   if (valid_symbols[BRACE_END] && scan_brace_end(lexer)) return true;
+
+  if (valid_symbols[RAW_STRING_LITERAL]) {
+    while (lexer->lookahead == ' ' || lexer->lookahead == '\t' ||
+           lexer->lookahead == '\n' || lexer->lookahead == '\r') {
+      skip(lexer);
+    }
+    if (lexer->lookahead == 'r') return scan_raw_string(lexer);
+  }
 
   if (valid_symbols[BLOCK_COMMENT] && scan_block_comment(lexer)) return true;
 

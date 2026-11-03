@@ -28,17 +28,21 @@ fn f() {
                     (identifier)))
                 (expr
                   (expr
-                    (expr
-                      (name
-                        (identifier)))
-                    (expr
-                      (name
-                        (identifier))))
+                    (name
+                      (identifier)))
                   (expr
                     (expr
                       (expr
-                        (name
-                          (identifier)))
+                        (expr
+                          (name
+                            (identifier)))
+                        (expr
+                          (expr
+                            (name
+                              (identifier)))
+                          (expr
+                            (name
+                              (identifier)))))
                       (expr
                         (name
                           (identifier))))
@@ -55,12 +59,8 @@ fn f() {
                           (name
                             (identifier)))
                         (expr
-                          (expr
-                            (name
-                              (identifier)))
-                          (expr
-                            (name
-                              (identifier))))))))))))))))
+                          (name
+                            (identifier)))))))))))))))
 
 ================================================================================
 logical or and
@@ -95,7 +95,7 @@ fn f() {
                     (identifier)))))))))))
 
 ================================================================================
-bitwise or at equality level
+bitwise or binds above equality
 ================================================================================
 
 fn f() {
@@ -116,15 +116,15 @@ fn f() {
           (expression_statement
             (expr
               (expr
+                (name
+                  (identifier)))
+              (expr
                 (expr
                   (name
                     (identifier)))
                 (expr
                   (name
-                    (identifier))))
-              (expr
-                (name
-                  (identifier))))))))))
+                    (identifier)))))))))))
 
 ================================================================================
 bit and xor
@@ -180,15 +180,15 @@ fn f() {
           (expression_statement
             (expr
               (expr
+                (name
+                  (identifier)))
+              (expr
                 (expr
                   (name
                     (identifier)))
                 (expr
                   (name
-                    (identifier))))
-              (expr
-                (name
-                  (identifier))))))))))
+                    (identifier)))))))))))
 
 ================================================================================
 additive multiplicative
@@ -2340,3 +2340,438 @@ fn main() {
                   (identifier))
                 (expr
                   (integer))))))))))
+
+================================================================================
+the precedence table
+================================================================================
+
+fn f() {
+  a..b ?? c + d | e * f & g
+}
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))
+                    (expr
+                      (name
+                        (identifier))))
+                  (expr
+                    (expr
+                      (expr
+                        (name
+                          (identifier)))
+                      (expr
+                        (name
+                          (identifier))))
+                    (expr
+                      (name
+                        (identifier)))))))))))))
+
+================================================================================
+coalescing that leaves the function
+================================================================================
+
+fn f() {
+  let x = a ?? return b
+  c ?? d ?? continue
+}
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (return_statement
+                (expr
+                  (name
+                    (identifier)))))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (continue_statement)))))))))
+
+================================================================================
+postfix try twice ends at a newline
+================================================================================
+
+fn f() {
+  let x = await a??
+  g(b??)
+}
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier)))))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (call_arguments
+                (argument
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))))))))))))
+
+================================================================================
+bitwise not, spread and open slices
+================================================================================
+
+fn f() {
+  ~a & b
+  [...a, b]
+  c[..1]
+  c[..=1]
+  c[1..]
+  c[1, 2]
+}
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier))))
+              (expr
+                (name
+                  (identifier))))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (name
+                    (identifier))))
+              (expr
+                (name
+                  (identifier))))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (expr
+                (integer)))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (expr
+                (integer)))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (expr
+                (integer)))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (name
+                  (identifier)))
+              (expr
+                (integer))
+              (expr
+                (integer)))))))))
+
+================================================================================
+multi-line strings hold quotes, interpolation and dollar text
+================================================================================
+
+fn f() {
+  let a = """
+    say "hi" ${b} $c $1 \"""
+    """
+}
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (string_literal
+                (string_literal_chars)
+                (string_literal_substitution
+                  (expr
+                    (name
+                      (identifier))))
+                (string_literal_chars)
+                (string_literal_variable)
+                (string_literal_chars)
+                (string_literal_chars)
+                (string_literal_chars)))))))))
+
+================================================================================
+raw strings
+================================================================================
+
+fn f() {
+  let a = r"\d$"
+  let b = r#"say "hi""#
+  let c = r"""
+    "\d"
+    """
+  let d = r""
+  let r = 1
+}
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (raw_string_literal))))
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (raw_string_literal))))
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (raw_string_literal))))
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (raw_string_literal))))
+        (statement
+          (let_statement
+            (pattern
+              (name
+                (identifier)))
+            (expr
+              (integer))))))))
+
+================================================================================
+membership and is tests at the comparisons' level
+================================================================================
+
+fn f() {
+  a + 1 in b && c not in d
+  if e is some(g) && g > 0 {
+    h()
+  }
+  if i is P { x: 1 } {
+    k()
+  }
+  l is Pair(m, n) || o is Color.Rgb(q) || r is .Rgb(s)
+}
+--------------------------------------------------------------------------------
+
+(program
+  (item
+    (function_definition
+      (function_name
+        (name
+          (identifier)))
+      (parameter_list)
+      (block
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (expr
+                    (name
+                      (identifier)))
+                  (expr
+                    (integer)))
+                (expr
+                  (name
+                    (identifier))))
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (expr
+                  (name
+                    (identifier)))))))
+        (statement
+          (expression_statement
+            (expr
+              (condition
+                (expr
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))
+                    (pattern
+                      (pattern
+                        (name
+                          (identifier)))))
+                  (expr
+                    (expr
+                      (name
+                        (identifier)))
+                    (expr
+                      (integer)))))
+              (block
+                (statement
+                  (expression_statement
+                    (expr
+                      (expr
+                        (name
+                          (identifier)))
+                      (call_arguments))))))))
+        (statement
+          (expression_statement
+            (expr
+              (condition
+                (expr
+                  (expr
+                    (name
+                      (identifier)))
+                  (pattern
+                    (identifier)
+                    (struct_pattern_item
+                      (field_name
+                        (identifier))
+                      (pattern
+                        (integer))))))
+              (block
+                (statement
+                  (expression_statement
+                    (expr
+                      (expr
+                        (name
+                          (identifier)))
+                      (call_arguments))))))))
+        (statement
+          (expression_statement
+            (expr
+              (expr
+                (expr
+                  (expr
+                    (name
+                      (identifier)))
+                  (pattern
+                    (identifier)
+                    (pattern
+                      (name
+                        (identifier)))
+                    (pattern
+                      (name
+                        (identifier)))))
+                (expr
+                  (expr
+                    (name
+                      (identifier)))
+                  (pattern
+                    (qualified_variant
+                      (identifier)
+                      (identifier))
+                    (pattern
+                      (name
+                        (identifier))))))
+              (expr
+                (expr
+                  (name
+                    (identifier)))
+                (pattern
+                  (identifier)
+                  (pattern
+                    (name
+                      (identifier))))))))))))

@@ -1,5 +1,120 @@
 [
   {
+    "type": "annotation",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "annotation_arguments",
+          "named": true
+        },
+        {
+          "type": "annotation_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "annotation_arguments",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "annotation_named_argument",
+          "named": true
+        },
+        {
+          "type": "annotation_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "annotation_named_argument",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "annotation_value",
+          "named": true
+        },
+        {
+          "type": "field_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "annotation_number",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "binary_integer",
+          "named": true
+        },
+        {
+          "type": "float",
+          "named": true
+        },
+        {
+          "type": "hex_integer",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        },
+        {
+          "type": "octal_integer",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "annotation_value",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "annotation_number",
+          "named": true
+        },
+        {
+          "type": "annotation_value",
+          "named": true
+        },
+        {
+          "type": "raw_string_literal",
+          "named": true
+        },
+        {
+          "type": "string_literal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "argument",
     "named": true,
     "fields": {},
@@ -118,6 +233,10 @@
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "annotation",
+          "named": true
+        },
         {
           "type": "class_member",
           "named": true
@@ -363,6 +482,10 @@
       "required": true,
       "types": [
         {
+          "type": "annotation",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -376,6 +499,37 @@
         },
         {
           "type": "visibility",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "exported_function",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "function_name",
+          "named": true
+        },
+        {
+          "type": "parameter_list",
+          "named": true
+        },
+        {
+          "type": "return_type",
+          "named": true
+        },
+        {
+          "type": "string_literal",
           "named": true
         }
       ]
@@ -423,6 +577,10 @@
           },
           {
             "type": "..",
+            "named": false
+          },
+          {
+            "type": "...",
             "named": false
           },
           {
@@ -474,6 +632,10 @@
             "named": false
           },
           {
+            "type": "??",
+            "named": false
+          },
+          {
             "type": "^",
             "named": false
           },
@@ -486,11 +648,19 @@
             "named": false
           },
           {
+            "type": "in",
+            "named": false
+          },
+          {
             "type": "|",
             "named": false
           },
           {
             "type": "||",
+            "named": false
+          },
+          {
+            "type": "~",
             "named": false
           }
         ]
@@ -509,6 +679,10 @@
           "named": true
         },
         {
+          "type": "break_statement",
+          "named": true
+        },
+        {
           "type": "call_arguments",
           "named": true
         },
@@ -522,6 +696,10 @@
         },
         {
           "type": "condition",
+          "named": true
+        },
+        {
+          "type": "continue_statement",
           "named": true
         },
         {
@@ -565,6 +743,18 @@
           "named": true
         },
         {
+          "type": "pattern",
+          "named": true
+        },
+        {
+          "type": "raw_string_literal",
+          "named": true
+        },
+        {
+          "type": "return_statement",
+          "named": true
+        },
+        {
           "type": "return_type",
           "named": true
         },
@@ -597,6 +787,29 @@
       "types": [
         {
           "type": "expr",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "extern_field",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "field_name",
+          "named": true
+        },
+        {
+          "type": "type",
           "named": true
         }
       ]
@@ -706,6 +919,14 @@
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
         {
           "type": "field_name",
           "named": true
@@ -891,6 +1112,10 @@
           "named": true
         },
         {
+          "type": "impl_type_arguments",
+          "named": true
+        },
+        {
           "type": "type_parameters",
           "named": true
         }
@@ -941,11 +1166,30 @@
           "named": true
         },
         {
+          "type": "impl_type_arguments",
+          "named": true
+        },
+        {
           "type": "primitive_type",
           "named": true
         },
         {
           "type": "type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "impl_type_arguments",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "type_argument",
           "named": true
         }
       ]
@@ -1065,6 +1309,10 @@
         },
         {
           "type": "enum_definition",
+          "named": true
+        },
+        {
+          "type": "exported_function",
           "named": true
         },
         {
@@ -1237,6 +1485,25 @@
     }
   },
   {
+    "type": "named_tuple_element",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "named_type",
     "named": true,
     "fields": {},
@@ -1339,6 +1606,10 @@
           "named": true
         },
         {
+          "type": "raw_string_literal",
+          "named": true
+        },
+        {
           "type": "rest_pattern",
           "named": true
         },
@@ -1361,6 +1632,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "named_tuple_element",
+          "named": true
+        },
         {
           "type": "named_type",
           "named": true
@@ -1564,14 +1839,26 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
+        {
+          "type": "annotation",
+          "named": true
+        },
+        {
+          "type": "class_method",
+          "named": true
+        },
         {
           "type": "copy_block",
           "named": true
         },
         {
           "type": "deinitializer",
+          "named": true
+        },
+        {
+          "type": "extern_field",
           "named": true
         },
         {
@@ -1666,6 +1953,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "named_tuple_element",
+          "named": true
+        },
         {
           "type": "named_type",
           "named": true
@@ -1827,11 +2118,38 @@
       "required": true,
       "types": [
         {
+          "type": "annotation",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
         {
           "type": "string_literal",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        },
+        {
+          "type": "variant_field",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "variant_field",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "field_name",
           "named": true
         },
         {
@@ -1894,6 +2212,10 @@
   },
   {
     "type": "\"",
+    "named": false
+  },
+  {
+    "type": "\"\"\"",
     "named": false
   },
   {
@@ -2057,6 +2379,10 @@
     "named": false
   },
   {
+    "type": "??",
+    "named": false
+  },
+  {
     "type": "@",
     "named": false
   },
@@ -2079,6 +2405,10 @@
   {
     "type": "_",
     "named": false
+  },
+  {
+    "type": "annotation_name",
+    "named": true
   },
   {
     "type": "as",
@@ -2107,6 +2437,10 @@
   },
   {
     "type": "break",
+    "named": false
+  },
+  {
+    "type": "builtin",
     "named": false
   },
   {
@@ -2147,6 +2481,10 @@
   },
   {
     "type": "errdefer",
+    "named": false
+  },
+  {
+    "type": "export",
     "named": false
   },
   {
@@ -2234,6 +2572,10 @@
     "named": false
   },
   {
+    "type": "is",
+    "named": false
+  },
+  {
     "type": "let",
     "named": false
   },
@@ -2255,11 +2597,19 @@
     "named": false
   },
   {
+    "type": "not",
+    "named": false
+  },
+  {
     "type": "octal_integer",
     "named": true
   },
   {
     "type": "ok",
+    "named": false
+  },
+  {
+    "type": "packed",
     "named": false
   },
   {
@@ -2269,6 +2619,10 @@
   {
     "type": "pub",
     "named": false
+  },
+  {
+    "type": "raw_string_literal",
+    "named": true
   },
   {
     "type": "return",
@@ -2323,6 +2677,10 @@
     "named": false
   },
   {
+    "type": "union",
+    "named": false
+  },
+  {
     "type": "unsafe",
     "named": false
   },
@@ -2364,6 +2722,10 @@
   },
   {
     "type": "}",
+    "named": false
+  },
+  {
+    "type": "~",
     "named": false
   }
 ]
