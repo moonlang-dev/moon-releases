@@ -22,6 +22,46 @@ $ProgressPreference = "SilentlyContinue"
 $DefaultGitHub = "https://github.com"
 $DefaultRepository = "moonlang-dev/moon-releases"
 
+# `irm <url> | iex` cannot pass parameters, so MOON_INSTALL_ARGS can carry
+# them instead as comma-separated pairs, such as
+# "editor=nvim,editor-path=nvim,editor-only". A parameter passed explicitly
+# wins.
+if ($env:MOON_INSTALL_ARGS) {
+    $ArgParameters = @{
+        "editor"        = "Editor"
+        "editor-path"   = "EditorPath"
+        "editor-config" = "EditorConfig"
+        "editor-only"   = "EditorOnly"
+        "help"          = "Help"
+    }
+    foreach ($Pair in $env:MOON_INSTALL_ARGS.Split(',')) {
+        if (-not $Pair.Trim()) {
+            continue
+        }
+        $Key, $Value = $Pair -split '=', 2
+        $Key = $Key.Trim()
+        $Value = if ($null -ne $Value) { $Value.Trim() } else { "" }
+        $Parameter = $ArgParameters[$Key]
+        if (-not $Parameter) {
+            throw "Unknown key '$Key' in MOON_INSTALL_ARGS (use editor, editor-path, editor-config, editor-only, or help)."
+        }
+        if ($Parameter -in "EditorOnly", "Help") {
+            $Value = switch -Regex ($Value) {
+                '^(|1|true|yes|on)$' { $true }
+                '^(0|false|no|off)$' { $false }
+                default { throw "Invalid value '$Value' for $Key in MOON_INSTALL_ARGS (use yes or no)." }
+            }
+            $Value = [switch]$Value
+        }
+        elseif (-not $Value) {
+            throw "$Key in MOON_INSTALL_ARGS needs a value, as in $Key=<value>."
+        }
+        if (-not $PSBoundParameters.ContainsKey($Parameter)) {
+            Set-Variable -Name $Parameter -Value $Value
+        }
+    }
+}
+
 if ($Help) {
     Write-Output @'
 Usage: install.ps1 [[-Target] <version>] [[-Editor] <name>] [options]
@@ -39,6 +79,14 @@ Installs the moon toolchain and, optionally, one editor integration.
                           neovim     config directory
   -EditorOnly           keep the installed toolchain; install only the editor
   -Help                 show this help
+
+For `irm <url> | iex`, which cannot pass parameters, set MOON_INSTALL_ARGS to
+comma-separated pairs instead; a parameter passed explicitly wins:
+
+  $env:MOON_INSTALL_ARGS = "editor=nvim,editor-config=C:\nvim,editor-only"
+
+Its keys are editor, editor-path, editor-config, editor-only, and help. The
+last two take yes or no, and a bare key means yes. MOON_VERSION sets -Target.
 '@
     return
 }

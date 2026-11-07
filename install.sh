@@ -55,6 +55,16 @@ Options:
                           neovim     config directory
   --editor-only         keep the installed toolchain; install only the editor
   -h, --help            show this help
+
+Environment:
+  MOON_VERSION          same as the version argument
+  MOON_INSTALL_ARGS     options as comma-separated pairs, for piping into bash;
+                        an option passed explicitly wins:
+
+    curl -fsSL <url> | MOON_INSTALL_ARGS=editor=nvim,editor-only bash
+
+  Its keys are editor, editor-path, editor-config, editor-only, and help. The
+  last two take yes or no, and a bare key means yes.
 EOF
 }
 
@@ -337,6 +347,55 @@ while (( $# > 0 )); do
             ;;
     esac
 done
+
+# `curl <url> | bash` takes options only after `bash -s --`, so MOON_INSTALL_ARGS
+# can carry them instead as comma-separated pairs, such as
+# "editor=nvim,editor-path=nvim,editor-only". An option passed explicitly wins.
+trim() {
+    local value=$1
+    value=${value#"${value%%[![:space:]]*}"}
+    printf '%s' "${value%"${value##*[![:space:]]}"}"
+}
+arg_flag() {
+    case "$(printf '%s' "$2" | tr '[:upper:]' '[:lower:]')" in
+        '' | 1 | true | yes | on) return 0 ;;
+        0 | false | no | off) return 1 ;;
+        *) error "invalid value '$2' for $1 in MOON_INSTALL_ARGS (use yes or no)" ;;
+    esac
+}
+if [[ -n ${MOON_INSTALL_ARGS:-} ]]; then
+    IFS=',' read -r -a install_args <<<"$MOON_INSTALL_ARGS"
+    for pair in ${install_args[@]+"${install_args[@]}"}; do
+        [[ -n $(trim "$pair") ]] || continue
+        key=$(trim "${pair%%=*}" | tr '[:upper:]' '[:lower:]')
+        value=""
+        [[ $pair != *=* ]] || value=$(trim "${pair#*=}")
+        case "$key" in
+            editor | editor-path | editor-config)
+                [[ -n $value ]] || error "$key in MOON_INSTALL_ARGS needs a value, as in $key=<value>"
+                case "$key" in
+                    editor) editor=${editor:-$value} ;;
+                    editor-path) editor_path=${editor_path:-$value} ;;
+                    editor-config) editor_config=${editor_config:-$value} ;;
+                esac
+                ;;
+            editor-only)
+                if arg_flag "$key" "$value"; then
+                    editor_only=true
+                fi
+                ;;
+            help)
+                if arg_flag "$key" "$value"; then
+                    usage
+                    exit 0
+                fi
+                ;;
+            *)
+                error "unknown key '$key' in MOON_INSTALL_ARGS (use editor, editor-path, editor-config, editor-only, or help)"
+                ;;
+        esac
+    done
+fi
 
 if [[ -z $editor ]]; then
     [[ -z $editor_path && -z $editor_config ]] ||

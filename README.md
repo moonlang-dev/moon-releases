@@ -73,6 +73,21 @@ The editor is also the second positional argument, after the version:
 | `--editor-config DIR` | `-EditorConfig DIR` | Install location, as listed below |
 | `--editor-only` | `-EditorOnly` | Keep the installed toolchain and install only the editor |
 
+When piping an installer into a shell with no way to pass options, set
+`MOON_INSTALL_ARGS` to the same options as comma-separated `key=value` pairs.
+Its keys are `editor`, `editor-path`, `editor-config`, `editor-only` and
+`help`. `editor-only` and `help` take `yes` or `no`, and a bare key means
+`yes`. An option passed explicitly wins over `MOON_INSTALL_ARGS`.
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/moonlang-dev/moon-releases/main/install.sh | MOON_INSTALL_ARGS=editor=nvim,editor-only bash
+```
+
+```powershell
+$env:MOON_INSTALL_ARGS = "editor=nvim,editor-only"
+irm https://raw.githubusercontent.com/moonlang-dev/moon-releases/main/install.ps1 | iex
+```
+
 | Editor | Default target | `--editor-config` | Afterwards |
 | --- | --- | --- | --- |
 | `vscode` | The `code` command | Extensions directory | Reload VS Code |
