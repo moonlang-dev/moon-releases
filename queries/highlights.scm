@@ -59,11 +59,11 @@
 
 ;; Keyword, operator, and punctuation literals.
 [
-  "interface" "continue" "errdefer" "builtin" "return" "struct" "extern" "export"
-  "packed" "deinit" "unsafe" "match" "while" "break" "await" "yield"
-  "union" "class" "const" "async" "defer" "else" "enum" "impl"
-  "type" "test" "priv" "copy" "for" "pub" "let" "mut"
-  "if" "in" "fn" "_"
+  "interface" "continue" "errdefer" "builtin" "return" "struct" "shared" "extern"
+  "export" "packed" "deinit" "unsafe" "match" "while" "break" "await"
+  "yield" "union" "class" "const" "async" "defer" "else" "enum"
+  "impl" "type" "test" "priv" "copy" "for" "pub" "let"
+  "mut" "if" "in" "fn" "_"
 ] @keyword
 [
   "use" "as"

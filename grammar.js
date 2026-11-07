@@ -233,7 +233,7 @@ module.exports = grammar({
 
     visibility: $ => "pub",
 
-    function_definition: $ => seq(optional($.visibility), optional("async"), "fn", $.function_name, optional($.type_parameters), $.parameter_list, optional($.return_type), $.block),
+    function_definition: $ => seq(optional($.visibility), optional(choice("async", "unsafe")), "fn", $.function_name, optional($.type_parameters), $.parameter_list, optional($.return_type), $.block),
 
     exported_function: $ => seq("export", "fn", $.function_name, $.parameter_list, optional($.return_type), optional(seq("=", $.string_literal)), $.block),
 
@@ -267,7 +267,7 @@ module.exports = grammar({
 
     type_alias: $ => seq(optional($.visibility), "type", $.identifier, optional($.type_parameters), "=", $.type),
 
-    const_definition: $ => seq(optional($.visibility), choice(seq("let", optional("mut")), "const"), $.identifier, optional(seq(":", $.type)), "=", $.expr),
+    const_definition: $ => seq(optional($.visibility), choice(seq("let", optional("mut")), seq("shared", "let", "mut"), "const"), $.identifier, optional(seq(":", $.type)), "=", $.expr),
 
     use_leaf: $ => seq($.name, optional(seq("as", $.name))),
 

@@ -6781,8 +6781,17 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "STRING",
-              "value": "async"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "async"
+                },
+                {
+                  "type": "STRING",
+                  "value": "unsafe"
+                }
+              ]
             },
             {
               "type": "BLANK"
@@ -7987,6 +7996,23 @@
                       "type": "BLANK"
                     }
                   ]
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "shared"
+                },
+                {
+                  "type": "STRING",
+                  "value": "let"
+                },
+                {
+                  "type": "STRING",
+                  "value": "mut"
                 }
               ]
             },
