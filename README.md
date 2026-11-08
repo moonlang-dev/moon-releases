@@ -81,6 +81,4 @@ release, even when the toolchain version is pinned. They all launch `moon lsp`.
 
 Neovim and Zed files are kept in `~/.local/share/moon/editors`
 (`%LOCALAPPDATA%\moon\editors` on Windows), which toolchain upgrades leave in
-place. Zed builds its grammar from a `tree-sitter-moon-vX.Y.Z` tag in this
-repository; that branch contains only the public grammar, never compiler
-source.
+place.
