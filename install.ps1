@@ -4,13 +4,17 @@ param(
     [string]$Target = "latest",
 
     [Parameter(Position = 1)]
-    [string]$Editor,
+    [string[]]$Editor = @(),
 
     [string]$EditorPath,
 
     [string]$EditorConfig,
 
     [switch]$EditorOnly,
+
+    [switch]$Interactive,
+
+    [switch]$Yes,
 
     [switch]$Help
 )
@@ -22,6 +26,10 @@ $ProgressPreference = "SilentlyContinue"
 $DefaultGitHub = "https://github.com"
 $DefaultRepository = "moonlang-dev/moon-releases"
 
+# Any parameter or MOON_INSTALL_ARGS marks a scripted run, which asks nothing
+# unless told to.
+$Configured = $PSBoundParameters.Count -gt 0 -or [bool]$env:MOON_INSTALL_ARGS
+
 # `irm <url> | iex` cannot pass parameters, so MOON_INSTALL_ARGS can carry
 # them instead as comma-separated pairs, such as
 # "editor=nvim,editor-path=nvim,editor-only". A parameter passed explicitly
@@ -32,8 +40,11 @@ if ($env:MOON_INSTALL_ARGS) {
         "editor-path"   = "EditorPath"
         "editor-config" = "EditorConfig"
         "editor-only"   = "EditorOnly"
+        "interactive"   = "Interactive"
+        "yes"           = "Yes"
         "help"          = "Help"
     }
+    $ArgEditors = @()
     foreach ($Pair in $env:MOON_INSTALL_ARGS.Split(',')) {
         if (-not $Pair.Trim()) {
             continue
@@ -43,9 +54,9 @@ if ($env:MOON_INSTALL_ARGS) {
         $Value = if ($null -ne $Value) { $Value.Trim() } else { "" }
         $Parameter = $ArgParameters[$Key]
         if (-not $Parameter) {
-            throw "Unknown key '$Key' in MOON_INSTALL_ARGS (use editor, editor-path, editor-config, editor-only, or help)."
+            throw "Unknown key '$Key' in MOON_INSTALL_ARGS (use editor, editor-path, editor-config, editor-only, interactive, yes, or help)."
         }
-        if ($Parameter -in "EditorOnly", "Help") {
+        if ($Parameter -in "EditorOnly", "Interactive", "Yes", "Help") {
             $Value = switch -Regex ($Value) {
                 '^(|1|true|yes|on)$' { $true }
                 '^(0|false|no|off)$' { $false }
@@ -56,48 +67,93 @@ if ($env:MOON_INSTALL_ARGS) {
         elseif (-not $Value) {
             throw "$Key in MOON_INSTALL_ARGS needs a value, as in $Key=<value>."
         }
-        if (-not $PSBoundParameters.ContainsKey($Parameter)) {
+        if ($Parameter -eq "Editor") {
+            $ArgEditors += $Value
+        }
+        elseif ($Parameter -in "Interactive", "Yes") {
+            # An explicit -Interactive or -Yes settles the question either way.
+            if (-not ($PSBoundParameters.ContainsKey("Interactive") -or $PSBoundParameters.ContainsKey("Yes"))) {
+                Set-Variable -Name $Parameter -Value $Value
+            }
+        }
+        elseif (-not $PSBoundParameters.ContainsKey($Parameter)) {
             Set-Variable -Name $Parameter -Value $Value
         }
+    }
+    if ($ArgEditors.Count -gt 0 -and -not $PSBoundParameters.ContainsKey("Editor")) {
+        $Editor = $ArgEditors
     }
 }
 
 if ($Help) {
     Write-Output @'
-Usage: install.ps1 [[-Target] <version>] [[-Editor] <name>] [options]
+Usage: install.ps1 [[-Target] <version>] [[-Editor] <names>] [options]
 
-Installs the moon toolchain and, optionally, one editor integration.
+Installs the moon toolchain and, optionally, editor integrations.
+
+Run from a terminal with no parameters, the installer asks where to install
+moon, which editors to set up, and where each integration goes. Given any
+parameter, or without a terminal, it asks nothing and uses the defaults.
 
   -Target <version>     latest (default) or vX.Y.Z; MOON_VERSION also sets this
-  -Editor <name>        vscode, sublime, jetbrains, neovim, or zed
-                        (also accepts code, subl, and nvim)
+  -Editor <names>       vscode, sublime, jetbrains, neovim, or zed (also
+                        accepts code, subl, and nvim); separate several with
+                        commas
   -EditorPath <cmd>     editor command to use (vscode, neovim)
   -EditorConfig <dir>   where the integration is installed:
                           vscode     extensions directory
                           sublime    Packages directory
                           jetbrains  one IDE's plugins directory
                           neovim     config directory
-  -EditorOnly           keep the installed toolchain; install only the editor
+                          zed        directory the extension is unpacked in
+                        -EditorPath and -EditorConfig need exactly one editor
+  -EditorOnly           keep the installed toolchain; install only the editors
+  -Interactive          ask, with the other parameters as the suggested answers
+  -Yes                  ask nothing
   -Help                 show this help
+
+MOON_INSTALL sets the install directory, ~\.moon by default, and MOON_VERSION
+sets -Target.
 
 For `irm <url> | iex`, which cannot pass parameters, set MOON_INSTALL_ARGS to
 comma-separated pairs instead; a parameter passed explicitly wins:
 
   $env:MOON_INSTALL_ARGS = "editor=nvim,editor-config=C:\nvim,editor-only"
 
-Its keys are editor, editor-path, editor-config, editor-only, and help. The
-last two take yes or no, and a bare key means yes. MOON_VERSION sets -Target.
+Its keys are editor, editor-path, editor-config, editor-only, interactive,
+yes, and help. The last four take yes or no, and a bare key means yes. Repeat
+editor for several editors.
 '@
     return
 }
 
-if (-not $Editor) {
-    if ($EditorPath -or $EditorConfig) {
-        throw "-EditorPath and -EditorConfig require an editor."
+$AllEditors = @("vscode", "sublime", "jetbrains", "neovim", "zed")
+$EditorLabels = @{
+    vscode = "VS Code"; sublime = "Sublime Text"; jetbrains = "JetBrains"; neovim = "Neovim"; zed = "Zed"
+}
+$EditorAliases = @{
+    vscode = "vscode"; code = "vscode"
+    sublime = "sublime"; subl = "sublime"
+    jetbrains = "jetbrains"
+    neovim = "neovim"; nvim = "neovim"
+    zed = "zed"
+}
+$Editors = @()
+foreach ($Name in @($Editor | ForEach-Object { "$_".Split(',') } | ForEach-Object { $_.Trim() } | Where-Object { $_ })) {
+    $Canonical = $EditorAliases[$Name]
+    if (-not $Canonical) {
+        throw "Unknown editor '$Name' (use vscode, sublime, jetbrains, neovim, or zed)."
     }
-    if ($EditorOnly) {
-        throw "-EditorOnly requires an editor."
+    if ($Editors -notcontains $Canonical) {
+        $Editors += $Canonical
     }
+}
+
+if ($Interactive -and $Yes) {
+    throw "-Interactive and -Yes cannot be combined."
+}
+if (($EditorPath -or $EditorConfig) -and $Editors.Count -ne 1) {
+    throw "-EditorPath and -EditorConfig require exactly one editor."
 }
 if ($EditorOnly -and $Target -ne "latest") {
     throw "-EditorOnly does not install a toolchain, so it cannot take a version."
@@ -145,96 +201,312 @@ $RoamingAppData = if ($env:APPDATA) { $env:APPDATA } else { Join-Path $HOME "App
 # Neovim's generated config and Zed's dev extension keep pointing at these
 # files, so they live outside the toolchain directory that upgrades replace.
 $EditorDataDir = Join-Path $LocalAppData "moon\editors"
-$EditorName = $null
-$EditorCli = $null
-$EditorTargets = @()
 
-# Runs before the toolchain is touched, so a bad editor request changes nothing.
-if ($Editor) {
-    $EditorAliases = @{
-        vscode = "vscode"; code = "vscode"
-        sublime = "sublime"; subl = "sublime"
-        jetbrains = "jetbrains"
-        neovim = "neovim"; nvim = "neovim"
-        zed = "zed"
+$InstallInput = if ($env:MOON_INSTALL) { $env:MOON_INSTALL } else { Join-Path $HOME ".moon" }
+$VsCodeCli = ""
+$VsCodeDir = ""
+$SublimeDir = ""
+$JetBrainsTargets = @()
+$NvimCli = ""
+$NvimConfig = ""
+$ZedDir = $EditorDataDir
+if ($EditorPath -or $EditorConfig) {
+    if ($EditorPath -and $Editors[0] -notin "vscode", "neovim") {
+        throw "-EditorPath does not apply to $($Editors[0])."
     }
-    $EditorName = $EditorAliases[$Editor]
-    if (-not $EditorName) {
-        throw "Unknown editor '$Editor' (use vscode, sublime, jetbrains, neovim, or zed)."
+    switch ($Editors[0]) {
+        "vscode" { $VsCodeCli = $EditorPath; $VsCodeDir = $EditorConfig }
+        "sublime" { $SublimeDir = $EditorConfig }
+        "jetbrains" { $JetBrainsTargets = @($EditorConfig) }
+        "neovim" { $NvimCli = $EditorPath; $NvimConfig = $EditorConfig }
+        "zed" { $ZedDir = $EditorConfig }
     }
-    if ($EditorPath -and $EditorName -notin "vscode", "neovim") {
-        throw "-EditorPath does not apply to $EditorName."
-    }
-    if ($EditorConfig -and $EditorName -eq "zed") {
-        throw "-EditorConfig does not apply to zed."
-    }
+}
 
-    if ($EditorPath) {
-        $EditorCommand = Get-Command $EditorPath -ErrorAction SilentlyContinue | Select-Object -First 1
-        if (-not $EditorCommand) {
-            throw "Editor command not found: '$EditorPath'."
+# The Find-* functions look for what the parameters left unset, and return
+# nothing when there is nothing to find.
+function Find-MoonVsCode {
+    $Command = Get-Command "code" -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($Command) {
+        return $Command.Source
+    }
+    return @(
+        (Join-Path $LocalAppData "Programs\Microsoft VS Code\bin\code.cmd"),
+        (Join-Path $env:ProgramFiles "Microsoft VS Code\bin\code.cmd")
+    ) | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Select-Object -First 1
+}
+
+function Find-MoonSublime {
+    return "Sublime Text", "Sublime Text 3" |
+        ForEach-Object { Join-Path $RoamingAppData "$_\Packages" } |
+        Where-Object { Test-Path -LiteralPath $_ -PathType Container } |
+        Select-Object -First 1
+}
+
+# Every IDE that can load the plugin gets it. Older IDEs reject it, because
+# the plugin's since-build is 262 (2026.2).
+function Find-MoonJetBrains {
+    $JetBrainsRoot = Join-Path $RoamingAppData "JetBrains"
+    if (-not (Test-Path -LiteralPath $JetBrainsRoot -PathType Container)) {
+        return
+    }
+    foreach ($Product in Get-ChildItem -LiteralPath $JetBrainsRoot -Directory) {
+        if ($Product.Name -match '^[A-Za-z]+(\d{4})\.(\d+)$') {
+            $Year = [int]$Matches[1]
+            $Minor = [int]$Matches[2]
+            if ($Year -gt 2026 -or ($Year -eq 2026 -and $Minor -ge 2)) {
+                Join-Path $Product.FullName "plugins"
+            }
         }
-        $EditorCli = $EditorCommand.Source
     }
-    if ($EditorConfig) {
-        $EditorConfig = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($EditorConfig)
-        $EditorTargets = @($EditorConfig)
+}
+
+function Test-MoonZed {
+    return [bool](Get-Command "zed" -ErrorAction SilentlyContinue) -or
+        (Test-Path -LiteralPath (Join-Path $RoamingAppData "Zed") -PathType Container) -or
+        (Test-Path -LiteralPath (Join-Path $LocalAppData "Programs\Zed") -PathType Container)
+}
+
+# Returns what stops the Neovim setup from running, or nothing.
+function Get-MoonNeovimProblem {
+    if (-not ($env:CC -or (Get-Command "zig", "gcc", "clang" -ErrorAction SilentlyContinue))) {
+        return "a C compiler is required to build the Neovim parser (set CC, or install zig, gcc, or clang)"
+    }
+}
+
+function Resolve-MoonCommand([string]$Name) {
+    $Command = Get-Command $Name -ErrorAction SilentlyContinue | Select-Object -First 1
+    if (-not $Command) {
+        throw "Editor command not found: '$Name'."
+    }
+    return $Command.Source
+}
+
+function Resolve-MoonPath([string]$Path) {
+    return $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path)
+}
+
+# Reads one line from the terminal; an empty line means the default. $Shown
+# stands in for a default that has no value to print.
+function Read-MoonAnswer([string]$Prompt, [string]$Default = "", [string]$Shown = "") {
+    if (-not $Shown) {
+        $Shown = $Default
+    }
+    $Label = if ($Shown) { "$Prompt [$Shown]" } else { $Prompt }
+    $Reply = "$(Read-Host $Label)".Trim()
+    if ($Reply) {
+        return $Reply
+    }
+    return $Default
+}
+
+function Read-MoonRequiredAnswer([string]$Prompt, [string]$Default = "") {
+    while ($true) {
+        $Reply = Read-MoonAnswer $Prompt $Default
+        if ($Reply) {
+            return $Reply
+        }
+        Write-Host "A value is needed here."
+    }
+}
+
+$CanPrompt = [Environment]::UserInteractive -and -not [Console]::IsInputRedirected -and
+    -not ([Environment]::GetCommandLineArgs() | Where-Object { $_ -match '^-noni' })
+if ($Interactive -and -not $CanPrompt) {
+    throw "-Interactive needs a terminal to ask on."
+}
+if (-not $Interactive -and -not $Yes -and -not $Configured -and $CanPrompt) {
+    $Interactive = $true
+}
+
+if ($Interactive) {
+    Write-Host "moon installer"
+    Write-Host "Press Enter to accept the answer in brackets."
+    Write-Host ""
+    if (-not $EditorOnly) {
+        $InstallInput = Read-MoonAnswer "Install moon in" $InstallInput
     }
 
-    switch ($EditorName) {
-        "vscode" {
-            if (-not $EditorCli) {
-                $EditorCommand = Get-Command "code" -ErrorAction SilentlyContinue | Select-Object -First 1
-                if ($EditorCommand) {
-                    $EditorCli = $EditorCommand.Source
+    if (-not $VsCodeCli) {
+        $VsCodeCli = "$(Find-MoonVsCode)"
+    }
+    if (-not $SublimeDir) {
+        $SublimeDir = "$(Find-MoonSublime)"
+    }
+    if ($JetBrainsTargets.Count -eq 0) {
+        $JetBrainsTargets = @(Find-MoonJetBrains)
+    }
+    $NvimFound = $NvimCli
+    if (-not $NvimFound) {
+        $NvimCommand = Get-Command "nvim" -ErrorAction SilentlyContinue | Select-Object -First 1
+        $NvimFound = if ($NvimCommand) { $NvimCommand.Source } else { "" }
+    }
+    $NvimProblem = Get-MoonNeovimProblem
+    $EditorNotes = @{
+        vscode    = $VsCodeCli
+        sublime   = $SublimeDir
+        jetbrains = switch ($JetBrainsTargets.Count) {
+            0 { "" }
+            1 { $JetBrainsTargets[0] }
+            default { "$_ IDEs at 2026.2 or newer" }
+        }
+        neovim    = if ($NvimProblem) { "" } else { $NvimFound }
+        zed       = if (Test-MoonZed) { "found" } else { "" }
+    }
+
+    Write-Host ""
+    Write-Host "Editor integrations"
+    $Detected = @()
+    for ($Index = 0; $Index -lt $AllEditors.Count; $Index++) {
+        $Name = $AllEditors[$Index]
+        $Note = $EditorNotes[$Name]
+        if ($Note) {
+            $Detected += $Name
+        }
+        elseif ($Name -eq "jetbrains") {
+            $Note = "no IDE at 2026.2 or newer found"
+        }
+        elseif ($Name -eq "neovim" -and $NvimFound) {
+            $Note = "$NvimFound, but $NvimProblem"
+        }
+        else {
+            $Note = "not found"
+        }
+        Write-Host ("  {0}) {1,-13} {2}" -f ($Index + 1), $EditorLabels[$Name], $Note)
+    }
+    $DefaultEditors = @(if ($Editors.Count -gt 0) { $Editors } else { $Detected })
+    $DefaultSelection = if ($DefaultEditors.Count -gt 0) { $DefaultEditors -join " " } else { "none" }
+
+    while ($true) {
+        $Selection = Read-MoonAnswer "Editors to set up (numbers or names, 'all', or 'none')" $DefaultSelection
+        $Chosen = @()
+        $Valid = $true
+        foreach ($Word in @($Selection -split '[,\s]+' | Where-Object { $_ })) {
+            if ($Word -eq "all") {
+                $Chosen = $AllEditors
+            }
+            elseif ($Word -eq "none") {
+                $Chosen = @()
+            }
+            elseif ($Word -match '^[1-5]$') {
+                $Chosen += $AllEditors[[int]$Word - 1]
+            }
+            elseif ($EditorAliases[$Word]) {
+                $Chosen += $EditorAliases[$Word]
+            }
+            else {
+                Write-Host "'$Word' is not one of the editors above."
+                $Valid = $false
+            }
+        }
+        if ($Valid) {
+            break
+        }
+    }
+    $Editors = @($AllEditors | Where-Object { $Chosen -contains $_ })
+
+    foreach ($Name in $Editors) {
+        switch ($Name) {
+            "vscode" {
+                $VsCodeCli = Read-MoonAnswer "VS Code command" $(if ($VsCodeCli) { $VsCodeCli } else { "code" })
+                $VsCodeDir = Read-MoonAnswer "VS Code extensions directory" $VsCodeDir $(if ($VsCodeDir) { $VsCodeDir } else { "the default" })
+            }
+            "sublime" {
+                $SublimeDir = Read-MoonRequiredAnswer "Sublime Text Packages directory" $SublimeDir
+            }
+            "jetbrains" {
+                if ($JetBrainsTargets.Count -gt 1) {
+                    Write-Host "JetBrains plugins directories found:"
+                    $JetBrainsTargets | ForEach-Object { Write-Host "  $_" }
+                    $Reply = Read-MoonAnswer "JetBrains plugins directory" "" "all $($JetBrainsTargets.Count) above"
+                    if ($Reply) {
+                        $JetBrainsTargets = @($Reply)
+                    }
                 }
                 else {
-                    $EditorCli = @(
-                        (Join-Path $LocalAppData "Programs\Microsoft VS Code\bin\code.cmd"),
-                        (Join-Path $env:ProgramFiles "Microsoft VS Code\bin\code.cmd")
-                    ) | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Select-Object -First 1
+                    $JetBrainsTargets = @(Read-MoonRequiredAnswer "JetBrains plugins directory" "$($JetBrainsTargets | Select-Object -First 1)")
                 }
             }
-            if (-not $EditorCli) {
+            "neovim" {
+                $NvimCli = Read-MoonAnswer "Neovim command" $(if ($NvimCli) { $NvimCli } else { "nvim" })
+                $NvimConfig = Read-MoonAnswer "Neovim config directory" $NvimConfig $(if ($NvimConfig) { $NvimConfig } else { "the default" })
+            }
+            "zed" {
+                $ZedDir = Read-MoonAnswer "Unpack the Zed extension in" $ZedDir
+            }
+        }
+    }
+
+    $Labels = @($Editors | ForEach-Object { $EditorLabels[$_] }) -join ", "
+    if ($EditorOnly) {
+        if (-not $Labels) {
+            throw "No editor was selected, and -EditorOnly installs nothing else."
+        }
+        $Question = "Set up ${Labels}?"
+    }
+    else {
+        $Question = "Install moon ($Target) in $InstallInput"
+        if ($Labels) {
+            $Question += " and set up $Labels"
+        }
+        $Question += "?"
+    }
+    Write-Host ""
+    if ((Read-MoonAnswer $Question "y" "Y/n") -notmatch '^(y|yes)$') {
+        Write-Host "Cancelled; nothing was installed."
+        return
+    }
+    Write-Host ""
+}
+
+if ($EditorOnly -and $Editors.Count -eq 0) {
+    throw "-EditorOnly requires an editor."
+}
+
+# Runs before the toolchain is touched, so a bad editor request changes nothing.
+foreach ($Name in $Editors) {
+    switch ($Name) {
+        "vscode" {
+            $VsCodeCli = if ($VsCodeCli) { Resolve-MoonCommand $VsCodeCli } else { "$(Find-MoonVsCode)" }
+            if (-not $VsCodeCli) {
                 throw "Could not find the 'code' command; pass -EditorPath."
+            }
+            if ($VsCodeDir) {
+                $VsCodeDir = Resolve-MoonPath $VsCodeDir
             }
         }
         "sublime" {
-            if ($EditorTargets.Count -eq 0) {
-                $EditorTargets = @(
-                    "Sublime Text", "Sublime Text 3" |
-                        ForEach-Object { Join-Path $RoamingAppData "$_\Packages" } |
-                        Where-Object { Test-Path -LiteralPath $_ -PathType Container } |
-                        Select-Object -First 1
-                )
+            if (-not $SublimeDir) {
+                $SublimeDir = "$(Find-MoonSublime)"
             }
-            if ($EditorTargets.Count -eq 0) {
+            if (-not $SublimeDir) {
                 throw "Could not find Sublime Text's Packages directory; pass -EditorConfig."
             }
+            $SublimeDir = Resolve-MoonPath $SublimeDir
         }
         "jetbrains" {
-            # Every IDE that can load the plugin gets it. Older IDEs reject it,
-            # because the plugin's since-build is 262 (2026.2).
-            $JetBrainsRoot = Join-Path $RoamingAppData "JetBrains"
-            if ($EditorTargets.Count -eq 0 -and (Test-Path -LiteralPath $JetBrainsRoot -PathType Container)) {
-                foreach ($Product in Get-ChildItem -LiteralPath $JetBrainsRoot -Directory) {
-                    if ($Product.Name -match '^[A-Za-z]+(\d{4})\.(\d+)$') {
-                        $Year = [int]$Matches[1]
-                        $Minor = [int]$Matches[2]
-                        if ($Year -gt 2026 -or ($Year -eq 2026 -and $Minor -ge 2)) {
-                            $EditorTargets += Join-Path $Product.FullName "plugins"
-                        }
-                    }
-                }
+            if ($JetBrainsTargets.Count -eq 0) {
+                $JetBrainsTargets = @(Find-MoonJetBrains)
             }
-            if ($EditorTargets.Count -eq 0) {
+            if ($JetBrainsTargets.Count -eq 0) {
                 throw "Found no JetBrains IDE at version 2026.2 or newer; pass -EditorConfig."
             }
+            $JetBrainsTargets = @($JetBrainsTargets | ForEach-Object { Resolve-MoonPath $_ })
         }
         "neovim" {
-            if (-not ($env:CC -or (Get-Command "zig", "gcc", "clang" -ErrorAction SilentlyContinue))) {
-                throw "A C compiler is required to build the Neovim parser (set CC, or install zig, gcc, or clang)."
+            if ($NvimCli) {
+                $NvimCli = Resolve-MoonCommand $NvimCli
             }
+            if ($NvimConfig) {
+                $NvimConfig = Resolve-MoonPath $NvimConfig
+            }
+            $NvimProblem = Get-MoonNeovimProblem
+            if ($NvimProblem) {
+                throw "$($NvimProblem.Substring(0, 1).ToUpper())$($NvimProblem.Substring(1))."
+            }
+        }
+        "zed" {
+            $ZedDir = Resolve-MoonPath $ZedDir
         }
     }
 }
@@ -296,34 +568,35 @@ function Set-MoonEditorDirectory([string]$Source, [string]$Destination) {
     }
 }
 
-function Install-MoonEditor([string]$MoonExe) {
+function Install-MoonEditor([string]$Name, [string]$MoonExe) {
     $TempDir = Join-Path ([IO.Path]::GetTempPath()) ("moon-editor-" + [IO.Path]::GetRandomFileName())
     New-Item -ItemType Directory -Path $TempDir | Out-Null
+    Write-Output ""
     try {
-        switch ($EditorName) {
+        switch ($Name) {
             "vscode" {
                 $Vsix = Get-MoonEditorAsset "moon-vscode.vsix" $TempDir
                 $CliArguments = @("--install-extension", $Vsix, "--force")
-                if ($EditorConfig) {
-                    $CliArguments += @("--extensions-dir", $EditorConfig)
+                if ($VsCodeDir) {
+                    $CliArguments += @("--extensions-dir", $VsCodeDir)
                 }
-                & $EditorCli @CliArguments
+                & $VsCodeCli @CliArguments
                 if ($LASTEXITCODE -ne 0) {
-                    throw "'$EditorCli' could not install the extension."
+                    throw "'$VsCodeCli' could not install the extension."
                 }
-                Write-Output "moon extension installed with $EditorCli"
+                Write-Output "moon extension installed with $VsCodeCli"
             }
             "sublime" {
                 $Staged = Expand-MoonEditorPackage "moon-sublime" $TempDir
-                $Destination = Join-Path $EditorTargets[0] "moon-sublime"
+                $Destination = Join-Path $SublimeDir "moon-sublime"
                 Set-MoonEditorDirectory $Staged $Destination
                 Write-Output "moon package installed to $Destination"
                 Write-Output "For language server features, set up the LSP package as described in its README.md."
             }
             "jetbrains" {
                 $Staged = Expand-MoonEditorPackage "moon-jetbrains" $TempDir
-                foreach ($EditorTarget in $EditorTargets) {
-                    $Destination = Join-Path $EditorTarget "moon-jetbrains"
+                foreach ($JetBrainsTarget in $JetBrainsTargets) {
+                    $Destination = Join-Path $JetBrainsTarget "moon-jetbrains"
                     Set-MoonEditorDirectory $Staged $Destination
                     Write-Output "moon plugin installed to $Destination"
                 }
@@ -346,12 +619,12 @@ function Install-MoonEditor([string]$MoonExe) {
                     "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $Setup,
                     "-ExecutableDir", (Split-Path -Parent $MoonExe)
                 )
-                if ($EditorConfig) {
-                    $SetupArguments += @("-ConfigDir", $EditorConfig)
+                if ($NvimConfig) {
+                    $SetupArguments += @("-ConfigDir", $NvimConfig)
                 }
                 $CallerPath = $env:Path
-                if ($EditorCli) {
-                    $env:Path = "$(Split-Path -Parent $EditorCli);$env:Path"
+                if ($NvimCli) {
+                    $env:Path = "$(Split-Path -Parent $NvimCli);$env:Path"
                 }
                 try {
                     & $Shell @SetupArguments
@@ -365,7 +638,7 @@ function Install-MoonEditor([string]$MoonExe) {
             }
             "zed" {
                 $Staged = Expand-MoonEditorPackage "moon-zed" $TempDir
-                $Destination = Join-Path $EditorDataDir "moon-zed"
+                $Destination = Join-Path $ZedDir "moon-zed"
                 Set-MoonEditorDirectory $Staged $Destination
                 Write-Output "moon extension unpacked to $Destination"
                 Write-Output "Finish in Zed: run 'zed: install dev extension' and select that directory."
@@ -380,21 +653,22 @@ function Install-MoonEditor([string]$MoonExe) {
     }
 }
 
+$InstallInput = Resolve-MoonPath $InstallInput
 if ($EditorOnly) {
-    $InstalledMoon = Join-Path $(if ($env:MOON_INSTALL) { $env:MOON_INSTALL } else { Join-Path $HOME ".moon" }) "bin\moon.exe"
-    if (Test-Path -LiteralPath $InstalledMoon -PathType Leaf) {
-        Install-MoonEditor $InstalledMoon
-        return
+    $MoonExe = Join-Path $InstallInput "bin\moon.exe"
+    if (-not (Test-Path -LiteralPath $MoonExe -PathType Leaf)) {
+        $MoonCommand = Get-Command "moon" -ErrorAction SilentlyContinue | Select-Object -First 1
+        if (-not $MoonCommand) {
+            throw "moon is not installed; run this installer without -EditorOnly."
+        }
+        $MoonExe = $MoonCommand.Source
     }
-    $MoonCommand = Get-Command "moon" -ErrorAction SilentlyContinue | Select-Object -First 1
-    if (-not $MoonCommand) {
-        throw "moon is not installed; run this installer without -EditorOnly."
+    foreach ($Name in $Editors) {
+        Install-MoonEditor $Name $MoonExe
     }
-    Install-MoonEditor $MoonCommand.Source
     return
 }
 
-$InstallInput = if ($env:MOON_INSTALL) { $env:MOON_INSTALL } else { Join-Path $HOME ".moon" }
 $InstallDir = [IO.Path]::GetFullPath($InstallInput)
 $InstallRoot = [IO.Path]::GetPathRoot($InstallDir)
 $DirectorySeparators = [char[]]@([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar)
@@ -556,7 +830,6 @@ else {
     Write-Output "Open a new terminal, then run 'moon --help'."
 }
 
-if ($EditorName) {
-    Write-Output ""
-    Install-MoonEditor $Exe
+foreach ($Name in $Editors) {
+    Install-MoonEditor $Name $Exe
 }
